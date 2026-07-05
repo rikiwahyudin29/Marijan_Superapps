@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"> <!-- Background Putih Bersih -->
+
+    <!-- Animated Gradient -->
+    <View
+        android:id="@+id/vBackgroundGradient"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_animated_gradient"
+        android:alpha="0" />
+
+    <LinearLayout
+        android:id="@+id/logoContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <!-- Logo -->
+        <ImageView
+            android:id="@+id/ivLogo"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:src="@drawable/logo_marj"
+            android:scaleType="fitCenter"
+            android:layout_marginBottom="24dp"
+            android:alpha="0" /> 
+            
+        <!-- Judul -->
+        <TextView
+            android:id="@+id/tvJudul"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SMK RJ Superapp"
+            android:textColor="#212121" 
+            android:textSize="28sp"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.02"
+            android:alpha="0" />
+
+        <!-- Sub Judul -->
+        <TextView
+            android:id="@+id/tvSubJudul"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Portal Belajar &amp; CBT Mobile"
+            android:textColor="#757575" 
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-light"
+            android:letterSpacing="0.05"
+            android:alpha="0" />
+    </LinearLayout>
+
+    <!-- Footer -->
+    <TextView
+        android:id="@+id/tvFooter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp"
+        android:text="Powered by PT Ruang Teknologi Mandiri Indonesia"
+        android:textColor="#9E9E9E"
+        android:textSize="12sp"
+        android:fontFamily="sans-serif-condensed"
+        android:alpha="0" />
+
+</RelativeLayout>

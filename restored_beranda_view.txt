@@ -1,0 +1,266 @@
+Created At: 2026-07-03T16:57:07Z
+Completed At: 2026-07-03T16:57:08Z
+File Path: `file:///e:/Web/MarijanCBT/app/src/main/res/layout/activity_login.xml`
+Total Lines: 163
+Total Bytes: 6569
+Showing lines 1 to 163
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: <?xml version="1.0" encoding="utf-8"?>
+2: <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+3:     xmlns:app="http://schemas.android.com/apk/res-auto"
+4:     android:layout_width="match_parent"
+5:     android:layout_height="match_parent"
+6:     android:background="@drawable/bg_login_gradient"
+7:     android:keepScreenOn="true">
+8: 
+9:     <androidx.core.widget.NestedScrollView
+10:         android:layout_width="match_parent"
+11:         android:layout_height="match_parent"
+12:         android:layout_above="@id/layoutPowered"
+13:         android:fillViewport="true">
+14: 
+15:         <LinearLayout
+16:             android:layout_width="match_parent"
+17:             android:layout_height="wrap_content"
+18:             android:orientation="vertical"
+19:             android:padding="32dp"
+20:             android:gravity="center_horizontal">
+21: 
+22:             <ImageView
+23:                 android:id="@+id/ivLogoLogin"
+24:                 android:layout_width="140dp"
+25:                 android:layout_height="140dp"
+26:                 android:src="@drawable/logo_marj"
+27:                 android:layout_marginTop="30dp"
+28:                 android:layout_marginBottom="24dp"
+29:                 android:elevation="4dp"/>
+30: 
+31:             <TextView
+32:                 android:layout_width="wrap_content"
+33:                 android:layout_height="wrap_content"
+34:                 android:text="Login"
+35:                 android:textSize="28sp"
+36:                 android:textStyle="bold"
+37:                 androi
+<truncated 3713 bytes>
+dingLogin"
+118:                 android:layout_width="wrap_content"
+119:                 android:layout_height="wrap_content"
+120:                 android:layout_marginTop="16dp"
+121:                 android:visibility="gone"
+122:                 android:indeterminateTint="#FFFFFF" />
+123: 
+124:             <TextView
+125:                 android:id="@+id/tvLupaPassword"
+126:                 android:layout_width="wrap_content"
+127:                 android:layout_height="wrap_content"
+128:                 android:layout_marginTop="40dp"
+129:                 android:layout_marginBottom="30dp"
+130:                 android:text="Lupa password? Hubungi Admin Sekolah"
+131:                 android:textColor="#FFFFFF"
+132:                 android:textStyle="bold" />
+133: 
+134:         </LinearLayout>
+135:     </androidx.core.widget.NestedScrollView>
+136: 
+137:     <LinearLayout
+138:         android:id="@+id/layoutPowered"
+139:         android:layout_width="wrap_content"
+140:         android:layout_height="wrap_content"
+141:         android:layout_alignParentBottom="true"
+142:         android:layout_centerHorizontal="true"
+143:         android:layout_marginBottom="24dp"
+144:         android:orientation="vertical"
+145:         android:gravity="center">
+146: 
+147:         <TextView
+148:             android:layout_width="wrap_content"
+149:             android:layout_height="wrap_content"
+150:             android:text="Powered by"
+151:             android:textColor="#B0BEC5"
+152:             android:textSize="12sp" />
+153: 
+154:         <TextView
+155:             android:layout_width="wrap_content"
+156:             android:layout_height="wrap_content"
+157:             android:text="PT Ruang Teknologi Mandiri Indonesia"
+158:             android:textColor="#FFFFFF"
+159:             android:textStyle="bold"
+160:             android:textSize="12sp" />
+161:     </LinearLayout>
+162: 
+163: </RelativeLayout>
+The above content shows the entire, complete file contents of the requested file.
+
+==================
+Created At: 2026-07-03T17:34:31Z
+Completed At: 2026-07-03T17:34:31Z
+File Path: `file:///e:/Web/MarijanCBT/app/src/main/res/layout/activity_dashboard.xml`
+Total Lines: 423
+Total Bytes: 21587
+Showing lines 1 to 423
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: <?xml version="1.0" encoding="utf-8"?>
+2: <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+3:     xmlns:app="http://schemas.android.com/apk/res-auto"
+4:     android:layout_width="match_parent"
+5:     android:layout_height="match_parent"
+6:     android:background="#F8FAFC">
+7: 
+8:     <androidx.core.widget.NestedScrollView
+9:         android:layout_width="match_parent"
+10:         android:layout_height="match_parent"
+11:         android:clipToPadding="false"
+12:         android:paddingBottom="40dp">
+13: 
+14:         <RelativeLayout
+15:             android:layout_width="match_parent"
+16:             android:layout_height="wrap_content">
+17: 
+18:             <!-- HERO HEADER -->
+19:             <RelativeLayout
+20:                 android:id="@+id/headerDashboard"
+21:                 android:layout_width="match_parent"
+22:                 android:layout_height="280dp"
+23:                 android:background="@drawable/bg_header_dashboard"
+24:                 android:paddingTop="56dp"
+25:                 android:paddingHorizontal="24dp">
+26:                 
+27:                 <androidx.cardview.widget.CardView
+28:                     android:id="@+id/cvProfilPic"
+29:                     android:layout_width="64dp"
+30:                     android:layout_height="64dp"
+31:                     app:cardCornerRadius="32dp"
+32:                     app:cardElevation="4dp"
+33:                     app:cardBackgroundColor="#FFFFFF"
+34:                     android:layout_centerVertical="false">
+35:                    
+<truncated 20036 bytes>
+                        <LinearLayout
+391:                             android:layout_width="match_parent"
+392:                             android:layout_height="wrap_content"
+393:                             android:orientation="vertical"
+394:                             android:padding="20dp"
+395:                             android:gravity="center">
+396:                             <ImageView
+397:                                 android:layout_width="42dp"
+398:                                 android:layout_height="42dp"
+399:                                 android:src="@drawable/ic_modern_keuangan"
+400:                                 android:layout_marginBottom="12dp"/>
+401:                             <TextView
+402:                                 android:layout_width="wrap_content"
+403:                                 android:layout_height="wrap_content"
+404:                                 android:text="Keuangan"
+405:                                 android:textSize="15sp"
+406:                                 android:textStyle="bold"
+407:                                 android:textColor="#1E293B"/>
+408:                             <TextView
+409:                                 android:layout_width="wrap_content"
+410:                                 android:layout_height="wrap_content"
+411:                                 android:text="SPP &amp; Tagihan"
+412:                                 android:textSize="12sp"
+413:                                 android:textColor="#64748B"
+414:                                 android:layout_marginTop="2dp"
+415:                                 android:gravity="center"/>
+416:                         </LinearLayout>
+417:                     </androidx.cardview.widget.CardView>
+418: 
+419:                 </GridLayout>
+420:             </LinearLayout>
+421:         </RelativeLayout>
+422:     </androidx.core.widget.NestedScrollView>
+423: </androidx.coordinatorlayout.widget.CoordinatorLayout>
+The above content shows the entire, complete file contents of the requested file.
+
+==================
+Created At: 2026-07-03T18:11:32Z
+Completed At: 2026-07-03T18:11:32Z
+File Path: `file:///e:/Web/MarijanCBT/app/src/main/res/layout/activity_login.xml`
+Total Lines: 209
+Total Bytes: 9375
+Showing lines 1 to 209
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: <?xml version="1.0" encoding="utf-8"?>
+2: <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+3:     xmlns:app="http://schemas.android.com/apk/res-auto"
+4:     android:layout_width="match_parent"
+5:     android:layout_height="match_parent"
+6:     android:background="#FFFFFF"
+7:     android:keepScreenOn="true">
+8: 
+9:     <!-- Animated Gradient -->
+10:     <View
+11:         android:id="@+id/vBackgroundGradient"
+12:         android:layout_width="match_parent"
+13:         android:layout_height="match_parent"
+14:         android:background="@drawable/bg_animated_gradient" />
+15: 
+16:     <androidx.core.widget.NestedScrollView
+17:         android:layout_width="match_parent"
+18:         android:layout_height="match_parent"
+19:         android:layout_above="@+id/layoutPowered"
+20:         android:fillViewport="true">
+21: 
+22:         <LinearLayout
+23:             android:layout_width="match_parent"
+24:             android:layout_height="wrap_content"
+25:             android:layout_gravity="center_vertical"
+26:             android:orientation="vertical"
+27:             android:padding="24dp"
+28:             android:gravity="center">
+29: 
+30:             <!-- Logo in a circular card for soft shadow -->
+31:             <androidx.cardview.widget.CardView
+32:                 android:layout_width="80dp"
+33:                 android:layout_height="80dp"
+34:                 app:cardCornerRadius="40dp"
+35:                 app:cardElevation="4dp"
+36:                 app:cardBackgroundColor="#FFFFFF"
+37:                 android:l
+<truncated 6749 bytes>
+layout_width="match_parent"
+168:                             android:layout_height="match_parent"
+169:                             android:background="@android:color/transparent"
+170:                             android:text="Masuk"
+171:                             android:textAllCaps="false"
+172:                             android:textSize="16sp"
+173:                             android:textStyle="bold"
+174:                             android:textColor="#FFFFFF" />
+175:                             
+176:                         <ProgressBar
+177:                             android:id="@+id/pbLoadingLogin"
+178:                             android:layout_width="24dp"
+179:                             android:layout_height="24dp"
+180:                             android:layout_gravity="center"
+181:                             android:visibility="gone"
+182:                             android:indeterminateTint="#FFFFFF" />
+183:                     </FrameLayout>
+184: 
+185:                 </LinearLayout>
+186:             </androidx.cardview.widget.CardView>
+187: 
+188:         </LinearLayout>
+189:     </androidx.core.widget.NestedScrollView>
+190: 
+191:     <LinearLayout
+192:         android:id="@+id/layoutPowered"
+193:         android:layout_width="wrap_content"
+194:         android:layout_height="wrap_content"
+195:         android:layout_alignParentBottom="true"
+196:         android:layout_centerHorizontal="true"
+197:         android:layout_marginBottom="24dp"
+198:         android:orientation="vertical"
+199:         android:gravity="center">
+200: 
+201:         <TextView
+202:             android:layout_width="wrap_content"
+203:             android:layout_height="wrap_content"
+204:             android:text="Powered by PT Ruang Teknologi Mandiri Indonesia"
+205:             android:textColor="#9CA3AF"
+206:             android:textSize="11sp" />
+207:     </LinearLayout>
+208: 
+209: </RelativeLayout>
+The above content shows the entire, complete file contents of the requested file.
+
+==================

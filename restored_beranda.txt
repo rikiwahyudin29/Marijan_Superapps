@@ -1,0 +1,17 @@
+Created At: 2026-07-04T15:47:54Z
+Tool is running as a background task with task id: 668091c2-1fb0-4f73-93cf-b07fd3c358f8/task-1062
+Task Description: node -e "
+const fs = require('fs');
+const lines = fs.readFileSync('C:/Users/rikiw/.gemini/antigravity-ide/brain/668091c2-1fb0-4f73-93cf-b07fd3c358f8/.system_generated/logs/transcript.jsonl', 'utf-8').split('\n');
+let matchCount = 0;
+for (const line of lines) {
+    if (!line) continue;
+    const obj = JSON.parse(line);
+    if (obj.content && obj.content.includes('fragment_beranda.xml') && obj.content.includes('<ScrollView')) {
+        console.log('Found ScrollView!');
+        fs.writeFileSync('restored_beranda.txt', obj.content);
+        break;
+    }
+}
+"
+Task logs are available at: file:///C:/Users/rikiw/.gemini/antigravity-ide/brain/668091c2-1fb0-4f73-93cf-b07fd3c358f8/.system_generated/tasks/task-1062.log

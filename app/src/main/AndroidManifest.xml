@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera.any" android:required="true" />
+    <application
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        android:usesCleartextTraffic="true">
+
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
+        <activity android:name=".LoginActivity" android:exported="false" />
+        <activity android:name=".DaftarTugasActivity" android:exported="false" />
+        <activity android:name=".KumpulTugasActivity" android:exported="false" />
+        <activity android:name=".FileViewerActivity" android:exported="false" />
+        <activity android:name=".MateriBelajarActivity" android:exported="false" />
+        <activity android:name=".NilaiRaportActivity" android:exported="false" />
+        <activity
+            android:name=".DashboardActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity android:name=".JadwalActivity" android:exported="false" />
+        <activity android:name=".KonfirmasiActivity" android:exported="false" />
+
+        <activity
+            android:name=".UjianActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:excludeFromRecents="true" />
+
+        <activity
+            android:name=".PresensiActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".KameraAbsenActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity android:name=".IzinActivity" android:screenOrientation="portrait" />
+        <activity android:name=".RekapActivity" android:screenOrientation="portrait" />
+        <activity android:name=".KeuanganActivity" />
+        <activity
+            android:name=".PaymentActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MateriTugasActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity android:name=".DashboardGuruActivity" android:exported="false" android:screenOrientation="portrait"/>
+        <activity
+            android:name=".CustomScannerActivity"
+            android:screenOrientation="portrait"
+            android:stateNotNeeded="true"
+            android:theme="@style/zxing_CaptureTheme" />
+
+    </application>
+</manifest>
+

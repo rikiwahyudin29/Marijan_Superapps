@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Base Background - Gradien Halus Biru Modern -->
+    <item>
+        <shape>
+            <gradient
+                android:startColor="#F8FAFC"
+                android:endColor="#DBEAFE"
+                android:angle="135" />
+        </shape>
+    </item>
+
+    <!-- Ornamen Lingkaran Abstrak Kanan Atas (Biru Transparan) -->
+    <item android:top="-100dp" android:right="-100dp">
+        <shape android:shape="oval">
+            <solid android:color="#1A2563EB" /> 
+            <size android:width="300dp" android:height="300dp" />
+        </shape>
+    </item>
+
+    <!-- Ornamen Lingkaran Abstrak Kiri Bawah (Biru Sangat Transparan) -->
+    <item android:bottom="-50dp" android:left="-150dp">
+        <shape android:shape="oval">
+            <solid android:color="#0D2563EB" />
+            <size android:width="400dp" android:height="400dp" />
+        </shape>
+    </item>
+</layer-list>
