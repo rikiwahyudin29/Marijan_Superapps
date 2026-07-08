@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <style>
+        body { padding: 0; margin: 0; }
+        html, body, #map { height: 100%; width: 100%; }
+        /* Hilangkan attribution logo untuk tampilan bersih */
+        .leaflet-control-attribution { display: none !important; }
+    </style>
+    <!-- Gunakan CDN Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+        var map = L.map('map', {
+            zoomControl: false,
+            dragging: false,
+            scrollWheelZoom: false,
+            doubleClickZoom: false,
+            boxZoom: false,
+            keyboard: false
+        }).setView([-6.200000, 106.816666], 15);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19
+        }).addTo(map);
+
+        var userMarker;
+        var schoolCircle;
+
+        // Fungsi ini akan dipanggil dari Kotlin
+        function updateLocation(userLat, userLng, schoolLat, schoolLng, radius) {
+            var userPos = [userLat, userLng];
+
+            // Set Center map ke posisi user
+            map.setView(userPos, 17);
+
+            // Update user marker (biru)
+            if (userMarker) {
+                userMarker.setLatLng(userPos);
+            } else {
+                userMarker = L.circleMarker(userPos, {
+                    color: '#FFFFFF',
+                    fillColor: '#00E6E6',
+                    fillOpacity: 1,
+                    radius: 8,
+                    weight: 3
+                }).addTo(map);
+            }
+
+            // Update school radius circle if school data exists
+            if (schoolLat != 0 && schoolLng != 0) {
+                var schoolPos = [schoolLat, schoolLng];
+                if (schoolCircle) {
+                    schoolCircle.setLatLng(schoolPos);
+                    schoolCircle.setRadius(radius);
+                } else {
+                    schoolCircle = L.circle(schoolPos, {
+                        color: '#1E3A8A',
+                        fillColor: '#1E3A8A',
+                        fillOpacity: 0.1,
+                        radius: radius,
+                        weight: 1
+                    }).addTo(map);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

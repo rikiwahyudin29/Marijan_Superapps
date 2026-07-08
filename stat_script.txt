@@ -1,0 +1,39 @@
+    private fun muatStatistikPresensi() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val resp = ApiClient.instance.getRiwayatAbsen(identifier)
+                withContext(Dispatchers.Main) {
+                    if (resp.isSuccessful && resp.body()?.status == true) {
+                        val riwayatList = resp.body()?.data ?: emptyList()
+                        
+                        var hadir = 0
+                        var alfa = 0
+                        var sakit = 0
+                        var izin = 0
+                        var terlambat = 0
+                        
+                        for (r in riwayatList) {
+                            when (r.status_kehadiran.lowercase()) {
+                                "hadir" -> hadir++
+                                "alfa" -> alfa++
+                                "sakit" -> sakit++
+                                "izin" -> izin++
+                                "terlambat" -> terlambat++
+                            }
+                        }
+                        
+                        val total = hadir + alfa + sakit + izin + terlambat
+                        val percentage = if (total > 0) ((hadir.toFloat() / total.toFloat()) * 100).toInt() else 0
+                        
+                        rootView.findViewById<TextView>(R.id.tvTotalKehadiran).text = "$percentage%"
+                        rootView.findViewById<TextView>(R.id.tvStatHadir).text = hadir.toString()
+                        rootView.findViewById<TextView>(R.id.tvStatAlfa).text = alfa.toString()
+                        rootView.findViewById<TextView>(R.id.tvStatSakit).text = sakit.toString()
+                        rootView.findViewById<TextView>(R.id.tvStatTerlambat).text = terlambat.toString()
+                    }
+                }
+            } catch (e: Exception) {
+                // Ignore silent fail for stats
+            }
+        }
+    }
