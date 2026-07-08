@@ -1,4 +1,4 @@
-package com.rtekmidev.marijancbt
+﻿package com.rtekmidev.marijancbt
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -12,6 +12,8 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -25,10 +27,13 @@ import com.journeyapps.barcodescanner.ScanOptions
 import com.rtekmidev.marijancbt.api.ApiClient
 import android.content.Intent
 import kotlinx.coroutines.*
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class PresensiActivity : AppCompatActivity() {
 
-    // 🔥 Variabel Penentu Hybrid (Guru / Siswa)
+    // ðŸ”¥ Variabel Penentu Hybrid (Guru / Siswa)
     private var identifier = "" // Bisa berisi NISN atau ID_USER
     private var userRole = "SISWA"
 
@@ -42,6 +47,7 @@ class PresensiActivity : AppCompatActivity() {
     private var currentJarak = 0
 
     private lateinit var locationManager: LocationManager
+    private lateinit var mapWebView: WebView
 
     // 1. SCANNER QR
     private val barcodeLauncher = registerForActivityResult(ScanContract()) { result: ScanIntentResult ->
@@ -60,11 +66,22 @@ class PresensiActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_presensi)
 
-        // 🔥 LOGIKA HYBRID BACA SESI 🔥
+        // Set Date
+        val sdf = SimpleDateFormat("EEEE, dd MMMM yyyy", Locale("id", "ID"))
+        findViewById<TextView>(R.id.tvDate).text = sdf.format(Date())
+
+        // Setup WebView Leaflet
+        mapWebView = findViewById(R.id.mapWebView)
+        mapWebView.settings.javaScriptEnabled = true
+        mapWebView.webViewClient = WebViewClient()
+        mapWebView.loadUrl("file:///android_asset/leaflet_map.html")
+
+        // ðŸ”¥ LOGIKA HYBRID BACA SESI ðŸ”¥
         userRole = intent.getStringExtra("ROLE") ?: "SISWA"
         if (userRole == "GURU") {
             val pref = getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
@@ -76,12 +93,12 @@ class PresensiActivity : AppCompatActivity() {
 
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-        findViewById<ImageView>(R.id.btnBack).setOnClickListener { finish() }
+
 
         // Ambil Setting Sekolah dari API
         muatSettingSekolah()
 
-        // Tombol Mulai Absen
+        // Tombol Main Action
         findViewById<CardView>(R.id.btnMulaiAbsen).setOnClickListener {
             if (isSubmitting) return@setOnClickListener
 
@@ -93,7 +110,7 @@ class PresensiActivity : AppCompatActivity() {
             if (!isWithinRadius) {
                 val selisih = currentJarak - schoolRadius
                 if (selisih > 0) {
-                    Toast.makeText(this, "Gagal: Anda berada $selisih meter di luar jangkauan (Jarak Anda: $currentJarak m, Maks: $schoolRadius m).", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Gagal: Anda berada $selisih meter di luar jangkauan.", Toast.LENGTH_LONG).show()
                 } else {
                     Toast.makeText(this, "Gagal: Anda masih di luar radius sekolah!", Toast.LENGTH_LONG).show()
                 }
@@ -102,16 +119,6 @@ class PresensiActivity : AppCompatActivity() {
 
             bukaScannerQR()
         }
-
-        // Tombol Ajukan Izin
-        findViewById<CardView>(R.id.btnAjukanIzin).setOnClickListener {
-            startActivity(Intent(this, IzinActivity::class.java))
-        }
-
-        // Tombol Lihat Rekap
-        findViewById<CardView>(R.id.btnLihatRekap).setOnClickListener {
-            startActivity(Intent(this, RekapActivity::class.java))
-        }
     }
 
     private fun muatSettingSekolah() {
@@ -119,7 +126,7 @@ class PresensiActivity : AppCompatActivity() {
             try {
                 val resp = ApiClient.instance.getSettingPresensi()
                 withContext(Dispatchers.Main) {
-                    if (resp.isSuccessful && resp.body()?.status == true) {
+                    if (resp.isSuccessful && ((resp.body()?.status?.isJsonPrimitive == true && resp.body()?.status?.asBoolean == true) || resp.body()?.status?.asString == "success" || resp.body()?.status?.asString == "true")) {
                         val d = resp.body()?.data
                         schoolLat = d?.latitude?.toDouble() ?: 0.0
                         schoolLng = d?.longitude?.toDouble() ?: 0.0
@@ -183,11 +190,18 @@ class PresensiActivity : AppCompatActivity() {
     private fun updateVisualRadius(loc: Location) {
         val tvStatus = findViewById<TextView>(R.id.tvStatusRadius)
         val dot = findViewById<View>(R.id.indicatorDot)
+        val btnActionText = findViewById<TextView>(R.id.tvBtnActionText)
+
+        // Update Map Marker via JavaScript
+        if (schoolLat != 0.0) {
+            val script = "updateLocation(${loc.latitude}, ${loc.longitude}, $schoolLat, $schoolLng, $schoolRadius);"
+            mapWebView.evaluateJavascript(script, null)
+        }
 
         if (schoolLat == 0.0) {
             tvStatus.text = "Menunggu data sekolah..."
-            tvStatus.setTextColor(Color.parseColor("#F57C00"))
-            setDotColor(dot, "#F57C00")
+            tvStatus.setTextColor(Color.parseColor("#F59E0B"))
+            setDotColor(dot, "#F59E0B")
             isWithinRadius = false
             return
         }
@@ -206,19 +220,22 @@ class PresensiActivity : AppCompatActivity() {
             tvStatus.setTextColor(Color.RED)
             setDotColor(dot, "#D32F2F")
             isWithinRadius = false
+            btnActionText.text = "Gagal (Fake GPS)"
             return
         }
 
         if (jarak <= schoolRadius) {
             isWithinRadius = true
-            tvStatus.text = "Dalam Radius ($jarak m)"
+            tvStatus.text = "Dalam Radius Kehadiran ( m)"
             tvStatus.setTextColor(Color.parseColor("#1DA748"))
             setDotColor(dot, "#1DA748")
+            btnActionText.text = "Presensi Sekarang"
         } else {
             isWithinRadius = false
-            tvStatus.text = "Luar Radius ($jarak m / Maks: $schoolRadius m)"
+            tvStatus.text = "Luar Radius Kehadiran ( m / Maks:  m)"
             tvStatus.setTextColor(Color.RED)
             setDotColor(dot, "#D32F2F")
+            btnActionText.text = "Ajukan Izin"
         }
     }
 
@@ -250,7 +267,7 @@ class PresensiActivity : AppCompatActivity() {
     @SuppressLint("MissingPermission")
     private fun prosesAbsenQR(qrToken: String) {
         if (identifier.isEmpty()) {
-            Toast.makeText(this, "Gagal: Data Sesi Tidak Lengkap ($userRole)", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Gagal: Data Sesi Tidak Lengkap ()", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -265,7 +282,6 @@ class PresensiActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                // 🔥 PERCABANGAN API BERDASARKAN ROLE 🔥
                 val response = if (userRole == "GURU") {
                     ApiClient.instance.submitAbsenGuru(identifier, lat, lng, qrToken)
                 } else {
@@ -304,3 +320,4 @@ class PresensiActivity : AppCompatActivity() {
         }
     }
 }
+

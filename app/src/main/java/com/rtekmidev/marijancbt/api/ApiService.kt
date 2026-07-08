@@ -10,7 +10,7 @@ import retrofit2.http.Query
 
 interface ApiService {
 
-    // 1. Endpoint Login (🔥 FIXED: Pakai "username" bukan "nisn")
+    // 1. Endpoint Login (ðŸ”¥ FIXED: Pakai "username" bukan "nisn")
     @FormUrlEncoded
     @POST("api/login")
     suspend fun login(
@@ -40,7 +40,7 @@ interface ApiService {
     suspend fun getDashboard(@Query("nisn") nisn: String): retrofit2.Response<DashboardResponse>
 
     @GET("api/presensi/riwayat")
-    suspend fun getRiwayatAbsen(@Query("nisn") nisn: String): retrofit2.Response<PresensiRiwayatResponse>
+    suspend fun getRiwayatAbsen(@Query("nisn") nisn: String): retrofit2.Response<com.google.gson.JsonElement>
 
     @FormUrlEncoded
     @POST("api/presensi/submit")
@@ -48,7 +48,7 @@ interface ApiService {
         @Field("nisn") nisn: String,
         @Field("latitude") lat: String,
         @Field("longitude") lng: String,
-        @Field("qr_token") qrToken: String // 🔥 GANTI JADI INI
+        @Field("qr_token") qrToken: String // ðŸ”¥ GANTI JADI INI
     ): retrofit2.Response<SubmitAbsenResponse>
 
     @GET("api/presensi/rekap")
@@ -132,3 +132,4 @@ interface ApiService {
     @GET("api/ujian/cek_waktu")
     suspend fun cekWaktuUjian(@Query("id_ujian_siswa") id: String): retrofit2.Response<CekWaktuResponse>
 }
+

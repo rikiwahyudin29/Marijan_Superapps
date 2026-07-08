@@ -1,4 +1,4 @@
-package com.rtekmidev.marijancbt
+﻿package com.rtekmidev.marijancbt
 
 import android.Manifest
 import android.content.Context
@@ -219,7 +219,7 @@ class DashboardActivity : AppCompatActivity() {
             try {
                 val resp = ApiClient.instance.getSettingPresensi()
                 withContext(Dispatchers.Main) {
-                    if (resp.isSuccessful && resp.body()?.status == true) {
+                    if (resp.isSuccessful && ((resp.body()?.status?.isJsonPrimitive == true && resp.body()?.status?.asBoolean == true) || resp.body()?.status?.asString == "success" || resp.body()?.status?.asString == "true")) {
                         val d = resp.body()?.data
                         val schoolLat = d?.latitude?.toDouble() ?: 0.0
                         val schoolLng = d?.longitude?.toDouble() ?: 0.0
@@ -316,3 +316,4 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 }
+

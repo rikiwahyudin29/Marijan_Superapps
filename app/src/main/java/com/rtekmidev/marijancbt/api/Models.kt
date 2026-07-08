@@ -174,7 +174,7 @@ data class SubmitIzinResponse(
     val status: Boolean, val message: String
 )
 data class SettingResponse(
-    val status: Boolean,
+    val status: com.google.gson.JsonElement,
     val data: SettingData?
 )
 
@@ -190,7 +190,7 @@ data class TagihanResponse(
     val status: Boolean,
     val message: String?,
     val tagihan: List<DataTagihan>?,
-    val riwayat: List<DataRiwayat>? // ðŸ”¥ Tambahkan Penangkap Riwayat
+    val riwayat: List<DataRiwayat>? // Ã°Å¸â€Â¥ Tambahkan Penangkap Riwayat
 )
 
 data class DataTagihan(
@@ -201,7 +201,7 @@ data class DataTagihan(
     val status_bayar: String?
 )
 
-// ðŸ”¥ Data Class Baru Untuk Riwayat (Sesuai output KeuanganApi.php)
+// Ã°Å¸â€Â¥ Data Class Baru Untuk Riwayat (Sesuai output KeuanganApi.php)
 data class DataRiwayat(
     val id: String?,
     val nama_pos: String?,
@@ -282,7 +282,7 @@ data class CekWaktuResponse(
     val status: Boolean,
     val sisa_waktu_milis: Long,
     val status_pengerjaan: Int,
-    val is_unlocked: Boolean? // ðŸ”¥ WAJIB DITAMBAHKAN
+    val is_unlocked: Boolean? // Ã°Å¸â€Â¥ WAJIB DITAMBAHKAN
 )
 
 
@@ -323,3 +323,17 @@ data class NilaiMapel(
     val nilai_akhir: String?,
     val deskripsi: String?
 )
+// --- DATA CLASS PRESENSI STATISTIK ---
+data class PresensiStatistikResponse(
+    val status: com.google.gson.JsonElement,
+    val data: StatistikData?
+)
+
+data class StatistikData(
+    val total_percentage: Int,
+    val hadir: Int,
+    val alfa: Int,
+    val sakit: Int,
+    val terlambat: Int
+)
+

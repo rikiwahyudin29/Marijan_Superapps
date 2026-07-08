@@ -1,4 +1,4 @@
-package com.rtekmidev.marijancbt
+﻿package com.rtekmidev.marijancbt
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -15,6 +15,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -26,6 +28,9 @@ import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import com.rtekmidev.marijancbt.api.ApiClient
 import kotlinx.coroutines.*
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class PresensiFragment : Fragment() {
 
@@ -41,6 +46,8 @@ class PresensiFragment : Fragment() {
 
     private lateinit var locationManager: LocationManager
     private lateinit var rootView: View
+    private lateinit var mapWebView: WebView
+    private var isMapLoaded = false
 
     private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
         if (result.contents != null) {
@@ -65,8 +72,30 @@ class PresensiFragment : Fragment() {
         return rootView
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Set Date
+        val sdf = SimpleDateFormat("EEEE, dd MMMM yyyy", Locale("id", "ID"))
+        view.findViewById<TextView>(R.id.tvDate).text = sdf.format(Date())
+
+        // Setup WebView Leaflet
+        mapWebView = view.findViewById(R.id.mapWebView)
+        mapWebView.settings.javaScriptEnabled = true
+                mapWebView.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                isMapLoaded = true
+                // Force update location once map is loaded
+                val lastLoc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                    ?: locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                if (lastLoc != null) {
+                    updateVisualRadius(lastLoc)
+                }
+            }
+        }
+        mapWebView.loadUrl("file:///android_asset/leaflet_map.html")
 
         userRole = requireActivity().intent.getStringExtra("ROLE") ?: "SISWA"
         if (userRole == "GURU") {
@@ -79,11 +108,10 @@ class PresensiFragment : Fragment() {
 
         locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-        view.findViewById<ImageView>(R.id.btnBack).setOnClickListener { 
-            // In a fragment, back could mean switching to Beranda
-        }
+
 
         muatSettingSekolah()
+        muatStatistikPresensi()
 
         view.findViewById<CardView>(R.id.btnMulaiAbsen).setOnClickListener {
             if (isSubmitting) return@setOnClickListener
@@ -96,7 +124,7 @@ class PresensiFragment : Fragment() {
             if (!isWithinRadius) {
                 val selisih = currentJarak - schoolRadius
                 if (selisih > 0) {
-                    Toast.makeText(requireContext(), "Gagal: Anda berada $selisih meter di luar jangkauan (Jarak Anda: $currentJarak m, Maks: $schoolRadius m).", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "Gagal: Anda berada ${selisih} meter di luar jangkauan.", Toast.LENGTH_LONG).show()
                 } else {
                     Toast.makeText(requireContext(), "Gagal: Anda masih di luar radius sekolah!", Toast.LENGTH_LONG).show()
                 }
@@ -104,16 +132,91 @@ class PresensiFragment : Fragment() {
             }
             bukaScannerQR()
         }
+    }
 
-        view.findViewById<CardView>(R.id.btnAjukanIzin).setOnClickListener {
-            val intent = Intent(requireContext(), IzinActivity::class.java)
-            intent.putExtra("ROLE", userRole)
-            startActivity(intent)
-        }
-
-        view.findViewById<CardView>(R.id.btnLihatRekap).setOnClickListener {
-            val intent = Intent(requireContext(), RekapActivity::class.java)
-            startActivity(intent)
+    private fun muatStatistikPresensi() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val resp = ApiClient.instance.getRiwayatAbsen(identifier)
+                withContext(Dispatchers.Main) {
+                    if (resp.isSuccessful) {
+                        val jsonBody = resp.body()
+                        if (jsonBody == null) {
+                            Toast.makeText(requireContext(), "Data stat null", Toast.LENGTH_SHORT).show()
+                        } else if (jsonBody.isJsonArray) {
+                            // FALLBACK: If backend still returns Array instead of Object
+                            val array = jsonBody.asJsonArray
+                            var hadir = 0; var alfa = 0; var sakit = 0; var izin = 0; var terlambat = 0
+                            for (i in 0 until array.size()) {
+                                val item = array[i].asJsonObject
+                                val statusKehadiran = item.get("status_kehadiran")?.asString?.lowercase() ?: ""
+                                when (statusKehadiran) {
+                                    "hadir" -> hadir++
+                                    "alfa" -> alfa++
+                                    "sakit" -> sakit++
+                                    "izin" -> izin++
+                                    "terlambat" -> terlambat++
+                                }
+                            }
+                            val total = hadir + alfa + sakit + izin + terlambat
+                            val percentage = if (total > 0) ((hadir.toFloat() / total.toFloat()) * 100).toInt() else 0
+                            rootView.findViewById<TextView>(R.id.tvTotalKehadiran).text = "${percentage}%"
+                            rootView.findViewById<TextView>(R.id.tvStatHadir).text = hadir.toString()
+                            rootView.findViewById<TextView>(R.id.tvStatAlfa).text = alfa.toString()
+                            rootView.findViewById<TextView>(R.id.tvStatSakit).text = sakit.toString()
+                            rootView.findViewById<TextView>(R.id.tvStatTerlambat).text = terlambat.toString()
+                        } else if (jsonBody.isJsonObject) {
+                            val jsonObj = jsonBody.asJsonObject
+                            val dataElement = jsonObj.get("data")
+                            if (dataElement != null && dataElement.isJsonObject) {
+                                // NEW FORMAT: Object with pre-calculated stats
+                                val dataObj = dataElement.asJsonObject
+                                val tPercent = dataObj.get("total_percentage")?.asInt ?: 0
+                                val tHadir = dataObj.get("hadir")?.asInt ?: 0
+                                val tAlfa = dataObj.get("alfa")?.asInt ?: 0
+                                val tSakit = dataObj.get("sakit")?.asInt ?: 0
+                                val tTerlambat = dataObj.get("terlambat")?.asInt ?: 0
+                                rootView.findViewById<TextView>(R.id.tvTotalKehadiran).text = "${tPercent}%"
+                                rootView.findViewById<TextView>(R.id.tvStatHadir).text = tHadir.toString()
+                                rootView.findViewById<TextView>(R.id.tvStatAlfa).text = tAlfa.toString()
+                                rootView.findViewById<TextView>(R.id.tvStatSakit).text = tSakit.toString()
+                                rootView.findViewById<TextView>(R.id.tvStatTerlambat).text = tTerlambat.toString()
+                            } else if (dataElement != null && dataElement.isJsonArray) {
+                                // OLD FORMAT: Array wrapped in "data"
+                                val array = dataElement.asJsonArray
+                                var hadir = 0; var alfa = 0; var sakit = 0; var izin = 0; var terlambat = 0
+                                for (i in 0 until array.size()) {
+                                    val item = array[i].asJsonObject
+                                    val statusKehadiran = (item.get("status_kehadiran") ?: item.get("status"))?.asString?.lowercase()?.trim() ?: ""
+                                    when (statusKehadiran) {
+                                        "hadir" -> hadir++
+                                        "alfa", "alpha" -> alfa++
+                                        "sakit" -> sakit++
+                                        "izin" -> izin++
+                                        "terlambat" -> terlambat++
+                                    }
+                                }
+                                val total = hadir + alfa + sakit + izin + terlambat
+                                val percentage = if (total > 0) ((hadir.toFloat() / total.toFloat()) * 100).toInt() else 0
+                                rootView.findViewById<TextView>(R.id.tvTotalKehadiran).text = "${percentage}%"
+                                rootView.findViewById<TextView>(R.id.tvStatHadir).text = hadir.toString()
+                                rootView.findViewById<TextView>(R.id.tvStatAlfa).text = alfa.toString()
+                                rootView.findViewById<TextView>(R.id.tvStatSakit).text = sakit.toString()
+                                rootView.findViewById<TextView>(R.id.tvStatTerlambat).text = terlambat.toString()
+                            } else {
+                                Toast.makeText(requireContext(), "Data JSON tidak lengkap atau salah format", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), "API Stat Error: ${resp.code()}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    android.util.Log.e("PresensiStat", "Error muat stat", e)
+                    Toast.makeText(requireContext(), "Gagal muat stat: $e", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -122,7 +225,7 @@ class PresensiFragment : Fragment() {
             try {
                 val resp = ApiClient.instance.getSettingPresensi()
                 withContext(Dispatchers.Main) {
-                    if (resp.isSuccessful && resp.body()?.status == true) {
+                    val statusStr = resp.body()?.status?.asString; if (resp.isSuccessful && (statusStr == "success" || statusStr == "true")) {
                         val d = resp.body()?.data
                         schoolLat = d?.latitude?.toDouble() ?: 0.0
                         schoolLng = d?.longitude?.toDouble() ?: 0.0
@@ -186,11 +289,18 @@ class PresensiFragment : Fragment() {
     private fun updateVisualRadius(loc: Location) {
         val tvStatus = rootView.findViewById<TextView>(R.id.tvStatusRadius)
         val dot = rootView.findViewById<View>(R.id.indicatorDot)
+        val btnActionText = rootView.findViewById<TextView>(R.id.tvBtnActionText)
+
+        // Update Map Marker via JavaScript
+        if (isMapLoaded) {
+            val script = "updateLocation(${loc.latitude}, ${loc.longitude}, $schoolLat, $schoolLng, $schoolRadius);"
+            mapWebView.evaluateJavascript(script, null)
+        }
 
         if (schoolLat == 0.0) {
             tvStatus.text = "Menunggu data sekolah..."
-            tvStatus.setTextColor(Color.parseColor("#F57C00"))
-            setDotColor(dot, "#F57C00")
+            tvStatus.setTextColor(Color.parseColor("#F59E0B"))
+            setDotColor(dot, "#F59E0B")
             isWithinRadius = false
             return
         }
@@ -209,19 +319,22 @@ class PresensiFragment : Fragment() {
             tvStatus.setTextColor(Color.RED)
             setDotColor(dot, "#D32F2F")
             isWithinRadius = false
+            btnActionText.text = "Gagal (Fake GPS)"
             return
         }
 
         if (jarak <= schoolRadius) {
             isWithinRadius = true
-            tvStatus.text = "Dalam Radius ($jarak m)"
+            tvStatus.text = "Dalam Radius Kehadiran ( m)"
             tvStatus.setTextColor(Color.parseColor("#1DA748"))
             setDotColor(dot, "#1DA748")
+            btnActionText.text = "Presensi Sekarang"
         } else {
             isWithinRadius = false
-            tvStatus.text = "Luar Radius ($jarak m / Maks: $schoolRadius m)"
+            tvStatus.text = "Luar Radius Kehadiran ( m / Maks:  m)"
             tvStatus.setTextColor(Color.RED)
             setDotColor(dot, "#D32F2F")
+            btnActionText.text = "Ajukan Izin"
         }
     }
 
@@ -245,7 +358,7 @@ class PresensiFragment : Fragment() {
         options.setDesiredBarcodeFormats(ScanOptions.QR_CODE)
         options.setPrompt("Arahkan ke QR Code Guru Piket")
         options.setBeepEnabled(true)
-        options.setCaptureActivity(CustomScannerActivity::class.java)
+        // options.setCaptureActivity(CustomScannerActivity::class.java)
         options.setOrientationLocked(true)
         barcodeLauncher.launch(options)
     }
@@ -253,7 +366,7 @@ class PresensiFragment : Fragment() {
     @SuppressLint("MissingPermission")
     private fun prosesAbsenQR(qrToken: String) {
         if (identifier.isEmpty()) {
-            Toast.makeText(requireContext(), "Gagal: Data Sesi Tidak Lengkap ($userRole)", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Gagal: Data Sesi Tidak Lengkap ()", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -304,3 +417,17 @@ class PresensiFragment : Fragment() {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
