@@ -9,10 +9,18 @@ import java.util.concurrent.TimeUnit
 object ApiClient {
     private val BASE_URL = "https://smkriyadhuljannahjalancagak.sch.id/"
 
-    // Interceptor untuk menambahkan X-API-KEY
+    var authToken: String = ""
+
+    // Interceptor untuk menambahkan X-API-KEY dan Accept JSON
     private val apiKeyInterceptor = Interceptor { chain ->
         val request = chain.request().newBuilder()
             .header("X-API-KEY", "SuperSecretSiakad2026")
+            .header("Accept", "application/json")
+            .apply {
+                if (authToken.isNotEmpty()) {
+                    header("Authorization", "Bearer $authToken")
+                }
+            }
             .build()
         chain.proceed(request)
     }
