@@ -14,8 +14,10 @@ interface ApiService {
     @FormUrlEncoded
     @POST("api/login")
     suspend fun login(
-        @Field("username") username: String, // <-- Ini yang diubah bos!
-        @Field("password") password: String
+        @Field("username") username: String,
+        @Field("password") password: String,
+        @Field("device_id") deviceId: String,
+        @Field("device_name") deviceName: String
     ): Response<LoginResponse>
 
     // 2. Endpoint Ambil Jadwal

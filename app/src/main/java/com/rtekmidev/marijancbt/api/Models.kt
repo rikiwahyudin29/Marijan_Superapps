@@ -2,24 +2,32 @@ package com.rtekmidev.marijancbt.api
 
 // --- MODEL UNTUK LOGIN ---
 data class LoginResponse(
-    val status: Boolean,
+    val status: com.google.gson.JsonElement,
     val message: String,
     val data: DataLogin?
 )
 
 data class DataLogin(
-    val id_user: String,
-    val username: String,
-    val nama_lengkap: String,
-    val role: String,
-    val detail_siswa: DetailSiswa?
+    val id_user: String?,
+    val username: String?,
+    val nama_lengkap: String?,
+    val role: String?,
+    val token: String?,
+    val detail_siswa: DetailSiswa?,
+    val detail_guru: DetailGuru?
 )
 
 data class DetailSiswa(
-    val id: String,
-    val nisn: String,
-    val nama_lengkap: String,
-    val kelas_id: String
+    val id: String?,
+    val nisn: String?,
+    val nama_lengkap: String?,
+    val kelas_id: String?
+)
+
+data class DetailGuru(
+    val id: String?,
+    val nama_guru: String?,
+    val foto: String?
 )
 
 // --- MODEL UNTUK JADWAL UJIAN ---

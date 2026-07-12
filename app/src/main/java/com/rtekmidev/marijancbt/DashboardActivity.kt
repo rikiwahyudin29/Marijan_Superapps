@@ -1,4 +1,4 @@
-﻿package com.rtekmidev.marijancbt
+package com.rtekmidev.marijancbt
 
 import android.Manifest
 import android.content.Context
@@ -72,6 +72,9 @@ class DashboardActivity : AppCompatActivity() {
             finish()
             return
         }
+
+        // Set token ke ApiClient
+        ApiClient.authToken = sharedPref.getString("token", "") ?: ""
 
         viewPager = findViewById(R.id.viewPager)
         viewPager.isUserInputEnabled = true // Enable swipe navigation
@@ -288,7 +291,25 @@ class DashboardActivity : AppCompatActivity() {
                     if (response.isSuccessful && response.body()?.status == true) {
                         Toast.makeText(this@DashboardActivity, "Presensi Berhasil!", Toast.LENGTH_LONG).show()
                     } else {
-                        Toast.makeText(this@DashboardActivity, response.body()?.message ?: "Presensi Gagal", Toast.LENGTH_LONG).show()
+                        var errorMsg = response.body()?.message
+                        if (errorMsg.isNullOrEmpty() && !response.isSuccessful) {
+                            try {
+                                val errorStr = response.errorBody()?.string()
+                                if (!errorStr.isNullOrEmpty()) {
+                                    if (errorStr.startsWith("{")) {
+                                        val jsonObject = org.json.JSONObject(errorStr)
+                                        errorMsg = jsonObject.optString("message", "")
+                                        if (errorMsg.isNullOrEmpty()) errorMsg = errorStr.take(100)
+                                    } else {
+                                        errorMsg = "Server Error: " + errorStr.take(100)
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                errorMsg = "Gagal memproses error dari server."
+                            }
+                        }
+                        if (errorMsg.isNullOrEmpty()) errorMsg = "Presensi Gagal (Unknown Error)"
+                        Toast.makeText(this@DashboardActivity, errorMsg, Toast.LENGTH_LONG).show()
                     }
                 }
             } catch (e: Exception) {
