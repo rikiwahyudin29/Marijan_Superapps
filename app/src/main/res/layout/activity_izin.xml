@@ -109,11 +109,60 @@
                             android:gravity="center"
                             android:orientation="vertical"
                             android:padding="16dp">
-                            <ImageView android:id="@+id/ivPreviewIzin" android:layout_width="48dp" android:layout_height="48dp" android:src="@android:drawable/ic_menu_camera" app:tint="@color/text_hint"/>
+                            <ImageView android:id="@+id/ivPreviewIzin" android:layout_width="48dp" android:layout_height="48dp" android:src="@android:drawable/ic_menu_camera" app:tint="@color/text_hint" android:scaleType="centerCrop"/>
                             <TextView android:id="@+id/tvLabelFile" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Ketuk untuk Buka Kamera" android:textColor="@color/color_primary" android:textStyle="bold" android:layout_marginTop="12dp"/>
                             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Foto surat langsung dari aplikasi" android:textColor="@color/text_hint" android:textSize="12sp" android:layout_marginTop="4dp"/>
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
+
+                    <FrameLayout
+                        android:id="@+id/containerKameraInline"
+                        android:layout_width="match_parent"
+                        android:layout_height="280dp"
+                        android:visibility="gone"
+                        android:layout_marginBottom="8dp">
+                        
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="0dp">
+                            <androidx.camera.view.PreviewView
+                                android:id="@+id/viewFinderIzin"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
+                        </androidx.cardview.widget.CardView>
+                        
+                        <ImageView
+                            android:id="@+id/btnTutupKamera"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@android:drawable/ic_menu_close_clear_cancel"
+                            app:tint="#FFFFFF"
+                            android:layout_margin="12dp"
+                            android:layout_gravity="top|end"
+                            android:clickable="true"
+                            android:background="?attr/selectableItemBackgroundBorderless"/>
+                            
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/btnJepretIzin"
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:layout_gravity="bottom|center_horizontal"
+                            android:layout_marginBottom="16dp"
+                            app:cardCornerRadius="32dp"
+                            app:cardBackgroundColor="#FFFFFF"
+                            app:cardElevation="4dp"
+                            android:clickable="true"
+                            android:foreground="?attr/selectableItemBackgroundBorderless">
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="16dp"
+                                android:src="@android:drawable/ic_menu_camera"
+                                app:tint="@color/color_primary"/>
+                        </androidx.cardview.widget.CardView>
+                    </FrameLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -234,63 +283,4 @@
         app:elevation="20dp"
         app:fabSize="normal" />
 
-    <!-- Kamera Tanam Layout -->
-    <RelativeLayout
-        android:id="@+id/layoutKameraTanam"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:elevation="100dp"
-        android:background="#000000">
-
-        <androidx.camera.view.PreviewView
-            android:id="@+id/viewFinderIzin"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="24dp"
-            android:background="#80000000"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-            <ImageView
-                android:id="@+id/btnTutupKamera"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@android:drawable/ic_menu_close_clear_cancel"
-                app:tint="#FFFFFF"
-                android:clickable="true"
-                android:background="?attr/selectableItemBackgroundBorderless"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Foto Surat"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginStart="16dp"/>
-        </LinearLayout>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/btnJepretIzin"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="48dp"
-            app:cardCornerRadius="36dp"
-            app:cardBackgroundColor="#FFFFFF"
-            app:cardElevation="8dp"
-            android:clickable="true"
-            android:foreground="?attr/selectableItemBackgroundBorderless">
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="18dp"
-                android:src="@android:drawable/ic_menu_camera"
-                app:tint="@color/color_primary"/>
-        </androidx.cardview.widget.CardView>
-    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

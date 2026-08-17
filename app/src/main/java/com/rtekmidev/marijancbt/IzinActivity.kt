@@ -195,11 +195,8 @@ class IzinActivity : AppCompatActivity() {
     // FUNGSI CAMERAX EMBEDDED
     // ==========================================
     private fun bukaKameraTanam() {
-        findViewById<View>(R.id.headerLayout).visibility = View.GONE
-        findViewById<View>(R.id.svFormIzin).visibility = View.GONE
-        findViewById<View>(R.id.bottomNavigation).visibility = View.GONE
-        findViewById<View>(R.id.fabScanner).visibility = View.GONE
-        findViewById<RelativeLayout>(R.id.layoutKameraTanam).visibility = View.VISIBLE
+        findViewById<View>(R.id.btnPilihFile).visibility = View.GONE
+        findViewById<View>(R.id.containerKameraInline).visibility = View.VISIBLE
 
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener({
@@ -222,11 +219,8 @@ class IzinActivity : AppCompatActivity() {
     }
 
     private fun tutupKameraTanam() {
-        findViewById<RelativeLayout>(R.id.layoutKameraTanam).visibility = View.GONE
-        findViewById<View>(R.id.headerLayout).visibility = View.VISIBLE
-        findViewById<View>(R.id.svFormIzin).visibility = View.VISIBLE
-        findViewById<View>(R.id.bottomNavigation).visibility = View.VISIBLE
-        findViewById<View>(R.id.fabScanner).visibility = View.VISIBLE
+        findViewById<View>(R.id.containerKameraInline).visibility = View.GONE
+        findViewById<View>(R.id.btnPilihFile).visibility = View.VISIBLE
     }
 
     private fun jepretFoto() {
