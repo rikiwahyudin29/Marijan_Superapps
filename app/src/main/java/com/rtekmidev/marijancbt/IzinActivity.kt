@@ -106,8 +106,16 @@ class IzinActivity : AppCompatActivity() {
 
         val ivProfilPhoto = findViewById<ImageView>(R.id.ivProfilPhoto)
         if (ivProfilPhoto != null && fotoProfilUrl.isNotEmpty()) {
+            val finalUrl = if (!fotoProfilUrl.startsWith("http") && userRole == "GURU") {
+                "https://smkriyadhuljannahjalancagak.sch.id/uploads/guru/" + fotoProfilUrl
+            } else if (!fotoProfilUrl.startsWith("http") && userRole == "SISWA") {
+                "https://smkriyadhuljannahjalancagak.sch.id/uploads/siswa/" + fotoProfilUrl
+            } else {
+                fotoProfilUrl
+            }
+            
             com.bumptech.glide.Glide.with(this)
-                .load(fotoProfilUrl)
+                .load(finalUrl)
                 .placeholder(android.R.drawable.ic_menu_myplaces)
                 .error(android.R.drawable.ic_menu_myplaces)
                 .circleCrop()
