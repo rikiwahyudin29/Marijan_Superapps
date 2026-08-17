@@ -244,15 +244,25 @@ class IzinActivity : AppCompatActivity() {
                 val bytes = ByteArray(buffer.capacity())
                 buffer.get(bytes)
                 val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size, null)
+                val rotationDegrees = image.imageInfo.rotationDegrees
+                val isFrontCamera = cameraFacing == CameraSelector.LENS_FACING_FRONT
                 image.close()
+
+                val matrix = android.graphics.Matrix()
+                matrix.postRotate(rotationDegrees.toFloat())
+                if (isFrontCamera) {
+                    matrix.postScale(-1f, 1f, bitmap.width / 2f, bitmap.height / 2f)
+                }
+
+                val rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
 
                 // Resize bitmap to avoid Payload Too Large (max 800px)
                 val maxDim = 800f
-                val scale = Math.min(maxDim / bitmap.width, maxDim / bitmap.height)
+                val scale = Math.min(maxDim / rotatedBitmap.width, maxDim / rotatedBitmap.height)
                 val resizedBitmap = if (scale < 1) {
-                    Bitmap.createScaledBitmap(bitmap, (bitmap.width * scale).toInt(), (bitmap.height * scale).toInt(), true)
+                    Bitmap.createScaledBitmap(rotatedBitmap, (rotatedBitmap.width * scale).toInt(), (rotatedBitmap.height * scale).toInt(), true)
                 } else {
-                    bitmap
+                    rotatedBitmap
                 }
 
                 findViewById<ImageView>(R.id.ivPreviewIzin).setImageBitmap(resizedBitmap)
