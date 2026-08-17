@@ -102,7 +102,6 @@ class IzinActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvKelas).text = "Form Pengajuan Izin / Sakit"
 
         viewFinder = findViewById(R.id.viewFinderIzin)
-        findViewById<ImageView>(R.id.btnBackIzin).setOnClickListener { finish() }
 
         // Setup Bottom Nav & FAB as back buttons (since this is an overlay activity)
         val closeAction = View.OnClickListener { finish() }
