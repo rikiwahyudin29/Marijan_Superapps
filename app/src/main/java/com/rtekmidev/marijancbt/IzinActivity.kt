@@ -246,11 +246,20 @@ class IzinActivity : AppCompatActivity() {
                 val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size, null)
                 image.close()
 
-                findViewById<ImageView>(R.id.ivPreviewIzin).setImageBitmap(bitmap)
+                // Resize bitmap to avoid Payload Too Large (max 800px)
+                val maxDim = 800f
+                val scale = Math.min(maxDim / bitmap.width, maxDim / bitmap.height)
+                val resizedBitmap = if (scale < 1) {
+                    Bitmap.createScaledBitmap(bitmap, (bitmap.width * scale).toInt(), (bitmap.height * scale).toInt(), true)
+                } else {
+                    bitmap
+                }
+
+                findViewById<ImageView>(R.id.ivPreviewIzin).setImageBitmap(resizedBitmap)
                 findViewById<TextView>(R.id.tvLabelFile).text = "Foto Surat Terekam!"
 
                 val baos = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 60, baos)
+                resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos)
                 base64Image = Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP)
 
                 tutupKameraTanam()
@@ -309,7 +318,14 @@ class IzinActivity : AppCompatActivity() {
                         Toast.makeText(this@IzinActivity, resp.body()?.message ?: "Berhasil", Toast.LENGTH_LONG).show()
                         if (resp.body()?.status == true) finish()
                     } else {
-                        Toast.makeText(this@IzinActivity, "Gagal mengirim pengajuan", Toast.LENGTH_LONG).show()
+                        var errorMsg = "Gagal mengirim pengajuan"
+                        try {
+                            val jObjError = org.json.JSONObject(resp.errorBody()?.string() ?: "")
+                            errorMsg = jObjError.getString("message")
+                        } catch (e: Exception) {
+                            errorMsg = "Gagal (Kode: ${resp.code()})"
+                        }
+                        Toast.makeText(this@IzinActivity, errorMsg, Toast.LENGTH_LONG).show()
                     }
                 }
             } catch (e: Exception) {
