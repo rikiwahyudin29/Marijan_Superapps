@@ -17,6 +17,9 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import com.rtekmidev.marijancbt.api.ApiClient
 import kotlinx.coroutines.*
 import java.io.ByteArrayOutputStream
@@ -46,26 +49,93 @@ class IzinActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Transparent Status Bar (Samakan dengan Dashboard)
+        @Suppress("DEPRECATION")
+        window.statusBarColor = android.graphics.Color.TRANSPARENT
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        
+        val currentNightMode = resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
+        val isNightMode = currentNightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES
+        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+        insetsController.isAppearanceLightStatusBars = !isNightMode
+
         setContentView(R.layout.activity_izin)
+
+        // Padding untuk headerLayout agar tidak menabrak status bar
+        val headerLayout = findViewById<LinearLayout>(R.id.headerLayout)
+        ViewCompat.setOnApplyWindowInsetsListener(headerLayout) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val topPaddingPx = (20 * resources.displayMetrics.density).toInt()
+            view.setPadding(view.paddingLeft, systemBars.top + topPaddingPx, view.paddingRight, view.paddingBottom)
+            insets
+        }
+
+        // Update Header Text Colors based on theme (Samakan dengan Dashboard)
+        val headerTitleColor = if (isNightMode) android.graphics.Color.parseColor("#FFFFFF") else android.graphics.Color.parseColor("#1A1B41")
+        val headerSubtextColor = if (isNightMode) android.graphics.Color.parseColor("#D1D5DB") else android.graphics.Color.parseColor("#6B7280")
+        findViewById<TextView>(R.id.tvAppTitle).setTextColor(headerTitleColor)
+        findViewById<TextView>(R.id.tvNamaDashboard).setTextColor(headerTitleColor)
+        findViewById<TextView>(R.id.tvKelas).setTextColor(headerSubtextColor)
 
         // 🔥 LOGIKA HYBRID BACA SESI (ANTI-NYASAR) 🔥
         val prefGuru = getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
         val prefSiswa = getSharedPreferences("SesiUjian", Context.MODE_PRIVATE)
 
+        var namaUser = ""
+
         if (prefGuru.getBoolean("isLoggedIn", false)) {
             userRole = "GURU"
             identifier = prefGuru.getString("id_user", "") ?: ""
+            namaUser = prefGuru.getString("nama", "Guru") ?: "Guru"
         } else if (prefSiswa.getBoolean("isLoggedIn", false)) {
             userRole = "SISWA"
             identifier = prefSiswa.getString("nisn", "") ?: ""
+            namaUser = prefSiswa.getString("nama", "Siswa") ?: "Siswa"
         } else {
             Toast.makeText(this, "Sesi tidak valid!", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
 
+        findViewById<TextView>(R.id.tvNamaDashboard).text = "Selamat Datang, $namaUser"
+        findViewById<TextView>(R.id.tvKelas).text = "Form Pengajuan Izin / Sakit"
+
         viewFinder = findViewById(R.id.viewFinderIzin)
         findViewById<ImageView>(R.id.btnBackIzin).setOnClickListener { finish() }
+
+        // Setup Bottom Nav & FAB as back buttons (since this is an overlay activity)
+        val closeAction = View.OnClickListener { finish() }
+        
+        val bottomNavSiswa = findViewById<LinearLayout>(R.id.bottomNavigationSiswa)
+        val bottomNavGuru = findViewById<LinearLayout>(R.id.bottomNavigationGuru)
+        
+        if (userRole == "GURU" || userRole == "USTADZ") {
+            bottomNavSiswa.visibility = View.GONE
+            bottomNavGuru.visibility = View.VISIBLE
+            findViewById<View>(R.id.navBerandaGuru).setOnClickListener(closeAction)
+            findViewById<View>(R.id.navPresensiGuru).setOnClickListener(closeAction)
+            findViewById<View>(R.id.navAkademikGuru).setOnClickListener(closeAction)
+            findViewById<View>(R.id.navProfilGuru).setOnClickListener(closeAction)
+            
+            // Tampilkan Dinas Luar untuk Guru
+            findViewById<View>(R.id.rbDinasLuar).visibility = View.VISIBLE
+        } else {
+            bottomNavSiswa.visibility = View.VISIBLE
+            bottomNavGuru.visibility = View.GONE
+            findViewById<View>(R.id.navBeranda).setOnClickListener(closeAction)
+            findViewById<View>(R.id.navAkademik).setOnClickListener(closeAction)
+            findViewById<View>(R.id.navCbt).setOnClickListener(closeAction)
+            findViewById<View>(R.id.navPresensi).setOnClickListener(closeAction)
+            findViewById<View>(R.id.navKeuangan).setOnClickListener(closeAction)
+            findViewById<View>(R.id.navProfil).setOnClickListener(closeAction)
+            
+            // Sembunyikan Dinas Luar untuk Siswa
+            findViewById<View>(R.id.rbDinasLuar).visibility = View.GONE
+        }
+
+        findViewById<View>(R.id.fabScanner).setOnClickListener(closeAction)
+        findViewById<View>(R.id.cvProfilPic).setOnClickListener(closeAction)
 
         // 1. Pilih Tanggal
         val etTgl = findViewById<EditText>(R.id.etTanggalIzin)
@@ -105,7 +175,10 @@ class IzinActivity : AppCompatActivity() {
     // FUNGSI CAMERAX EMBEDDED
     // ==========================================
     private fun bukaKameraTanam() {
-        findViewById<LinearLayout>(R.id.layoutUtama).visibility = View.GONE
+        findViewById<View>(R.id.headerLayout).visibility = View.GONE
+        findViewById<View>(R.id.svFormIzin).visibility = View.GONE
+        findViewById<View>(R.id.bottomNavigation).visibility = View.GONE
+        findViewById<View>(R.id.fabScanner).visibility = View.GONE
         findViewById<RelativeLayout>(R.id.layoutKameraTanam).visibility = View.VISIBLE
 
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
@@ -130,7 +203,10 @@ class IzinActivity : AppCompatActivity() {
 
     private fun tutupKameraTanam() {
         findViewById<RelativeLayout>(R.id.layoutKameraTanam).visibility = View.GONE
-        findViewById<LinearLayout>(R.id.layoutUtama).visibility = View.VISIBLE
+        findViewById<View>(R.id.headerLayout).visibility = View.VISIBLE
+        findViewById<View>(R.id.svFormIzin).visibility = View.VISIBLE
+        findViewById<View>(R.id.bottomNavigation).visibility = View.VISIBLE
+        findViewById<View>(R.id.fabScanner).visibility = View.VISIBLE
     }
 
     private fun jepretFoto() {
@@ -168,7 +244,19 @@ class IzinActivity : AppCompatActivity() {
     private fun kirimIzin() {
         val tgl = findViewById<EditText>(R.id.etTanggalIzin).text.toString()
         val ket = findViewById<EditText>(R.id.etKeterangan).text.toString()
-        val status = if (findViewById<RadioButton>(R.id.rbSakit).isChecked) "Sakit" else "Izin"
+        
+        val rgStatus = findViewById<RadioGroup>(R.id.rgStatus)
+        val selectedRbId = rgStatus.checkedRadioButtonId
+        val statusText = if (selectedRbId != -1) findViewById<RadioButton>(selectedRbId).text.toString() else "Izin"
+        
+        val status = when {
+            statusText.contains("Sakit") -> "Sakit"
+            statusText.contains("Izin Keperluan") -> "Izin"
+            statusText.contains("Izin Pulang") -> "Izin Pulang"
+            statusText.contains("Dinas Luar") -> "Dinas Luar"
+            statusText.contains("Udzur") -> "Udzur Syar'i"
+            else -> "Izin"
+        }
 
         if (tgl.isEmpty() || ket.isEmpty() || base64Image.isEmpty()) {
             Toast.makeText(this, "Lengkapi semua data dan ambil foto surat!", Toast.LENGTH_SHORT).show()
