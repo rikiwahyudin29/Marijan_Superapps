@@ -77,7 +77,7 @@ class PresensiFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Set Date
-        val sdf = SimpleDateFormat("EEEE, dd MMMM yyyy", Locale("id", "ID"))
+        val sdf = SimpleDateFormat("EEEE, dd MMMM yyyy", java.util.Locale.Builder().setLanguage("id").setRegion("ID").build())
         view.findViewById<TextView>(R.id.tvDate).text = sdf.format(Date())
 
         // Setup WebView Leaflet
@@ -143,6 +143,12 @@ class PresensiFragment : Fragment() {
                 return@setOnClickListener
             }
             bukaScannerQR()
+        }
+
+        view.findViewById<CardView>(R.id.btnAjukanIzin).setOnClickListener {
+            val intent = Intent(requireContext(), IzinActivity::class.java)
+            intent.putExtra("ROLE", userRole)
+            startActivity(intent)
         }
     }
 

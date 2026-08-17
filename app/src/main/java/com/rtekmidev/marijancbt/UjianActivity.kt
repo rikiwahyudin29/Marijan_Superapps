@@ -1,3 +1,4 @@
+@file:OptIn(kotlinx.coroutines.DelicateCoroutinesApi::class)
 package com.rtekmidev.marijancbt
 
 import android.app.ActivityManager

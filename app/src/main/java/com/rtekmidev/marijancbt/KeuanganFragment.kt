@@ -1,4 +1,4 @@
-﻿package com.rtekmidev.marijancbt
+package com.rtekmidev.marijancbt
 
 import android.content.Context
 import android.content.Intent
@@ -61,7 +61,7 @@ class KeuanganFragment : Fragment() {
                     loading.visibility = View.GONE
                     if (resp.isSuccessful && resp.body()?.status == true) {
                         var totalTunggakan = 0.0
-                        val formatRupiah = NumberFormat.getCurrencyInstance(Locale("id", "ID"))
+                        val formatRupiah = NumberFormat.getCurrencyInstance(java.util.Locale.Builder().setLanguage("id").setRegion("ID").build())
                         val listTagihan = resp.body()?.tagihan ?: emptyList()
 
                         wadah.removeAllViews()

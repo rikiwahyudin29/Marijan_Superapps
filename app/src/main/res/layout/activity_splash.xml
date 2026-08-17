@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"> <!-- Background Putih Bersih -->
+    android:background="@color/bg_main"> <!-- Background -->
 
     <!-- Animated Gradient -->
     <View
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="SMK RJ Superapp"
-            android:textColor="#212121" 
+            android:textColor="@color/text_primary" 
             android:textSize="28sp"
             android:fontFamily="sans-serif-medium"
             android:letterSpacing="0.02"
@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:text="Portal Belajar &amp; CBT Mobile"
-            android:textColor="#757575" 
+            android:textColor="@color/text_secondary" 
             android:textSize="14sp"
             android:fontFamily="sans-serif-light"
             android:letterSpacing="0.05"
@@ -65,7 +65,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="32dp"
         android:text="Powered by PT Ruang Teknologi Mandiri Indonesia"
-        android:textColor="#9E9E9E"
+        android:textColor="@color/text_hint"
         android:textSize="12sp"
         android:fontFamily="sans-serif-condensed"
         android:alpha="0" />

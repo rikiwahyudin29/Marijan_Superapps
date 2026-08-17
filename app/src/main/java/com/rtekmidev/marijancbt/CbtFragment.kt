@@ -1,4 +1,4 @@
-﻿package com.rtekmidev.marijancbt
+package com.rtekmidev.marijancbt
 
 import android.os.Bundle
 import android.view.LayoutInflater

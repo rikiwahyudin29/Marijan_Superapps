@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
+import android.text.InputType
 import androidx.appcompat.app.AppCompatActivity
 import com.rtekmidev.marijancbt.api.ApiClient
 import kotlinx.coroutines.CoroutineScope
@@ -40,6 +42,25 @@ class LoginActivity : AppCompatActivity() {
             setEnterFadeDuration(2000)
             setExitFadeDuration(2000)
             start()
+        }
+
+        // 🌟 Password Toggle Logic
+        val ivTogglePassword = findViewById<ImageView>(R.id.ivTogglePassword)
+        var isPasswordVisible = false
+
+        ivTogglePassword.setOnClickListener {
+            isPasswordVisible = !isPasswordVisible
+            if (isPasswordVisible) {
+                // Show Password
+                etPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                ivTogglePassword.setColorFilter(android.graphics.Color.parseColor("#38BDF8")) // Highlight color
+            } else {
+                // Hide Password
+                etPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                ivTogglePassword.setColorFilter(android.graphics.Color.parseColor("#9CA3AF")) // Default color
+            }
+            // Pindahkan kursor ke akhir teks
+            etPassword.setSelection(etPassword.text.length)
         }
 
         btnLogin.setOnClickListener {

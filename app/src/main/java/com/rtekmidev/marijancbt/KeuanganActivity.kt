@@ -53,7 +53,7 @@ class KeuanganActivity : AppCompatActivity() {
 
                     if (resp.isSuccessful && resp.body()?.status == true) {
                         val listTagihan = resp.body()?.tagihan ?: emptyList()
-                        val formatRupiah = NumberFormat.getCurrencyInstance(Locale("id", "ID"))
+                        val formatRupiah = NumberFormat.getCurrencyInstance(java.util.Locale.Builder().setLanguage("id").setRegion("ID").build())
 
                         var totalTunggakan = 0.0
 

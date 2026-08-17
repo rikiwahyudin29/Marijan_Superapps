@@ -1,4 +1,4 @@
-﻿package com.rtekmidev.marijancbt
+package com.rtekmidev.marijancbt
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -33,7 +33,7 @@ import java.util.Locale
 
 class PresensiActivity : AppCompatActivity() {
 
-    // ðŸ”¥ Variabel Penentu Hybrid (Guru / Siswa)
+    // 🔥 Variabel Penentu Hybrid (Guru / Siswa)
     private var identifier = "" // Bisa berisi NISN atau ID_USER
     private var userRole = "SISWA"
 
@@ -72,7 +72,7 @@ class PresensiActivity : AppCompatActivity() {
         setContentView(R.layout.activity_presensi)
 
         // Set Date
-        val sdf = SimpleDateFormat("EEEE, dd MMMM yyyy", Locale("id", "ID"))
+        val sdf = SimpleDateFormat("EEEE, dd MMMM yyyy", java.util.Locale.Builder().setLanguage("id").setRegion("ID").build())
         findViewById<TextView>(R.id.tvDate).text = sdf.format(Date())
 
         // Setup WebView Leaflet
@@ -81,7 +81,7 @@ class PresensiActivity : AppCompatActivity() {
         mapWebView.webViewClient = WebViewClient()
         mapWebView.loadUrl("file:///android_asset/leaflet_map.html")
 
-        // ðŸ”¥ LOGIKA HYBRID BACA SESI ðŸ”¥
+        // 🔥 LOGIKA HYBRID BACA SESI 🔥
         userRole = intent.getStringExtra("ROLE") ?: "SISWA"
         if (userRole == "GURU") {
             val pref = getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)

@@ -1,3 +1,4 @@
+@file:Suppress("DEPRECATION")
 package com.rtekmidev.marijancbt
 
 import android.annotation.SuppressLint
