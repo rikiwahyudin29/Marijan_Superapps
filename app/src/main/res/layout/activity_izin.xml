@@ -152,27 +152,13 @@
                         android:id="@+id/rgStatus"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
+                        android:orientation="horizontal"
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="16dp">
                         
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-                            <RadioButton android:id="@+id/rbSakit" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sakit" android:buttonTint="@color/color_primary" android:textColor="@color/text_input" android:checked="true"/>
-                            <RadioButton android:id="@+id/rbIzin" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Izin Keperluan" android:layout_marginStart="16dp" android:buttonTint="@color/color_primary" android:textColor="@color/text_input"/>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-                            <RadioButton android:id="@+id/rbIzinPulang" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Izin Pulang" android:buttonTint="@color/color_primary" android:textColor="@color/text_input"/>
-                            <RadioButton android:id="@+id/rbDinasLuar" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Dinas Luar (DL)" android:layout_marginStart="16dp" android:buttonTint="@color/color_primary" android:textColor="@color/text_input"/>
-                        </LinearLayout>
-                        
-                        <RadioButton android:id="@+id/rbUdzur" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Udzur Syar'i" android:buttonTint="@color/color_primary" android:textColor="@color/text_input"/>
+                        <RadioButton android:id="@+id/rbSakit" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sakit" android:buttonTint="@color/color_primary" android:textColor="@color/text_input" android:checked="true"/>
+                        <RadioButton android:id="@+id/rbIzin" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Izin Keperluan" android:layout_marginStart="24dp" android:buttonTint="@color/color_primary" android:textColor="@color/text_input"/>
+                        <RadioButton android:id="@+id/rbDinasLuar" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Dinas Luar (DL)" android:layout_marginStart="24dp" android:buttonTint="@color/color_primary" android:textColor="@color/text_input"/>
 
                     </RadioGroup>
 
