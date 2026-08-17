@@ -36,6 +36,7 @@ class IzinActivity : AppCompatActivity() {
 
     // Variabel CameraX
     private lateinit var viewFinder: PreviewView
+    private var cameraFacing = CameraSelector.LENS_FACING_BACK
     private var imageCapture: ImageCapture? = null
 
     // Launcher Minta Izin Kamera
@@ -180,6 +181,16 @@ class IzinActivity : AppCompatActivity() {
             tutupKameraTanam()
         }
 
+        // Tombol Balik Kamera (Flip)
+        findViewById<ImageView>(R.id.btnFlipKamera).setOnClickListener {
+            cameraFacing = if (cameraFacing == CameraSelector.LENS_FACING_BACK) {
+                CameraSelector.LENS_FACING_FRONT
+            } else {
+                CameraSelector.LENS_FACING_BACK
+            }
+            bukaKameraTanam() // Rebind camera
+        }
+
         // 4. Tombol Jepret Foto
         findViewById<CardView>(R.id.btnJepretIzin).setOnClickListener {
             jepretFoto()
@@ -206,7 +217,7 @@ class IzinActivity : AppCompatActivity() {
             }
             imageCapture = ImageCapture.Builder().build()
 
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            val cameraSelector = CameraSelector.Builder().requireLensFacing(cameraFacing).build()
 
             try {
                 cameraProvider.unbindAll()

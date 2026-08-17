@@ -134,6 +134,17 @@
                         </androidx.cardview.widget.CardView>
                         
                         <ImageView
+                            android:id="@+id/btnFlipKamera"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@android:drawable/ic_popup_sync"
+                            app:tint="#FFFFFF"
+                            android:layout_margin="12dp"
+                            android:layout_gravity="top|start"
+                            android:clickable="true"
+                            android:background="?attr/selectableItemBackgroundBorderless"/>
+
+                        <ImageView
                             android:id="@+id/btnTutupKamera"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
