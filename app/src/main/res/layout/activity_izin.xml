@@ -93,7 +93,7 @@
                         
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/bg_light_grey" android:layout_marginBottom="24dp"/>
 
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Lampiran Bukti (Kamera Tanam)" android:textStyle="bold" android:textColor="@color/text_primary" android:textSize="14sp" android:layout_marginBottom="8dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Lampiran Bukti" android:textStyle="bold" android:textColor="@color/text_primary" android:textSize="14sp" android:layout_marginBottom="8dp"/>
                     <androidx.cardview.widget.CardView
                         android:id="@+id/btnPilihFile"
                         android:layout_width="match_parent"
