@@ -83,15 +83,18 @@ class IzinActivity : AppCompatActivity() {
         val prefSiswa = getSharedPreferences("SesiUjian", Context.MODE_PRIVATE)
 
         var namaUser = ""
+        var fotoProfilUrl = ""
 
         if (prefGuru.getBoolean("isLoggedIn", false)) {
             userRole = "GURU"
             identifier = prefGuru.getString("id_user", "") ?: ""
             namaUser = prefGuru.getString("nama", "Guru") ?: "Guru"
+            fotoProfilUrl = prefGuru.getString("foto_profil", "") ?: ""
         } else if (prefSiswa.getBoolean("isLoggedIn", false)) {
             userRole = "SISWA"
             identifier = prefSiswa.getString("nisn", "") ?: ""
             namaUser = prefSiswa.getString("nama", "Siswa") ?: "Siswa"
+            fotoProfilUrl = prefSiswa.getString("foto_profil", "") ?: ""
         } else {
             Toast.makeText(this, "Sesi tidak valid!", Toast.LENGTH_SHORT).show()
             finish()
@@ -100,6 +103,16 @@ class IzinActivity : AppCompatActivity() {
 
         findViewById<TextView>(R.id.tvNamaDashboard).text = "Selamat Datang, $namaUser"
         findViewById<TextView>(R.id.tvKelas).text = "Form Pengajuan Izin / Sakit"
+
+        val ivProfilPhoto = findViewById<ImageView>(R.id.ivProfilPhoto)
+        if (ivProfilPhoto != null && fotoProfilUrl.isNotEmpty()) {
+            com.bumptech.glide.Glide.with(this)
+                .load(fotoProfilUrl)
+                .placeholder(android.R.drawable.ic_menu_myplaces)
+                .error(android.R.drawable.ic_menu_myplaces)
+                .circleCrop()
+                .into(ivProfilPhoto)
+        }
 
         viewFinder = findViewById(R.id.viewFinderIzin)
 
