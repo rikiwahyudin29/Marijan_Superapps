@@ -60,7 +60,7 @@ interface ApiService {
     ): retrofit2.Response<RekapAbsenResponse>
 
     @FormUrlEncoded
-    @POST("api/presensi/ajukan_izin")
+    @POST("api/presensi/izin")
     suspend fun ajukanIzin(
         @Field("nisn") nisn: String,
         @Field("tanggal") tanggal: String,
