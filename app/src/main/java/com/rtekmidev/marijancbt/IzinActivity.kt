@@ -91,11 +91,13 @@ class IzinActivity : AppCompatActivity() {
             identifier = prefGuru.getString("id_user", "") ?: ""
             namaUser = prefGuru.getString("nama", "Guru") ?: "Guru"
             fotoProfilUrl = prefGuru.getString("foto_profil", "") ?: ""
+            ApiClient.authToken = prefGuru.getString("token", "") ?: ""
         } else if (prefSiswa.getBoolean("isLoggedIn", false)) {
             userRole = "SISWA"
             identifier = prefSiswa.getString("nisn", "") ?: ""
             namaUser = prefSiswa.getString("nama", "Siswa") ?: "Siswa"
             fotoProfilUrl = prefSiswa.getString("foto_profil", "") ?: ""
+            ApiClient.authToken = prefSiswa.getString("token", "") ?: ""
         } else {
             Toast.makeText(this, "Sesi tidak valid!", Toast.LENGTH_SHORT).show()
             finish()
