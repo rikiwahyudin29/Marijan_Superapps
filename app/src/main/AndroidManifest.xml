@@ -71,6 +71,12 @@
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme" />
+            
+        <activity android:name=".JurnalMengajarActivity" android:screenOrientation="portrait" />
+        <activity android:name=".RekapMengajarActivity" android:screenOrientation="portrait" />
+        <activity android:name=".WaliKelasActivity" android:screenOrientation="portrait" />
+        <activity android:name=".WaliKelasKehadiranActivity" android:screenOrientation="portrait" />
+        <activity android:name=".WaliKelasKeuanganActivity" android:screenOrientation="portrait" />
 
     </application>
 </manifest>

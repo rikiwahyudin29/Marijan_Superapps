@@ -134,12 +134,9 @@ class PresensiFragment : Fragment() {
             }
 
             if (!isWithinRadius) {
-                val selisih = currentJarak - schoolRadius
-                if (selisih > 0) {
-                    Toast.makeText(requireContext(), "Gagal: Anda berada ${selisih} meter di luar jangkauan.", Toast.LENGTH_LONG).show()
-                } else {
-                    Toast.makeText(requireContext(), "Gagal: Anda masih di luar radius sekolah!", Toast.LENGTH_LONG).show()
-                }
+                val intent = Intent(requireContext(), IzinActivity::class.java)
+                intent.putExtra("ROLE", userRole)
+                startActivity(intent)
                 return@setOnClickListener
             }
             bukaScannerQR()
@@ -148,6 +145,11 @@ class PresensiFragment : Fragment() {
         view.findViewById<CardView>(R.id.btnAjukanIzin).setOnClickListener {
             val intent = Intent(requireContext(), IzinActivity::class.java)
             intent.putExtra("ROLE", userRole)
+            startActivity(intent)
+        }
+        
+        view.findViewById<CardView>(R.id.btnLihatRekap).setOnClickListener {
+            val intent = Intent(requireContext(), RekapActivity::class.java)
             startActivity(intent)
         }
     }

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="#F3F4F6">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Isi Jurnal Mengajar"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#1F2937"
+        android:layout_marginBottom="24dp"/>
+
+    <EditText
+        android:id="@+id/etKelas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Kelas (Contoh: XII RPL 1)"
+        android:background="#FFFFFF"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp"/>
+
+    <EditText
+        android:id="@+id/etMapel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Mata Pelajaran"
+        android:background="#FFFFFF"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp"/>
+
+    <EditText
+        android:id="@+id/etMateri"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:hint="Materi / Kegiatan Hari Ini"
+        android:gravity="top|start"
+        android:background="#FFFFFF"
+        android:padding="12dp"
+        android:layout_marginBottom="24dp"/>
+
+    <Button
+        android:id="@+id/btnSimpanJurnal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Simpan Jurnal"
+        android:backgroundTint="#2563EB"
+        android:textColor="#FFFFFF"/>
+
+</LinearLayout>

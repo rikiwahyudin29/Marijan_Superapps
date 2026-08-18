@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Form Pengajuan Izin - SMK RJ SuperApps</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#00dbe7",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed": "#181c21",
+                    "secondary-container": "#00f1fe",
+                    "surface-container": "#ededf4",
+                    "surface-dim": "#d9d9e0",
+                    "secondary-fixed": "#74f5ff",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "inverse-primary": "#c0c1ff",
+                    "surface-tint": "#4f54b4",
+                    "error-container": "#ffdad6",
+                    "surface-variant": "#e2e2e9",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed-variant": "#373a9b",
+                    "tertiary-fixed-dim": "#c3c6ce",
+                    "inverse-surface": "#2e3036",
+                    "on-secondary": "#ffffff",
+                    "primary-container": "#2e3192",
+                    "surface-container-low": "#f3f3fa",
+                    "tertiary-fixed": "#dfe2ea",
+                    "surface": "#f9f9ff",
+                    "secondary": "#00696f",
+                    "on-surface-variant": "#464652",
+                    "outline-variant": "#c7c5d4",
+                    "surface-container-high": "#e8e7ef",
+                    "background": "#f9f9ff",
+                    "tertiary": "#25292f",
+                    "tertiary-container": "#3b3f45",
+                    "on-secondary-container": "#006a70",
+                    "primary-fixed": "#e1e0ff",
+                    "surface-container-highest": "#e2e2e9",
+                    "on-error": "#ffffff",
+                    "on-tertiary-container": "#a6aab1",
+                    "primary": "#15157d",
+                    "on-surface": "#1a1c20",
+                    "inverse-on-surface": "#f0f0f7",
+                    "error": "#ba1a1a",
+                    "on-background": "#1a1c20",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#f9f9ff",
+                    "on-secondary-fixed": "#002022",
+                    "outline": "#777683",
+                    "on-primary-fixed": "#04006d",
+                    "on-tertiary-fixed-variant": "#43474d",
+                    "on-primary-container": "#9da1ff",
+                    "on-secondary-fixed-variant": "#004f54"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-desktop": "32px",
+                    "lg": "40px",
+                    "base": "8px",
+                    "md": "24px",
+                    "gutter": "16px",
+                    "margin-mobile": "20px",
+                    "xl": "64px",
+                    "xs": "4px",
+                    "sm": "12px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "headline-sm": ["Plus Jakarta Sans"],
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "display-lg-mobile": ["Plus Jakarta Sans"],
+                    "label-md": ["Plus Jakarta Sans"],
+                    "body-md": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+            }
+          }
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 20px rgba(21, 21, 125, 0.05);
+        }
+        
+        /* Custom Input Styles */
+        .custom-input {
+            background-color: #EDF0F7;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .custom-input:focus {
+            background-color: #ffffff;
+            border-color: #00f1fe;
+            box-shadow: 0 0 0 4px rgba(0, 241, 254, 0.1);
+            outline: none;
+        }
+        
+        /* Custom Radio Button */
+        .custom-radio {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #c7c5d4;
+            border-radius: 50%;
+            outline: none;
+            transition: all 0.2s ease;
+            position: relative;
+            cursor: pointer;
+        }
+        .custom-radio:checked {
+            border-color: #00f1fe;
+            background-color: transparent;
+        }
+        .custom-radio:checked::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #2e3192;
+        }
+        
+        /* Gradient Background */
+        .bg-mesh {
+            background-color: #F4F7FF;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(237, 72%, 46%, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(186, 100%, 50%, 0.05) 0px, transparent 50%);
+        }
+    </style>
+</head>
+<body class="bg-mesh text-on-surface min-h-screen pb-32">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/70 backdrop-blur-md shadow-sm border-b border-white/20 flex items-center justify-between px-margin-mobile h-16 w-full">
+<div class="flex items-center gap-sm">
+<button class="text-on-surface-variant hover:bg-primary-container/20 transition-colors rounded-full p-2 active:scale-95 duration-200" onclick="window.history.back()">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+</button>
+<div class="flex items-center gap-2">
+<img alt="School Logo" class="w-8 h-8 object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLtL6o3ukCC9IrbkCuE0VzPD6rgRlCgv-m2DNl5JT4sS6bEMB_Kh8oFXdaldWzy_iqStSozVvO2THCGQo8HqM1AxpprkBxLT9tp4lxHEAmcQVqGEM41pJ9e9isDOtoZXI4haPp-j1My3OrJRocjXKFgLVcby5Z6YpBR-N9qXz-BANgO8ejbJWiRTQSajc1gKGGxEa9a4f6b3iDKCqvZ6SO6UJKuo8f8lnMyiqA4YYBK2iM3nNh5hxNVMJipbUKJfBl7FJAtNZoVJ"/>
+<span class="font-headline-sm text-headline-sm font-bold text-primary">SMK RJ</span>
+</div>
+</div>
+<div class="w-8 h-8 rounded-full bg-primary-container/20 flex items-center justify-center text-primary overflow-hidden border border-white/50 shadow-sm">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">person</span>
+</div>
+</header>
+<!-- Main Content -->
+<main class="pt-24 px-margin-mobile max-w-2xl mx-auto space-y-md">
+<!-- Header Section -->
+<div>
+<h1 class="font-headline-md text-headline-md text-primary mb-xs">Form Pengajuan</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Izin keperluan atau surat sakit.</p>
+</div>
+<!-- Form Card -->
+<div class="glass-panel rounded-[24px] p-md space-y-lg">
+<!-- Date Picker -->
+<div class="space-y-sm">
+<label class="block font-label-md text-label-md text-on-surface">Pilih Tanggal</label>
+<div class="relative">
+<input class="w-full h-14 px-4 rounded-xl custom-input font-body-md text-body-md text-on-surface placeholder-outline-variant" placeholder="Ketuk untuk pilih tanggal..." type="date"/>
+</div>
+</div>
+<!-- Category -->
+<div class="space-y-sm">
+<label class="block font-label-md text-label-md text-on-surface mb-sm">Kategori</label>
+<div class="flex gap-md">
+<label class="flex items-center gap-xs cursor-pointer group">
+<input checked="" class="custom-radio" name="kategori" type="radio" value="sakit"/>
+<span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors">Sakit</span>
+</label>
+<label class="flex items-center gap-xs cursor-pointer group">
+<input class="custom-radio" name="kategori" type="radio" value="izin"/>
+<span class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors">Izin Keperluan</span>
+</label>
+</div>
+</div>
+<!-- Reason / Description -->
+<div class="space-y-sm">
+<label class="block font-label-md text-label-md text-on-surface">Alasan / Keterangan</label>
+<textarea class="w-full p-4 rounded-xl custom-input font-body-md text-body-md text-on-surface placeholder-outline-variant resize-none" placeholder="Tulis detail alasan di sini..." rows="4"></textarea>
+</div>
+<hr class="border-t border-surface-variant/50"/>
+<!-- File Upload -->
+<div class="space-y-sm">
+<label class="block font-label-md text-label-md text-on-surface">Lampiran Bukti (Kamera Tanam)</label>
+<button class="w-full h-40 rounded-xl border-2 border-dashed border-primary-fixed-dim bg-surface-container-low hover:bg-white hover:border-secondary-container transition-all flex flex-col items-center justify-center gap-sm group" type="button">
+<div class="w-12 h-12 rounded-full bg-primary-container/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">photo_camera</span>
+</div>
+<div class="text-center">
+<p class="font-label-md text-label-md text-primary">Ketuk untuk Buka Kamera</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">Foto surat langsung dari aplikasi</p>
+</div>
+</button>
+</div>
+</div>
+<!-- Submit Button -->
+<button class="w-full h-14 bg-primary text-on-primary font-label-md text-label-md rounded-xl hover:bg-primary/90 active:scale-[0.98] transition-all flex items-center justify-center shadow-md relative overflow-hidden group">
+<span class="relative z-10">Kirim Pengajuan</span>
+<div class="absolute inset-0 bg-secondary-container/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+</button>
+</main>
+<!-- Bottom Navigation Bar (Suppressed due to form/transactional nature, but requested in prompt, so including as per instructions but noting semantic logic might normally hide it. Applying 'Presensi' as active as it's closest to attendance/absence) -->
+<!-- Applying exact styles from JSON BottomNavBar component -->
+<nav class="bg-surface/80 backdrop-blur-xl fixed bottom-0 w-full rounded-t-xl z-50 border-t border-white/30 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] h-20 flex justify-around items-center px-4 pb-safe md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined mb-1 text-[24px]">quiz</span>
+<span class="font-label-sm text-label-sm-mobile">CBT</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined mb-1 text-[24px]">menu_book</span>
+<span class="font-label-sm text-label-sm-mobile">Akademik</span>
+</a>
+<!-- Active Tab: Presensi (closest logical fit for Izin/Absence) -->
+<a class="flex flex-col items-center justify-center text-secondary bg-secondary-container/30 rounded-full px-3 py-1 hover:opacity-80 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined mb-1 text-[24px]" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
+<span class="font-label-sm text-label-sm-mobile font-semibold">Presensi</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined mb-1 text-[24px]">account_balance_wallet</span>
+<span class="font-label-sm text-label-sm-mobile">Keuangan</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined mb-1 text-[24px]">person</span>
+<span class="font-label-sm text-label-sm-mobile">Profile</span>
+</a>
+</nav>
+</body></html>

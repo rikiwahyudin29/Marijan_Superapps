@@ -131,6 +131,34 @@ interface ApiService {
         @Field("bukti") base64Image: String
     ): retrofit2.Response<SubmitIzinResponse>
 
+    // --- LAYANAN AKADEMIK GURU ---
+    @FormUrlEncoded
+    @POST("api/akademik-guru/jurnal")
+    suspend fun submitJurnalMengajar(
+        @Field("id_user") idUser: String,
+        @Field("kelas") kelas: String,
+        @Field("mapel") mapel: String,
+        @Field("materi") materi: String
+    ): retrofit2.Response<com.google.gson.JsonElement>
+
+    @GET("api/akademik-guru/rekap-jurnal")
+    suspend fun getRekapJurnal(
+        @Query("id_user") idUser: String,
+        @Query("bulan") bulan: String
+    ): retrofit2.Response<com.google.gson.JsonElement>
+
+    // --- LAYANAN WALI KELAS ---
+    @GET("api/walikelas/rekap-kehadiran")
+    suspend fun getWaliKelasRekapKehadiran(
+        @Query("id_user") idUser: String,
+        @Query("bulan") bulan: String
+    ): retrofit2.Response<com.google.gson.JsonElement>
+
+    @GET("api/walikelas/rekap-tagihan")
+    suspend fun getWaliKelasRekapTagihan(
+        @Query("id_user") idUser: String
+    ): retrofit2.Response<com.google.gson.JsonElement>
+
     @GET("api/ujian/cek_waktu")
     suspend fun cekWaktuUjian(@Query("id_ujian_siswa") id: String): retrofit2.Response<CekWaktuResponse>
 }

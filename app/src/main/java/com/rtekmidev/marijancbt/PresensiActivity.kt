@@ -108,16 +108,24 @@ class PresensiActivity : AppCompatActivity() {
             }
 
             if (!isWithinRadius) {
-                val selisih = currentJarak - schoolRadius
-                if (selisih > 0) {
-                    Toast.makeText(this, "Gagal: Anda berada $selisih meter di luar jangkauan.", Toast.LENGTH_LONG).show()
-                } else {
-                    Toast.makeText(this, "Gagal: Anda masih di luar radius sekolah!", Toast.LENGTH_LONG).show()
-                }
+                val intent = Intent(this, IzinActivity::class.java)
+                intent.putExtra("ROLE", userRole)
+                startActivity(intent)
                 return@setOnClickListener
             }
 
             bukaScannerQR()
+        }
+        
+        findViewById<CardView>(R.id.btnAjukanIzin)?.setOnClickListener {
+            val intent = Intent(this, IzinActivity::class.java)
+            intent.putExtra("ROLE", userRole)
+            startActivity(intent)
+        }
+        
+        findViewById<CardView>(R.id.btnLihatRekap)?.setOnClickListener {
+            val intent = Intent(this, RekapActivity::class.java)
+            startActivity(intent)
         }
     }
 

@@ -11,6 +11,28 @@ class AkademikGuruFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_akademik_guru, container, false)
+        val view = inflater.inflate(R.layout.fragment_akademik_guru, container, false)
+        
+        view.findViewById<View>(R.id.btnJurnalMengajar)?.setOnClickListener {
+            val intent = android.content.Intent(requireContext(), JurnalMengajarActivity::class.java)
+            startActivity(intent)
+        }
+
+        view.findViewById<View>(R.id.btnRekapMengajar)?.setOnClickListener {
+            val intent = android.content.Intent(requireContext(), RekapMengajarActivity::class.java)
+            startActivity(intent)
+        }
+        
+        view.findViewById<View>(R.id.btnWaliKelasKehadiran)?.setOnClickListener {
+            val intent = android.content.Intent(requireContext(), WaliKelasKehadiranActivity::class.java)
+            startActivity(intent)
+        }
+
+        view.findViewById<View>(R.id.btnWaliKelasKeuangan)?.setOnClickListener {
+            val intent = android.content.Intent(requireContext(), WaliKelasKeuanganActivity::class.java)
+            startActivity(intent)
+        }
+        
+        return view
     }
 }
