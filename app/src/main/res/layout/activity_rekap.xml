@@ -162,143 +162,219 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="20dp"
-                    android:background="#FFFFFF"
-                    android:weightSum="5">
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:background="#FFFFFF">
 
-                    <!-- Hadir -->
+                    <!-- Baris 1: Hadir, Izin, Sakit, Alfa -->
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical">
-                        <TextView
-                            android:id="@+id/tvTotalHadir"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:text="0"
-                            android:textColor="#FFFFFF"
-                            android:textStyle="bold"
-                            android:textSize="18sp"
-                            android:gravity="center"
-                            android:background="@drawable/bg_calendar_day_selected"/>
-                        <TextView
-                            android:layout_width="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="4">
+
+                        <!-- Hadir -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:text="Hadir"
-                            android:textSize="10sp"
-                            android:textColor="#6B7280"
-                            android:layout_marginTop="8dp"/>
+                            android:gravity="center"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tvTotalHadir"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:text="0"
+                                android:textColor="#FFFFFF"
+                                android:textStyle="bold"
+                                android:textSize="18sp"
+                                android:gravity="center"
+                                android:background="@drawable/bg_calendar_day_selected"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Hadir"
+                                android:textSize="10sp"
+                                android:textColor="#6B7280"
+                                android:layout_marginTop="8dp"/>
+                        </LinearLayout>
+
+                        <!-- Izin -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tvTotalIzin"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:text="0"
+                                android:textColor="#FFFFFF"
+                                android:textStyle="bold"
+                                android:textSize="18sp"
+                                android:gravity="center"
+                                android:background="@drawable/bg_icon_circle"
+                                android:backgroundTint="#00D2D3"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Izin"
+                                android:textSize="10sp"
+                                android:textColor="#6B7280"
+                                android:layout_marginTop="8dp"/>
+                        </LinearLayout>
+
+                        <!-- Sakit -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tvTotalSakit"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:text="0"
+                                android:textColor="#4B5563"
+                                android:textStyle="bold"
+                                android:textSize="18sp"
+                                android:gravity="center"
+                                android:background="@drawable/bg_icon_circle"
+                                android:backgroundTint="#E5E7EB"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Sakit"
+                                android:textSize="10sp"
+                                android:textColor="#6B7280"
+                                android:layout_marginTop="8dp"/>
+                        </LinearLayout>
+
+                        <!-- Alfa -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tvTotalAlpha"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:text="0"
+                                android:textColor="#991B1B"
+                                android:textStyle="bold"
+                                android:textSize="18sp"
+                                android:gravity="center"
+                                android:background="@drawable/bg_icon_circle"
+                                android:backgroundTint="#FEE2E2"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Alfa"
+                                android:textSize="10sp"
+                                android:textColor="#6B7280"
+                                android:layout_marginTop="8dp"/>
+                        </LinearLayout>
                     </LinearLayout>
 
-                    <!-- Izin -->
+                    <!-- Baris 2: Telat, Cuti, DL -->
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical">
-                        <TextView
-                            android:id="@+id/tvTotalIzin"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:text="0"
-                            android:textColor="#FFFFFF"
-                            android:textStyle="bold"
-                            android:textSize="18sp"
-                            android:gravity="center"
-                            android:background="@drawable/bg_icon_circle"
-                            android:backgroundTint="#00D2D3"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Izin"
-                            android:textSize="10sp"
-                            android:textColor="#6B7280"
-                            android:layout_marginTop="8dp"/>
-                    </LinearLayout>
+                        android:orientation="horizontal"
+                        android:layout_marginTop="16dp"
+                        android:weightSum="4">
 
-                    <!-- Sakit -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical">
-                        <TextView
-                            android:id="@+id/tvTotalSakit"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:text="0"
-                            android:textColor="#4B5563"
-                            android:textStyle="bold"
-                            android:textSize="18sp"
-                            android:gravity="center"
-                            android:background="@drawable/bg_icon_circle"
-                            android:backgroundTint="#E5E7EB"/>
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <!-- Terlambat -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:text="Sakit"
-                            android:textSize="10sp"
-                            android:textColor="#6B7280"
-                            android:layout_marginTop="8dp"/>
-                    </LinearLayout>
+                            android:gravity="center"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tvTotalTerlambat"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:text="0m"
+                                android:textColor="#B45309"
+                                android:textStyle="bold"
+                                android:textSize="14sp"
+                                android:gravity="center"
+                                android:background="@drawable/bg_icon_circle"
+                                android:backgroundTint="#FEF3C7"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Telat"
+                                android:textSize="10sp"
+                                android:textColor="#6B7280"
+                                android:layout_marginTop="8dp"/>
+                        </LinearLayout>
+                        
+                        <!-- Cuti -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tvTotalCuti"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:text="0"
+                                android:textColor="#FFFFFF"
+                                android:textStyle="bold"
+                                android:textSize="18sp"
+                                android:gravity="center"
+                                android:background="@drawable/bg_icon_circle"
+                                android:backgroundTint="#8B5CF6"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Cuti"
+                                android:textSize="10sp"
+                                android:textColor="#6B7280"
+                                android:layout_marginTop="8dp"/>
+                        </LinearLayout>
 
-                    <!-- Alfa -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical">
-                        <TextView
-                            android:id="@+id/tvTotalAlpha"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:text="0"
-                            android:textColor="#991B1B"
-                            android:textStyle="bold"
-                            android:textSize="18sp"
-                            android:gravity="center"
-                            android:background="@drawable/bg_icon_circle"
-                            android:backgroundTint="#FEE2E2"/>
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <!-- Dinas Luar -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:text="Alfa"
-                            android:textSize="10sp"
-                            android:textColor="#6B7280"
-                            android:layout_marginTop="8dp"/>
-                    </LinearLayout>
+                            android:gravity="center"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tvTotalDinasLuar"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:text="0"
+                                android:textColor="#FFFFFF"
+                                android:textStyle="bold"
+                                android:textSize="18sp"
+                                android:gravity="center"
+                                android:background="@drawable/bg_icon_circle"
+                                android:backgroundTint="#0EA5E9"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="DL"
+                                android:textSize="10sp"
+                                android:textColor="#6B7280"
+                                android:layout_marginTop="8dp"/>
+                        </LinearLayout>
 
-                    <!-- Terlambat -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical">
-                        <TextView
-                            android:id="@+id/tvTotalTerlambat"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:text="0m"
-                            android:textColor="#B45309"
-                            android:textStyle="bold"
-                            android:textSize="14sp"
-                            android:gravity="center"
-                            android:background="@drawable/bg_icon_circle"
-                            android:backgroundTint="#FEF3C7"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Telat"
-                            android:textSize="10sp"
-                            android:textColor="#6B7280"
-                            android:layout_marginTop="8dp"/>
+                        <!-- Spacer agar kotak seimbang posisinya -->
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="1dp"/>
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
