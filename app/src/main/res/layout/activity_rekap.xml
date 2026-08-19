@@ -70,7 +70,9 @@
                         android:id="@+id/btnPrevMonth"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/ic_modern_home"
+                        android:src="@drawable/ic_baseline_arrow_back_24"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:padding="2dp"
                         app:tint="#6B7280" />
 
                     <LinearLayout
@@ -99,7 +101,10 @@
                         android:id="@+id/btnNextMonth"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/ic_modern_home"
+                        android:src="@drawable/ic_baseline_arrow_back_24"
+                        android:rotation="180"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:padding="2dp"
                         app:tint="#6B7280" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
