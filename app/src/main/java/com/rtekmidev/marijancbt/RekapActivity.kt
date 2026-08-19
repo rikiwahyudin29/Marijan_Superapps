@@ -38,20 +38,9 @@ class RekapActivity : AppCompatActivity() {
         if (prefGuru.getBoolean("isLoggedIn", false)) {
             userRole = "GURU"
             identifier = prefGuru.getString("id_user", "") ?: ""
-            val nama = prefGuru.getString("nama_guru", "Guru") ?: "Guru"
-            findViewById<TextView>(R.id.tvNamaDashboard).text = "Halo, $nama!"
-            findViewById<TextView>(R.id.tvKelas).visibility = View.GONE
         } else if (prefSiswa.getBoolean("isLoggedIn", false)) {
             userRole = "SISWA"
             identifier = prefSiswa.getString("nisn", "") ?: ""
-            val nama = prefSiswa.getString("nama", "Siswa") ?: "Siswa"
-            val kelas = prefSiswa.getString("nama_kelas", "") ?: ""
-            findViewById<TextView>(R.id.tvNamaDashboard).text = "Halo, $nama!"
-            if (kelas.isNotEmpty()) {
-                findViewById<TextView>(R.id.tvKelas).text = "Kelas $kelas"
-            } else {
-                findViewById<TextView>(R.id.tvKelas).visibility = View.GONE
-            }
         } else {
             Toast.makeText(this, "Sesi tidak valid!", Toast.LENGTH_SHORT).show()
             finish()
@@ -60,7 +49,7 @@ class RekapActivity : AppCompatActivity() {
 
         findViewById<ImageView>(R.id.btnBackRekap).setOnClickListener { finish() }
 
-        setupBottomNav()
+        findViewById<ImageView>(R.id.btnBackRekap).setOnClickListener { finish() }
 
         findViewById<ImageView>(R.id.btnPrevMonth).setOnClickListener {
             currentMonthCalendar.add(Calendar.MONTH, -1)
@@ -80,27 +69,7 @@ class RekapActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvMonthYear).text = sdf.format(currentMonthCalendar.time)
     }
 
-    private fun setupBottomNav() {
-        // Setup listeners and styling matching Dashboard
-        findViewById<LinearLayout>(R.id.navBeranda).setOnClickListener { goToDashboard(0) }
-        findViewById<LinearLayout>(R.id.navAkademik).setOnClickListener { goToDashboard(1) }
-        findViewById<LinearLayout>(R.id.navCbt).setOnClickListener { goToDashboard(2) }
-        findViewById<LinearLayout>(R.id.navPresensi).setOnClickListener { finish() } // Presensi is the current context
-        findViewById<LinearLayout>(R.id.navKeuangan).setOnClickListener { goToDashboard(4) }
-        findViewById<LinearLayout>(R.id.navProfil).setOnClickListener { goToDashboard(5) }
 
-        // Select Presensi
-        val selectedColor = Color.parseColor("#1E3A8A")
-        findViewById<ImageView>(R.id.ivNavPresensi).setColorFilter(selectedColor)
-        findViewById<TextView>(R.id.tvNavPresensi).setTextColor(selectedColor)
-        findViewById<TextView>(R.id.tvNavPresensi).typeface = android.graphics.Typeface.DEFAULT_BOLD
-
-        if (userRole == "GURU") {
-            // Guru doesn't have CBT and Keuangan usually, hide them to match dashboard_guru
-            findViewById<LinearLayout>(R.id.navCbt).visibility = View.GONE
-            findViewById<LinearLayout>(R.id.navKeuangan).visibility = View.GONE
-        }
-    }
 
     private fun goToDashboard(tabIndex: Int) {
         val intent = Intent(this, DashboardActivity::class.java)
