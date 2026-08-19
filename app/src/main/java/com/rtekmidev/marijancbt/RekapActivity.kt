@@ -103,6 +103,7 @@ class RekapActivity : AppCompatActivity() {
                         findViewById<TextView>(R.id.tvTotalIzin).text = body.summary?.izin?.toString() ?: "0"
                         findViewById<TextView>(R.id.tvTotalSakit).text = body.summary?.sakit?.toString() ?: "0"
                         findViewById<TextView>(R.id.tvTotalAlpha).text = body.summary?.alpha?.toString() ?: "0"
+                        findViewById<TextView>(R.id.tvTotalTerlambat).text = "${body.summary?.terlambat ?: 0}m"
 
                         listKehadiran = body.data ?: emptyList()
                         buildCalendar()
