@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottomNavigation"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:background="@android:color/transparent"
+    android:elevation="0dp"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:paddingHorizontal="4dp"
+    android:weightSum="6">
+
+    <!-- 1. Beranda -->
+    <LinearLayout
+        android:id="@+id/navBeranda"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/ivNavBeranda"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_modern_cbt"
+            app:tint="#9CA3AF" />
+
+        <TextView
+            android:id="@+id/tvNavBeranda"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Beranda"
+            android:textColor="#9CA3AF"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <!-- 2. Akademik -->
+    <LinearLayout
+        android:id="@+id/navAkademik"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/ivNavAkademik"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_modern_materi"
+            app:tint="#9CA3AF" />
+
+        <TextView
+            android:id="@+id/tvNavAkademik"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Akademik"
+            android:textColor="#9CA3AF"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <!-- 3. CBT -->
+    <LinearLayout
+        android:id="@+id/navCbt"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/ivNavCbt"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_modern_tugas"
+            app:tint="#9CA3AF" />
+
+        <TextView
+            android:id="@+id/tvNavCbt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="CBT"
+            android:textColor="#9CA3AF"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <!-- SPACE FOR FAB (Scanner) -->
+
+    <!-- 4. Presensi -->
+    <LinearLayout
+        android:id="@+id/navPresensi"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:layout_marginStart="16dp"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/ivNavPresensi"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_modern_presensi"
+            app:tint="#9CA3AF" />
+
+        <TextView
+            android:id="@+id/tvNavPresensi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Presensi"
+            android:textColor="#9CA3AF"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <!-- 5. Keuangan -->
+    <LinearLayout
+        android:id="@+id/navKeuangan"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/ivNavKeuangan"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_modern_keuangan"
+            app:tint="#9CA3AF" />
+
+        <TextView
+            android:id="@+id/tvNavKeuangan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Keuangan"
+            android:textColor="#9CA3AF"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <!-- 6. Profil -->
+    <LinearLayout
+        android:id="@+id/navProfil"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/ivNavProfil"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_modern_profile"
+            app:tint="#9CA3AF" />
+
+        <TextView
+            android:id="@+id/tvNavProfil"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Profil"
+            android:textColor="#9CA3AF"
+            android:textSize="10sp" />
+    </LinearLayout>
+</LinearLayout>

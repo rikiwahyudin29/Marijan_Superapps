@@ -38,9 +38,20 @@ class RekapActivity : AppCompatActivity() {
         if (prefGuru.getBoolean("isLoggedIn", false)) {
             userRole = "GURU"
             identifier = prefGuru.getString("id_user", "") ?: ""
+            val nama = prefGuru.getString("nama_guru", "Guru") ?: "Guru"
+            findViewById<TextView>(R.id.tvNamaDashboard).text = "Halo, $nama!"
+            findViewById<TextView>(R.id.tvKelas).visibility = View.GONE
         } else if (prefSiswa.getBoolean("isLoggedIn", false)) {
             userRole = "SISWA"
             identifier = prefSiswa.getString("nisn", "") ?: ""
+            val nama = prefSiswa.getString("nama", "Siswa") ?: "Siswa"
+            val kelas = prefSiswa.getString("nama_kelas", "") ?: ""
+            findViewById<TextView>(R.id.tvNamaDashboard).text = "Halo, $nama!"
+            if (kelas.isNotEmpty()) {
+                findViewById<TextView>(R.id.tvKelas).text = "Kelas $kelas"
+            } else {
+                findViewById<TextView>(R.id.tvKelas).visibility = View.GONE
+            }
         } else {
             Toast.makeText(this, "Sesi tidak valid!", Toast.LENGTH_SHORT).show()
             finish()
