@@ -205,7 +205,7 @@ class RekapActivity : AppCompatActivity() {
             } else if (status == "terlambat") {
                 tvBadge.setBackgroundColor(Color.parseColor("#FEF3C7"))
                 tvBadge.setTextColor(Color.parseColor("#B45309"))
-            } else if (status == "izin" || status == "izin pulang" || status == "udzur syar'i" || status == "dinas luar") {
+            } else if (status == "izin" || status == "izin pulang" || status == "udzur syar'i" || status == "dinas luar" || status == "cuti") {
                 tvBadge.setBackgroundColor(Color.parseColor("#00D2D3"))
                 tvBadge.setTextColor(Color.WHITE)
             } else if (status == "sakit") {

@@ -288,8 +288,8 @@ class IzinActivity : AppCompatActivity() {
         val status = when {
             statusText.contains("Sakit") -> "Sakit"
             statusText.contains("Izin Keperluan") -> "Izin"
-            statusText.contains("Izin Pulang") -> "Izin Pulang"
-            statusText.contains("Udzur") -> "Udzur Syar'i"
+            statusText.contains("Cuti") -> "Cuti"
+            statusText.contains("Terlambat") -> "Terlambat"
             statusText.contains("Dinas Luar") -> "Dinas Luar"
             else -> "Izin"
         }
