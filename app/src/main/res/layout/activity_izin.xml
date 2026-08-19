@@ -212,6 +212,7 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:paddingHorizontal="4dp"
+        android:paddingBottom="16dp"
         android:weightSum="6">
 
             <LinearLayout android:id="@+id/navBeranda" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:clickable="true" android:focusable="true" android:foreground="?attr/selectableItemBackground">
@@ -254,6 +255,7 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:paddingHorizontal="4dp"
+        android:paddingBottom="16dp"
         android:weightSum="4">
 
             <!-- 1. Beranda -->

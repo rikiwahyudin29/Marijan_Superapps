@@ -9,6 +9,7 @@
     android:orientation="horizontal"
     android:gravity="center"
     android:paddingHorizontal="4dp"
+    android:paddingBottom="16dp"
     android:weightSum="6">
 
     <!-- 1. Beranda -->
