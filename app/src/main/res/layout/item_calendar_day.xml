@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="8dp"
+    android:background="?attr/selectableItemBackground">
+
+    <TextView
+        android:id="@+id/tvDayNumber"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:text="1"
+        android:textSize="14sp"
+        android:textColor="#111827"
+        android:gravity="center"
+        android:background="@drawable/bg_calendar_day_normal" />
+
+    <View
+        android:id="@+id/viewDot"
+        android:layout_width="4dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/bg_dot_normal" />
+
+</LinearLayout>

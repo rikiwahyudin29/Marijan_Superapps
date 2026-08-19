@@ -1,19 +1,22 @@
 package com.rtekmidev.marijancbt
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.rtekmidev.marijancbt.api.ApiClient
+import com.rtekmidev.marijancbt.api.DataRekap
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -22,11 +25,13 @@ class RekapActivity : AppCompatActivity() {
     private var userRole = ""
     private var identifier = ""
 
+    private var currentMonthCalendar = Calendar.getInstance()
+    private var listKehadiran = listOf<DataRekap>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_rekap)
 
-        // 🔥 KUNCI UTAMA: BACA ROLE LANGSUNG DARI SESI (ANTI-NYASAR) 🔥
         val prefGuru = getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
         val prefSiswa = getSharedPreferences("SesiUjian", Context.MODE_PRIVATE)
 
@@ -44,101 +49,84 @@ class RekapActivity : AppCompatActivity() {
 
         findViewById<ImageView>(R.id.btnBackRekap).setOnClickListener { finish() }
 
+        setupBottomNav()
+
+        findViewById<ImageView>(R.id.btnPrevMonth).setOnClickListener {
+            currentMonthCalendar.add(Calendar.MONTH, -1)
+            muatDataRekap()
+        }
+
+        findViewById<ImageView>(R.id.btnNextMonth).setOnClickListener {
+            currentMonthCalendar.add(Calendar.MONTH, 1)
+            muatDataRekap()
+        }
+
         muatDataRekap()
     }
 
+    private fun updateMonthText() {
+        val sdf = SimpleDateFormat("MMMM yyyy", Locale("id", "ID"))
+        findViewById<TextView>(R.id.tvMonthYear).text = sdf.format(currentMonthCalendar.time)
+    }
+
+    private fun setupBottomNav() {
+        // Setup listeners and styling matching Dashboard
+        findViewById<LinearLayout>(R.id.navBeranda).setOnClickListener { goToDashboard(0) }
+        findViewById<LinearLayout>(R.id.navAkademik).setOnClickListener { goToDashboard(1) }
+        findViewById<LinearLayout>(R.id.navCbt).setOnClickListener { goToDashboard(2) }
+        findViewById<LinearLayout>(R.id.navPresensi).setOnClickListener { finish() } // Presensi is the current context
+        findViewById<LinearLayout>(R.id.navKeuangan).setOnClickListener { goToDashboard(4) }
+        findViewById<LinearLayout>(R.id.navProfil).setOnClickListener { goToDashboard(5) }
+
+        // Select Presensi
+        val selectedColor = Color.parseColor("#1E3A8A")
+        findViewById<ImageView>(R.id.ivNavPresensi).setColorFilter(selectedColor)
+        findViewById<TextView>(R.id.tvNavPresensi).setTextColor(selectedColor)
+        findViewById<TextView>(R.id.tvNavPresensi).typeface = android.graphics.Typeface.DEFAULT_BOLD
+
+        if (userRole == "GURU") {
+            // Guru doesn't have CBT and Keuangan usually, hide them to match dashboard_guru
+            findViewById<LinearLayout>(R.id.navCbt).visibility = View.GONE
+            findViewById<LinearLayout>(R.id.navKeuangan).visibility = View.GONE
+        }
+    }
+
+    private fun goToDashboard(tabIndex: Int) {
+        val intent = Intent(this, DashboardActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        // Passing intent extra might require DashboardActivity to handle it, but standard Android behavior is to just let user navigate back
+        startActivity(intent)
+        finish()
+    }
+
     private fun muatDataRekap() {
-        val wadah = findViewById<LinearLayout>(R.id.wadahListRekap)
         if (identifier.isEmpty()) return
 
-        // Ambil format bulan saat ini persis seperti Web (Contoh: 2026-05)
-        val currentMonth = SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(Date())
+        updateMonthText()
+
+        val yearMonthSdf = SimpleDateFormat("yyyy-MM", Locale.getDefault())
+        val selectedMonthStr = yearMonthSdf.format(currentMonthCalendar.time)
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                // Tembak API yang PASTI BENAR sesuai Role
                 val resp = if (userRole == "GURU") {
-                    ApiClient.instance.getRekapGuru(identifier, currentMonth)
+                    ApiClient.instance.getRekapGuru(identifier, selectedMonthStr)
                 } else {
-                    ApiClient.instance.getRekapAbsen(identifier, currentMonth)
+                    ApiClient.instance.getRekapAbsen(identifier, selectedMonthStr)
                 }
 
                 withContext(Dispatchers.Main) {
                     if (resp.isSuccessful && resp.body()?.status == true) {
                         val body = resp.body()!!
-
+                        
                         findViewById<TextView>(R.id.tvTotalHadir).text = body.summary?.hadir?.toString() ?: "0"
-                        findViewById<TextView>(R.id.tvTotalIzin).text = ((body.summary?.sakit ?: 0) + (body.summary?.izin ?: 0)).toString()
+                        findViewById<TextView>(R.id.tvTotalIzin).text = body.summary?.izin?.toString() ?: "0"
+                        findViewById<TextView>(R.id.tvTotalSakit).text = body.summary?.sakit?.toString() ?: "0"
                         findViewById<TextView>(R.id.tvTotalAlpha).text = body.summary?.alpha?.toString() ?: "0"
 
-                        wadah.removeAllViews()
-
-                        val listData = body.data ?: emptyList()
-                        if (listData.isEmpty()) {
-                            Toast.makeText(this@RekapActivity, "Belum ada riwayat bulan ini.", Toast.LENGTH_SHORT).show()
-                        }
-
-                        listData.forEach { item ->
-                            val card = CardView(this@RekapActivity).apply {
-                                radius = 24f
-                                cardElevation = 0f
-                                useCompatPadding = true
-                                setCardBackgroundColor(Color.WHITE)
-                                setContentPadding(40, 30, 40, 30)
-                            }
-
-                            val layoutIn = LinearLayout(this@RekapActivity).apply {
-                                orientation = LinearLayout.VERTICAL
-                            }
-
-                            val headerRow = RelativeLayout(this@RekapActivity)
-
-                            val txtTgl = TextView(this@RekapActivity).apply {
-                                text = item.tanggal
-                                textSize = 14f
-                                setTypeface(null, android.graphics.Typeface.BOLD)
-                                setTextColor(Color.parseColor("#111827"))
-                            }
-
-                            val badgeStatus = TextView(this@RekapActivity).apply {
-                                text = item.status_kehadiran.uppercase()
-                                textSize = 10f
-                                setTypeface(null, android.graphics.Typeface.BOLD)
-                                setPadding(20, 8, 20, 8)
-
-                                val status = item.status_kehadiran.lowercase()
-                                if (status == "hadir") {
-                                    setTextColor(Color.parseColor("#059669"))
-                                    setBackgroundColor(Color.parseColor("#D1FAE5"))
-                                } else if (status == "sakit" || status == "izin" || status == "dinas luar") {
-                                    setTextColor(Color.parseColor("#D97706"))
-                                    setBackgroundColor(Color.parseColor("#FEF3C7"))
-                                } else {
-                                    setTextColor(Color.parseColor("#DC2626"))
-                                    setBackgroundColor(Color.parseColor("#FEE2E2"))
-                                }
-                            }
-
-                            val paramsBadge = RelativeLayout.LayoutParams(
-                                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                                RelativeLayout.LayoutParams.WRAP_CONTENT
-                            ).apply { addRule(RelativeLayout.ALIGN_PARENT_END) }
-
-                            headerRow.addView(txtTgl)
-                            headerRow.addView(badgeStatus, paramsBadge)
-
-                            val txtJam = TextView(this@RekapActivity).apply {
-                                text = "Masuk: ${item.jam_masuk ?: "--"}  |  Pulang: ${item.jam_pulang ?: "--"}"
-                                textSize = 13f
-                                setTextColor(Color.parseColor("#6B7280"))
-                                setPadding(0, 16, 0, 0)
-                            }
-
-                            layoutIn.addView(headerRow)
-                            layoutIn.addView(txtJam)
-                            card.addView(layoutIn)
-                            wadah.addView(card)
-                        }
+                        listKehadiran = body.data ?: emptyList()
+                        buildCalendar()
+                        
                     } else {
                         Toast.makeText(this@RekapActivity, "Gagal memuat data rekap", Toast.LENGTH_SHORT).show()
                     }
@@ -148,6 +136,108 @@ class RekapActivity : AppCompatActivity() {
                     Toast.makeText(this@RekapActivity, "Koneksi API Error", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+    }
+
+    private fun buildCalendar() {
+        val daysList = mutableListOf<CalendarDay>()
+        
+        val cal = currentMonthCalendar.clone() as Calendar
+        cal.set(Calendar.DAY_OF_MONTH, 1)
+        val firstDayOfWeek = cal.get(Calendar.DAY_OF_WEEK) // Sunday=1, Monday=2
+        
+        // Android Calendar: 1=Sunday, 2=Monday. Our UI: 0=Min, 1=Sen, 2=Sel, 3=Rab, 4=Kam, 5=Jum, 6=Sab
+        val offset = firstDayOfWeek - 1
+        
+        for (i in 0 until offset) {
+            daysList.add(CalendarDay(0, false, false, "")) // Empty cells
+        }
+        
+        val maxDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
+        val todayCal = Calendar.getInstance()
+        val isCurrentMonth = todayCal.get(Calendar.YEAR) == cal.get(Calendar.YEAR) && 
+                             todayCal.get(Calendar.MONTH) == cal.get(Calendar.MONTH)
+        val todayDate = todayCal.get(Calendar.DAY_OF_MONTH)
+
+        val sdfFullDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+        for (day in 1..maxDays) {
+            cal.set(Calendar.DAY_OF_MONTH, day)
+            val dateStr = sdfFullDate.format(cal.time)
+            
+            // Find status from API response
+            val dataForDay = listKehadiran.find { it.tanggal == dateStr }
+            val status = dataForDay?.status_kehadiran
+            
+            val isToday = isCurrentMonth && day == todayDate
+            val isSelected = isToday // default select today, or day 1 if not current month
+            
+            daysList.add(CalendarDay(day, isToday, false, dateStr, status))
+        }
+
+        // If today is in list, select it. Else select day 1
+        var selectedIdx = daysList.indexOfFirst { it.isToday }
+        if (selectedIdx == -1) {
+            selectedIdx = daysList.indexOfFirst { it.dayNumber == 1 }
+        }
+        if (selectedIdx != -1) {
+            daysList[selectedIdx].isSelected = true
+            updateDetailCard(daysList[selectedIdx])
+        }
+
+        val rv = findViewById<RecyclerView>(R.id.rvCalendar)
+        rv.layoutManager = GridLayoutManager(this, 7)
+        rv.adapter = CalendarAdapter(daysList) { day ->
+            updateDetailCard(day)
+        }
+    }
+
+    private fun updateDetailCard(day: CalendarDay) {
+        val sdfParse = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val sdfFormat = SimpleDateFormat("dd MMM yyyy", Locale("id", "ID"))
+        
+        var dateText = day.dateString
+        try {
+            val d = sdfParse.parse(day.dateString)
+            if (d != null) dateText = sdfFormat.format(d)
+        } catch (e: Exception) { }
+
+        findViewById<TextView>(R.id.tvDetailTitle).text = "Detail Hari: $dateText"
+        
+        val dataForDay = listKehadiran.find { it.tanggal == day.dateString }
+        
+        val tvMasuk = findViewById<TextView>(R.id.tvDetailMasuk)
+        val tvPulang = findViewById<TextView>(R.id.tvDetailPulang)
+        val tvBadge = findViewById<TextView>(R.id.tvDetailStatusBadge)
+
+        if (dataForDay != null) {
+            tvMasuk.text = dataForDay.jam_masuk ?: "--:--"
+            tvPulang.text = dataForDay.jam_pulang ?: "--:--"
+            
+            tvBadge.visibility = View.VISIBLE
+            tvBadge.text = dataForDay.status_kehadiran.uppercase()
+            
+            val status = dataForDay.status_kehadiran.lowercase()
+            if (status == "hadir" || status == "tepat waktu") {
+                tvBadge.setBackgroundColor(Color.parseColor("#1E3A8A"))
+                tvBadge.setTextColor(Color.WHITE)
+            } else if (status == "izin" || status == "izin pulang" || status == "udzur syar'i") {
+                tvBadge.setBackgroundColor(Color.parseColor("#00D2D3"))
+                tvBadge.setTextColor(Color.WHITE)
+            } else if (status == "sakit") {
+                tvBadge.setBackgroundColor(Color.parseColor("#E5E7EB"))
+                tvBadge.setTextColor(Color.parseColor("#4B5563"))
+            } else if (status == "alfa" || status == "alpha") {
+                tvBadge.setBackgroundColor(Color.parseColor("#FEE2E2"))
+                tvBadge.setTextColor(Color.parseColor("#991B1B"))
+            } else {
+                tvBadge.setBackgroundColor(Color.parseColor("#1E3A8A"))
+                tvBadge.setTextColor(Color.WHITE)
+            }
+        } else {
+            tvMasuk.text = "--:--"
+            tvPulang.text = "--:--"
+            tvBadge.visibility = View.GONE
         }
     }
 }
