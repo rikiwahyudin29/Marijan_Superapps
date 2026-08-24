@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -7,7 +8,9 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera.any" android:required="true" />
+    
     <application
+        tools:ignore="all"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -27,6 +30,7 @@
 
 
         <activity android:name=".LoginActivity" android:exported="false" />
+        <activity android:name=".OtpActivity" android:exported="false" />
         <activity android:name=".DaftarTugasActivity" android:exported="false" />
         <activity android:name=".KumpulTugasActivity" android:exported="false" />
         <activity android:name=".FileViewerActivity" android:exported="false" />
@@ -35,7 +39,8 @@
         <activity
             android:name=".DashboardActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="all" />
         <activity android:name=".JadwalActivity" android:exported="false" />
         <activity android:name=".KonfirmasiActivity" android:exported="false" />
 
@@ -48,36 +53,39 @@
         <activity
             android:name=".PresensiActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="all" />
 
         <activity
             android:name=".KameraAbsenActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity android:name=".IzinActivity" android:screenOrientation="portrait" />
-        <activity android:name=".RekapActivity" android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="all" />
+        <activity android:name=".IzinActivity" android:screenOrientation="portrait" tools:ignore="all" />
+        <activity android:name=".RekapActivity" android:screenOrientation="portrait" tools:ignore="all" />
         <activity android:name=".KeuanganActivity" />
         <activity
             android:name=".PaymentActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="all" />
         <activity
             android:name=".MateriTugasActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity android:name=".DashboardGuruActivity" android:exported="false" android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            tools:ignore="all" />
+        <activity android:name=".DashboardGuruActivity" android:exported="false" android:screenOrientation="portrait" tools:ignore="all"/>
         <activity
             android:name=".CustomScannerActivity"
             android:screenOrientation="portrait"
+            tools:ignore="all"
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme" />
             
-        <activity android:name=".JurnalMengajarActivity" android:screenOrientation="portrait" />
-        <activity android:name=".RekapMengajarActivity" android:screenOrientation="portrait" />
-        <activity android:name=".WaliKelasActivity" android:screenOrientation="portrait" />
-        <activity android:name=".WaliKelasKehadiranActivity" android:screenOrientation="portrait" />
-        <activity android:name=".WaliKelasKeuanganActivity" android:screenOrientation="portrait" />
-
+        <activity android:name=".JurnalMengajarActivity" android:screenOrientation="portrait" tools:ignore="all" />
+        <activity android:name=".RekapMengajarActivity" android:screenOrientation="portrait" tools:ignore="all" />
+        <activity android:name=".WaliKelasKehadiranActivity" android:screenOrientation="portrait" tools:ignore="all" />
+        <activity android:name=".WaliKelasKeuanganActivity" android:screenOrientation="portrait" tools:ignore="all" />
+        <activity android:name=".PresensiKelasActivity" android:screenOrientation="portrait" tools:ignore="all" />
     </application>
 </manifest>
-

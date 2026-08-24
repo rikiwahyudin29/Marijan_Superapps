@@ -1,54 +1,196 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="HardcodedText,Autofill,ContentDescription,ButtonStyle,MissingPrefix"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp"
-    android:background="#F3F4F6">
+    android:background="@android:color/white"
+    android:clipToPadding="false"
+    android:paddingBottom="100dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Isi Jurnal Mengajar"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="#1F2937"
-        android:layout_marginBottom="24dp"/>
-
-    <EditText
-        android:id="@+id/etKelas"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Kelas (Contoh: XII RPL 1)"
-        android:background="#FFFFFF"
-        android:padding="12dp"
-        android:layout_marginBottom="12dp"/>
+        android:orientation="vertical"
+        android:padding="20dp">
 
-    <EditText
-        android:id="@+id/etMapel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Mata Pelajaran"
-        android:background="#FFFFFF"
-        android:padding="12dp"
-        android:layout_marginBottom="12dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Form Jurnal Mengajar"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#333333" />
 
-    <EditText
-        android:id="@+id/etMateri"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:hint="Materi / Kegiatan Hari Ini"
-        android:gravity="top|start"
-        android:background="#FFFFFF"
-        android:padding="12dp"
-        android:layout_marginBottom="24dp"/>
+        <TextView
+            android:id="@+id/tvDetailPelajaran"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mata Pelajaran - Kelas"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="24dp" />
 
-    <Button
-        android:id="@+id/btnSimpanJurnal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Simpan Jurnal"
-        android:backgroundTint="#2563EB"
-        android:textColor="#FFFFFF"/>
+        <!-- Jam Ke -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jam Ke *"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:layout_marginBottom="8dp" />
 
-</LinearLayout>
+        <EditText
+            android:id="@+id/etJamKe"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_rounded_white"
+            android:paddingHorizontal="16dp"
+            android:hint="Contoh: 1-2"
+            android:inputType="text"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Materi Pokok -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Materi Pokok / Pembahasan *"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etMateri"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="@drawable/bg_rounded_white"
+            android:padding="16dp"
+            android:hint="Materi yang diajarkan hari ini..."
+            android:gravity="top|start"
+            android:inputType="textMultiLine"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Catatan -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Keterangan / Catatan (Opsional)"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etCatatan"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@drawable/bg_rounded_white"
+            android:padding="16dp"
+            android:hint="Catatan tambahan kejadian di kelas..."
+            android:gravity="top|start"
+            android:inputType="textMultiLine"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Kamera Foto Kegiatan -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Foto Kegiatan (Wajib)"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:layout_marginBottom="8dp" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_rounded_white"
+            android:clipChildren="true"
+            android:clipToPadding="true">
+
+            <androidx.camera.view.PreviewView
+                android:id="@+id/viewFinder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:id="@+id/ivPreview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+
+            <!-- Tombol Switch Kamera (Depan/Belakang) -->
+            <ImageButton
+                android:id="@+id/btnSwitchCamera"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="top|end"
+                android:layout_margin="12dp"
+                android:background="@drawable/bg_circle_primary"
+                android:src="@android:drawable/ic_menu_rotate"
+                app:tint="#FFFFFF"
+                android:padding="12dp" />
+
+            <!-- Tombol Ambil Foto -->
+            <ImageButton
+                android:id="@+id/btnCapture"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_circle_primary"
+                android:src="@android:drawable/ic_menu_camera"
+                app:tint="#FFFFFF"
+                android:padding="16dp" />
+                
+            <!-- Tombol Ulangi Foto (Jika sudah diambil) -->
+            <Button
+                android:id="@+id/btnRetake"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:text="Ulangi Foto"
+                android:visibility="gone"
+                android:backgroundTint="#FF9800"
+                android:textColor="#FFFFFF" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="16dp">
+
+            <Button
+                android:id="@+id/btnBatal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Batal"
+                android:backgroundTint="#CCCCCC"
+                android:textColor="#333333"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnLanjut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lanjut ke Presensi"
+                android:backgroundTint="#4F46E5"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+        
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginTop="16dp"/>
+
+    </LinearLayout>
+</ScrollView>

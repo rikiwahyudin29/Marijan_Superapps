@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="HardcodedText,ContentDescription,Autofill"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvNamaSiswa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nama Siswa"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#333333"/>
+
+        <TextView
+            android:id="@+id/tvNis"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="NIS: 12345"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:layout_marginBottom="12dp"/>
+
+        <RadioGroup
+            android:id="@+id/rgStatusAbsen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <RadioButton
+                android:id="@+id/rbHadir"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="H"
+                android:textColor="#10B981"
+                android:buttonTint="#10B981"/>
+
+            <RadioButton
+                android:id="@+id/rbSakit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="S"
+                android:textColor="#3B82F6"
+                android:buttonTint="#3B82F6"/>
+
+            <RadioButton
+                android:id="@+id/rbIzin"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="I"
+                android:textColor="#F59E0B"
+                android:buttonTint="#F59E0B"/>
+
+            <RadioButton
+                android:id="@+id/rbAlpa"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="A"
+                android:textColor="#EF4444"
+                android:buttonTint="#EF4444"/>
+
+        </RadioGroup>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

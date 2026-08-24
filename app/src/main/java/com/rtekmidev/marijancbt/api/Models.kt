@@ -1,3 +1,4 @@
+@file:Suppress("unused")
 package com.rtekmidev.marijancbt.api
 
 // --- MODEL UNTUK LOGIN ---
@@ -345,3 +346,62 @@ data class StatistikData(
     val terlambat: Int
 )
 
+// --- MODEL UNTUK AKADEMIK GURU DASHBOARD ---
+data class DashboardGuruResponse(
+    val status: Boolean,
+    val data: DashboardGuruData?
+)
+
+data class DashboardGuruData(
+    val total_jam_minggu_ini: Int,
+    val siswa_belum_absen: Int,
+    val jadwal_hari_ini: List<JadwalGuruHariIni>
+)
+
+data class JadwalGuruHariIni(
+    val id: String,
+    val id_kelas: String?,
+    val id_mapel: String?,
+    val jam_mulai: String?,
+    val jam_selesai: String?,
+    val nama_kelas: String?,
+    val nama_mapel: String?
+)
+
+// --- MODEL UNTUK JURNAL DAN PRESENSI GURU ---
+data class SubmitJurnalResponse(
+    val status: Boolean,
+    val message: String,
+    val data: JurnalData?
+)
+
+data class JurnalData(
+    val id_jurnal: Int
+)
+
+data class GetSiswaJurnalResponse(
+    val status: Boolean,
+    val data: List<SiswaJurnal>
+)
+
+data class SiswaJurnal(
+    val id: Int,
+    val nis: String?,
+    val nama_lengkap: String?,
+    var status_absen: String?
+)
+
+data class SubmitAbsenJurnalRequest(
+    val id_jurnal: Int,
+    val data_absen: List<DataAbsenItem>
+)
+
+data class DataAbsenItem(
+    val id_siswa: Int,
+    val status: String
+)
+
+data class SimpleResponse(
+    val status: Boolean,
+    val message: String
+)
