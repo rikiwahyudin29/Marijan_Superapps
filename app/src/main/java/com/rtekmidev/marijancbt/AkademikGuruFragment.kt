@@ -56,7 +56,7 @@ class AkademikGuruFragment : Fragment() {
         val pbJadwal = view.findViewById<ProgressBar>(R.id.pbJadwal)
         val tvEmptyJadwal = view.findViewById<TextView>(R.id.tvEmptyJadwal)
 
-        val sharedPref = requireActivity().getSharedPreferences("SesiUjian", Context.MODE_PRIVATE)
+        val sharedPref = requireActivity().getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
         val idUser = sharedPref.getString("id_user", null)
 
         if (!idUser.isNullOrEmpty()) {

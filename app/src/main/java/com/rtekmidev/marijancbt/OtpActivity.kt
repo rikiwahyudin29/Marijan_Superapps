@@ -17,6 +17,8 @@ class OtpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         
         // Fix Status Bar
+        @Suppress("DEPRECATION")
+        window.statusBarColor = android.graphics.Color.TRANSPARENT
         WindowCompat.setDecorFitsSystemWindows(window, false)
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = true
         

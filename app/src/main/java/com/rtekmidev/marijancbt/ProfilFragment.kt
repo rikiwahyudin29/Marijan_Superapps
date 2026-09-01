@@ -9,7 +9,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.core.content.edit
 
+@android.annotation.SuppressLint("SetTextI18n")
 class ProfilFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_profil, container, false)
@@ -19,11 +21,12 @@ class ProfilFragment : Fragment() {
         val tvRole = view.findViewById<TextView>(R.id.tvProfilRole)
         val btnLogout = view.findViewById<Button>(R.id.btnLogout)
         
-        // Sesuaikan dengan SharedPreferences yang dipakai saat login
-        val sharedPref = requireActivity().getSharedPreferences("SesiUjian", Context.MODE_PRIVATE)
+        val roleArg = arguments?.getString("ROLE") ?: requireActivity().intent.getStringExtra("ROLE") ?: "SISWA"
+        val prefName = if (roleArg == "GURU") "SesiGuru" else "SesiUjian"
+        val sharedPref = requireActivity().getSharedPreferences(prefName, Context.MODE_PRIVATE)
         val nama = sharedPref.getString("nama", "Pengguna")
-        val nisn = sharedPref.getString("nisn", "-")
-        val role = sharedPref.getString("role", "SISWA")
+        val nisn = sharedPref.getString("username", sharedPref.getString("nisn", "-"))
+        val role = sharedPref.getString("role", roleArg)
         
         tvNama.text = nama
         tvNisn.text = "NISN / Username: $nisn"
@@ -31,7 +34,7 @@ class ProfilFragment : Fragment() {
         
         btnLogout.setOnClickListener {
             // Hapus sesi login
-            sharedPref.edit().clear().apply()
+            sharedPref.edit { clear() }
             
             // Arahkan kembali ke halaman Login
             val intent = Intent(requireActivity(), LoginActivity::class.java)

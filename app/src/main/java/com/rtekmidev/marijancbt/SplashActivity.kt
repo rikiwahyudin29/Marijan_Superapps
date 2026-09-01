@@ -1,14 +1,12 @@
 @file:Suppress("DEPRECATION")
 package com.rtekmidev.marijancbt
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.animation.DecelerateInterpolator
-import android.view.animation.OvershootInterpolator
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -16,12 +14,14 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 
+@android.annotation.SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         
         // 🌟 Fix Status Bar Android 15+ (Force dark icons because background is white)
+        window.statusBarColor = android.graphics.Color.TRANSPARENT
         WindowCompat.setDecorFitsSystemWindows(window, false)
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = true
         
@@ -68,14 +68,14 @@ class SplashActivity : AppCompatActivity() {
             .scaleY(1f)
             .setDuration(1000)
             .setStartDelay(300)
-            .setInterpolator(android.view.animation.DecelerateInterpolator())
+            .setInterpolator(DecelerateInterpolator())
             .withEndAction {
                 // 4. TEKS SLIDE UP & FADE IN SECARA BERGANTIAN
                 tvJudul.animate()
                     .alpha(1f)
                     .translationY(0f)
                     .setDuration(800)
-                    .setInterpolator(android.view.animation.DecelerateInterpolator())
+                    .setInterpolator(DecelerateInterpolator())
                     .start()
 
                 tvSubJudul.animate()
@@ -83,7 +83,7 @@ class SplashActivity : AppCompatActivity() {
                     .translationY(0f)
                     .setDuration(800)
                     .setStartDelay(150)
-                    .setInterpolator(android.view.animation.DecelerateInterpolator())
+                    .setInterpolator(DecelerateInterpolator())
                     .start()
             }
             .start()
@@ -105,11 +105,11 @@ class SplashActivity : AppCompatActivity() {
         // 🔥 LOGIKA HYBRID PENGECEKAN SESI 🔥
 
         // 1. Cek apakah ada sesi Guru
-        val prefGuru = getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
+        val prefGuru = getSharedPreferences("SesiGuru", MODE_PRIVATE)
         val isGuruLoggedIn = prefGuru.getBoolean("isLoggedIn", false)
 
         // 2. Cek apakah ada sesi Siswa
-        val prefSiswa = getSharedPreferences("SesiUjian", Context.MODE_PRIVATE)
+        val prefSiswa = getSharedPreferences("SesiUjian", MODE_PRIVATE)
         val isSiswaLoggedIn = prefSiswa.getBoolean("isLoggedIn", false)
 
         // 3. Percabangan Halaman
