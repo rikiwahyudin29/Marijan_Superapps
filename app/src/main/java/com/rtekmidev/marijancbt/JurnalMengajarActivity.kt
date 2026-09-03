@@ -64,9 +64,40 @@ class JurnalMengajarActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        
+        // Transparent Status Bar
+        @Suppress("DEPRECATION")
+        window.statusBarColor = android.graphics.Color.TRANSPARENT
+        androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
+        
+        val currentNightMode = resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
+        val isNightMode = currentNightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES
+        val insetsController = androidx.core.view.WindowCompat.getInsetsController(window, window.decorView)
+        insetsController.isAppearanceLightStatusBars = !isNightMode
+        
         setContentView(R.layout.activity_jurnal_mengajar)
+        
+        // Handle insets for root view (bottom navigation bar)
+        findViewById<android.view.ViewGroup>(android.R.id.content).getChildAt(0)?.let { rootView ->
+            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
+                val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+                view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, systemBars.bottom)
+                insets
+            }
+        }
+        
+        // Handle insets for appBar (status bar padding)
+        val appBar = findViewById<View>(R.id.appBar)
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(appBar) { view, insets ->
+            val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+            val defaultPadding = (16 * resources.displayMetrics.density).toInt()
+            view.setPadding(defaultPadding, systemBars.top + defaultPadding, defaultPadding, defaultPadding)
+            insets
+        }
 
-        // Get intent data
+        // Initialize Intent Data
         idKelas = intent.getStringExtra("id_kelas") ?: ""
         idMapel = intent.getStringExtra("id_mapel") ?: ""
         namaKelas = intent.getStringExtra("nama_kelas") ?: "Kelas"

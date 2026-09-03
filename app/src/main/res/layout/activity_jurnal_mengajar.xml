@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F3F4F6"
+    android:background="@drawable/bg_animated_gradient"
     tools:ignore="HardcodedText,Autofill,ContentDescription,ButtonStyle,MissingPrefix">
 
     <!-- App Bar Header -->
@@ -514,7 +514,7 @@
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"
-            android:text="Lanjut ke Presensi ->"
+            android:text="Lanjut ke Presensi"
             android:textColor="#FFFFFF"
             android:backgroundTint="#2645AC"
             android:insetBottom="0dp"
