@@ -244,9 +244,19 @@ class JurnalMengajarActivity : AppCompatActivity() {
                     val rotatedBitmap = rotateBitmap(bitmap, image.imageInfo.rotationDegrees)
                     image.close()
 
+                    // Resize to avoid Payload Too Large (413)
+                    val maxDim = 1024
+                    var finalBitmap = rotatedBitmap
+                    if (finalBitmap.width > maxDim || finalBitmap.height > maxDim) {
+                        val ratio = finalBitmap.width.toFloat() / finalBitmap.height.toFloat()
+                        val newWidth = if (ratio > 1) maxDim else (maxDim * ratio).toInt()
+                        val newHeight = if (ratio > 1) (maxDim / ratio).toInt() else maxDim
+                        finalBitmap = Bitmap.createScaledBitmap(finalBitmap, newWidth, newHeight, true)
+                    }
+
                     // Convert to Base64
                     val baos = ByteArrayOutputStream()
-                    rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos)
+                    finalBitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos)
                     val bytes = baos.toByteArray()
                     base64Image = Base64.encodeToString(bytes, Base64.DEFAULT)
 
@@ -330,14 +340,15 @@ class JurnalMengajarActivity : AppCompatActivity() {
                         startActivity(intent)
                         finish()
                     } else {
-                        Toast.makeText(this@JurnalMengajarActivity, "Gagal: ${response.body()?.message ?: "Unknown Error"}", Toast.LENGTH_SHORT).show()
+                        val errorMsg = response.errorBody()?.string() ?: "Unknown Error"
+                        Toast.makeText(this@JurnalMengajarActivity, "Gagal (${response.code()}): $errorMsg", Toast.LENGTH_LONG).show()
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     progressBar.visibility = View.GONE
                     btnLanjut.isEnabled = true
-                    Toast.makeText(this@JurnalMengajarActivity, "Error koneksi: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@JurnalMengajarActivity, "Error koneksi: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }

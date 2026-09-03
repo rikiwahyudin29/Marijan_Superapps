@@ -152,7 +152,7 @@ interface ApiService {
     suspend fun getAkademikGuruDashboard(@Query("id_user") idUser: String): Response<DashboardGuruResponse>
 
     @FormUrlEncoded
-    @POST("api/jurnal/submit")
+    @POST("api/akademik-guru/jurnal")
     suspend fun submitJurnal(
         @Field("id_kelas") idKelas: String,
         @Field("id_mapel") idMapel: String,
@@ -162,13 +162,13 @@ interface ApiService {
         @Field("foto_kegiatan") fotoKegiatan: String
     ): Response<SubmitJurnalResponse>
 
-    @GET("api/jurnal/siswa")
+    @GET("api/akademik-guru/get-siswa-jurnal")
     suspend fun getSiswaJurnal(@Query("id_jurnal") idJurnal: Int): Response<GetSiswaJurnalResponse>
 
-    @POST("api/jurnal/presensi")
+    @POST("api/akademik-guru/submit-absen-jurnal")
     suspend fun submitAbsenJurnal(@Body request: SubmitAbsenJurnalRequest): Response<SimpleResponse>
 
-    @GET("api/jurnal/rekap")
+    @GET("api/akademik-guru/rekap-jurnal")
     suspend fun getRekapJurnal(
         @Query("id_user") idUser: String,
         @Query("bulan") bulan: String
