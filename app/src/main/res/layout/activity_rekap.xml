@@ -19,23 +19,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <androidx.cardview.widget.CardView
+        <ImageView
+            android:id="@+id/btnBackRekap"
             android:layout_width="44dp"
             android:layout_height="44dp"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="#FFFFFF">
-            <ImageView
-                android:id="@+id/btnBackRekap"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_baseline_arrow_back_24"
-                android:padding="10dp"
-                app:tint="#1E3A8A"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?attr/selectableItemBackgroundBorderless"/>
-        </androidx.cardview.widget.CardView>
+            android:src="@drawable/ic_back_circle"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
 
         <TextView
             android:layout_width="wrap_content"
