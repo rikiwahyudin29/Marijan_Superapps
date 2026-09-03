@@ -160,7 +160,10 @@
                         <TextView android:id="@+id/tvIzin" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 Izin" android:textColor="#FFFFFF" android:textSize="10sp" android:layout_marginEnd="12dp"/>
                         
                         <View android:layout_width="6dp" android:layout_height="6dp" android:background="@drawable/bg_circle_red" android:layout_marginEnd="4dp"/>
-                        <TextView android:id="@+id/tvSakit" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 Sakit" android:textColor="#FFFFFF" android:textSize="10sp"/>
+                        <TextView android:id="@+id/tvSakit" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 Sakit" android:textColor="#FFFFFF" android:textSize="10sp" android:layout_marginEnd="12dp"/>
+                        
+                        <View android:layout_width="6dp" android:layout_height="6dp" android:background="@drawable/bg_circle_gray" android:layout_marginEnd="4dp"/>
+                        <TextView android:id="@+id/tvAlpha" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 Alfa" android:textColor="#FFFFFF" android:textSize="10sp"/>
                         
                         <Space android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
                         <TextView android:id="@+id/tvTotalSiswa" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Total: 0 Siswa" android:textColor="#FFFFFF" android:textSize="10sp" android:textStyle="bold"/>

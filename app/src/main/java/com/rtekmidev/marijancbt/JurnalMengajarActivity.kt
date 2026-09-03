@@ -157,6 +157,7 @@ class JurnalMengajarActivity : AppCompatActivity() {
                                 findViewById<TextView>(R.id.tvHadir)?.text = "${data.hadir} Hadir"
                                 findViewById<TextView>(R.id.tvIzin)?.text = "${data.izin} Izin"
                                 findViewById<TextView>(R.id.tvSakit)?.text = "${data.sakit} Sakit"
+                                findViewById<TextView>(R.id.tvAlpha)?.text = "${data.alpha} Alfa"
                                 
                                 // Set Jam Ke if available
                                 if (!data.jam_ke.isNullOrEmpty()) {
