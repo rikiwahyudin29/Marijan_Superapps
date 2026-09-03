@@ -170,9 +170,8 @@ interface ApiService {
 
     @GET("api/akademik-guru/rekap-jurnal")
     suspend fun getRekapJurnal(
-        @Query("id_user") idUser: String,
         @Query("bulan") bulan: String
-    ): Response<JsonElement>
+    ): Response<RekapJurnalResponse>
 
     @GET("api/walikelas/kehadiran")
     suspend fun getWaliKelasRekapKehadiran(

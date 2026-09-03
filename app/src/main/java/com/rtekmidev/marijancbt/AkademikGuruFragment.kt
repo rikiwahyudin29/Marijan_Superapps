@@ -25,8 +25,7 @@ class AkademikGuruFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_akademik_guru, container, false)
         
         view.findViewById<View>(R.id.btnJurnalMengajar)?.setOnClickListener {
-            val intent = android.content.Intent(requireContext(), JurnalMengajarActivity::class.java)
-            startActivity(intent)
+            Toast.makeText(requireContext(), "Sedang memuat data jadwal...", Toast.LENGTH_SHORT).show()
         }
 
         view.findViewById<View>(R.id.btnRekapMengajar)?.setOnClickListener {
@@ -105,6 +104,49 @@ class AkademikGuruFragment : Fragment() {
                                     }
                                 }
 
+                                // Quick Action: Jurnal Mengajar
+                                view?.findViewById<View>(R.id.btnJurnalMengajar)?.setOnClickListener {
+                                    val jadwalHariIniList = data.jadwal_hari_ini ?: emptyList()
+                                    if (jadwalHariIniList.isEmpty()) {
+                                        Toast.makeText(requireContext(), "Tidak ada jadwal mengajar hari ini", Toast.LENGTH_SHORT).show()
+                                        return@setOnClickListener
+                                    }
+                                    
+                                    val currentTimeStr = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault()).format(java.util.Date())
+                                    var activeJadwal: com.rtekmidev.marijancbt.api.JadwalGuruHariIni? = null
+                                    
+                                    for (j in jadwalHariIniList) {
+                                        val start = j.jam_mulai?.substring(0, 5) ?: ""
+                                        val end = j.jam_selesai?.substring(0, 5) ?: ""
+                                        if (start.isNotEmpty() && end.isNotEmpty()) {
+                                            if (currentTimeStr >= start && currentTimeStr <= end) {
+                                                activeJadwal = j
+                                                break
+                                            }
+                                        }
+                                    }
+                                    
+                                    if (activeJadwal == null) {
+                                        Toast.makeText(requireContext(), "Tidak ada jadwal yang sedang berlangsung saat ini", Toast.LENGTH_SHORT).show()
+                                    } else if (activeJadwal.is_jurnal_filled == true) {
+                                        Toast.makeText(requireContext(), "Jurnal untuk jadwal aktif sudah diisi", Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        val intent = android.content.Intent(requireContext(), JurnalMengajarActivity::class.java)
+                                        intent.putExtra("id_kelas", activeJadwal.id_kelas ?: "")
+                                        intent.putExtra("id_mapel", activeJadwal.id_mapel ?: "")
+                                        intent.putExtra("nama_kelas", activeJadwal.nama_kelas ?: "")
+                                        intent.putExtra("nama_mapel", activeJadwal.nama_mapel ?: "")
+                                        if (!activeJadwal.jam_ke.isNullOrEmpty()) {
+                                            intent.putExtra("jam_ke", activeJadwal.jam_ke)
+                                        } else {
+                                            val jmMulai = activeJadwal.jam_mulai?.substring(0, 5) ?: ""
+                                            val jmSelesai = activeJadwal.jam_selesai?.substring(0, 5) ?: ""
+                                            intent.putExtra("jam_ke", "$jmMulai - $jmSelesai WIB")
+                                        }
+                                        startActivity(intent)
+                                    }
+                                }
+
                                 // Render Jadwal
                                 if (data.jadwal_hari_ini != null && data.jadwal_hari_ini.isNotEmpty()) {
                                     for (jadwal in data.jadwal_hari_ini) {
@@ -118,11 +160,41 @@ class AkademikGuruFragment : Fragment() {
                                         itemJadwal.findViewById<TextView>(R.id.tvKelas).text = jadwal.nama_kelas ?: ""
                                         
                                         val ivAction = itemJadwal.findViewById<android.widget.ImageView>(R.id.ivAction)
+                                        val llJurnalDetail = itemJadwal.findViewById<LinearLayout>(R.id.llJurnalDetail)
+                                        val tvJurnalMateri = itemJadwal.findViewById<TextView>(R.id.tvJurnalMateri)
+                                        val tvJurnalPresensi = itemJadwal.findViewById<TextView>(R.id.tvJurnalPresensi)
+                                        val cvFotoPreview = itemJadwal.findViewById<androidx.cardview.widget.CardView>(R.id.cvFotoPreview)
+                                        val ivFotoPreview = itemJadwal.findViewById<android.widget.ImageView>(R.id.ivFotoPreview)
+                                        
                                         if (jadwal.is_jurnal_filled == true) {
                                             // Sudah diisi
                                             ivAction?.setImageResource(android.R.drawable.ic_menu_edit) // Or any check icon
                                             ivAction?.imageTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#10B981")) // Green
                                             itemJadwal.alpha = 0.7f // Dim the item to indicate it's done
+                                            llJurnalDetail?.visibility = View.VISIBLE
+                                            tvJurnalMateri?.text = "Materi: ${jadwal.jurnal_materi ?: "-"}"
+                                            tvJurnalPresensi?.text = jadwal.jurnal_presensi ?: "Presensi Belum Tersedia"
+                                            
+                                            if (!jadwal.jurnal_foto.isNullOrEmpty()) {
+                                                cvFotoPreview?.visibility = View.VISIBLE
+                                                ivFotoPreview?.let {
+                                                    com.bumptech.glide.Glide.with(requireContext())
+                                                        .load(jadwal.jurnal_foto)
+                                                        .into(it)
+                                                }
+                                                cvFotoPreview?.setOnClickListener {
+                                                    try {
+                                                        val intent = android.content.Intent(android.content.Intent.ACTION_VIEW)
+                                                        intent.data = android.net.Uri.parse(jadwal.jurnal_foto)
+                                                        startActivity(intent)
+                                                    } catch (e: Exception) {
+                                                        Toast.makeText(requireContext(), "Tidak dapat membuka foto", Toast.LENGTH_SHORT).show()
+                                                    }
+                                                }
+                                            } else {
+                                                cvFotoPreview?.visibility = View.GONE
+                                            }
+                                            
                                             itemJadwal.setOnClickListener {
                                                 Toast.makeText(requireContext(), "Jurnal untuk kelas ini sudah diisi hari ini", Toast.LENGTH_SHORT).show()
                                             }

@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cvMain"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="#FFFFFF">
+
+    <LinearLayout
+        android:id="@+id/llContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@drawable/bg_rounded_border_outline">
+
+        <!-- Header: Date & Status -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvDateCircle"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:text="1"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#3b82f6"
+                android:gravity="center"
+                android:background="@drawable/bg_icon_circle"
+                android:backgroundTint="#eff6ff" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp">
+
+                <TextView
+                    android:id="@+id/tvTanggal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Kamis, 03 September 2026"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#1e293b" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="2dp">
+                    <ImageView
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:src="@android:drawable/ic_menu_recent_history"
+                        app:tint="#94a3b8" />
+                    <TextView
+                        android:id="@+id/tvJam"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Jam Ke: 4-5 (12:45 - 13:45 WIB)"
+                        android:textSize="12sp"
+                        android:textColor="#64748B"
+                        android:layout_marginStart="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:background="@drawable/bg_rounded_border"
+                android:backgroundTint="#ccfbf1">
+                <ImageView
+                    android:id="@+id/ivBadgeIcon"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:src="@android:drawable/checkbox_on_background"
+                    app:tint="#0d9488"
+                    android:layout_marginEnd="4dp" />
+                <TextView
+                    android:id="@+id/tvBadgeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Terisi"
+                    android:textSize="10sp"
+                    android:textColor="#0d9488"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Mapel -->
+        <TextView
+            android:id="@+id/tvMapel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Konfigurasi Perangkat Jaringan"
+            android:textSize="12sp"
+            android:textColor="#4338ca"
+            android:background="@drawable/bg_rounded_border"
+            android:backgroundTint="#e0e7ff"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp" />
+
+        <!-- Kelas -->
+        <TextView
+            android:id="@+id/tvKelas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="12 TKJ 1"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#b45309"
+            android:background="@drawable/bg_rounded_border"
+            android:backgroundTint="#fef3c7"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp" />
+
+        <!-- Materi Info -->
+        <LinearLayout
+            android:id="@+id/llMateri"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_rounded_border"
+            android:backgroundTint="#f8fafc"
+            android:padding="12dp">
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Materi Pembelajaran:"
+                android:textSize="10sp"
+                android:textColor="#64748b" />
+                
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp">
+                <TextView
+                    android:id="@+id/tvMateri"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Evaluasi praktik dasar K3LH dan interaksi mesin."
+                    android:textSize="12sp"
+                    android:textColor="#1e293b" />
+                <ImageView
+                    android:id="@+id/ivWarning"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@android:drawable/stat_sys_warning"
+                    app:tint="#ef4444"
+                    android:visibility="gone"
+                    android:layout_marginStart="8dp" />
+            </LinearLayout>
+        </LinearLayout>
+        
+        <!-- Presensi or "Belum terekam" info -->
+        <LinearLayout
+            android:id="@+id/llFooter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="16dp">
+
+            <LinearLayout
+                android:id="@+id/llPresensi"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <ImageView
+                    android:id="@+id/ivPresensiIcon"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_modern_profile"
+                    app:tint="#0d9488"
+                    android:layout_marginEnd="6dp" />
+                <TextView
+                    android:id="@+id/tvPresensi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="33/35 Siswa (94% Hadir)"
+                    android:textSize="11sp"
+                    android:textColor="#0d9488"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                
+                <ImageView
+                    android:id="@+id/btnShare"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@android:drawable/ic_menu_share"
+                    android:background="@drawable/bg_rounded_border"
+                    android:backgroundTint="#f1f5f9"
+                    app:tint="#64748b"
+                    android:padding="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/btnAction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_rounded_border"
+                    android:backgroundTint="#1E1B4B"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp">
+                    <ImageView
+                        android:id="@+id/ivActionIcon"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@android:drawable/ic_menu_view"
+                        app:tint="#FFFFFF"
+                        android:layout_marginEnd="6dp" />
+                    <TextView
+                        android:id="@+id/tvActionText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lihat Jurnal"
+                        android:textSize="12sp"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

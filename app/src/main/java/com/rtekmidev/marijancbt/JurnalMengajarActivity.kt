@@ -340,8 +340,19 @@ class JurnalMengajarActivity : AppCompatActivity() {
                         startActivity(intent)
                         finish()
                     } else {
-                        val errorMsg = response.errorBody()?.string() ?: "Unknown Error"
-                        Toast.makeText(this@JurnalMengajarActivity, "Gagal (${response.code()}): $errorMsg", Toast.LENGTH_LONG).show()
+                        var errorMsg = "Unknown Error"
+                        try {
+                            val errorBodyStr = response.errorBody()?.string()
+                            if (!errorBodyStr.isNullOrEmpty()) {
+                                val jsonObject = org.json.JSONObject(errorBodyStr)
+                                if (jsonObject.has("message")) {
+                                    errorMsg = jsonObject.getString("message")
+                                }
+                            }
+                        } catch (e: Exception) {
+                            // fallback
+                        }
+                        Toast.makeText(this@JurnalMengajarActivity, "Gagal: $errorMsg", Toast.LENGTH_LONG).show()
                     }
                 }
             } catch (e: Exception) {

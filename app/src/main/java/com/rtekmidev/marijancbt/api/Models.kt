@@ -382,7 +382,10 @@ data class JadwalGuruHariIni(
     val jam_ke: String?,
     val nama_kelas: String?,
     val nama_mapel: String?,
-    val is_jurnal_filled: Boolean?
+    val is_jurnal_filled: Boolean?,
+    val jurnal_materi: String?,
+    val jurnal_foto: String?,
+    val jurnal_presensi: String?
 )
 
 // --- MODEL UNTUK JURNAL DAN PRESENSI GURU ---
@@ -437,4 +440,38 @@ data class JurnalInfoData(
     val izin: Int,
     val sakit: Int,
     val alpha: Int
+)
+
+data class RekapJurnalResponse(
+    val status: Boolean,
+    val data: RekapJurnalData?
+)
+
+data class RekapJurnalData(
+    val semester_info: String?,
+    val summary: RekapJurnalSummary?,
+    val list: List<RekapJurnalItem>?
+)
+
+data class RekapJurnalSummary(
+    val terisi: Int,
+    val perlu_diisi: Int,
+    val total_sesi: Int,
+    val rata_presensi: Double
+)
+
+data class RekapJurnalItem(
+    val tanggal: String?,
+    val nama_hari: String?,
+    val jam_mulai: String?,
+    val jam_selesai: String?,
+    val jam_ke: String?,
+    val nama_kelas: String?,
+    val nama_mapel: String?,
+    val id_kelas: String?,
+    val id_mapel: String?,
+    val id_jurnal: Int?,
+    val status: String?,
+    val materi: String?,
+    val presensi_summary: String?
 )
