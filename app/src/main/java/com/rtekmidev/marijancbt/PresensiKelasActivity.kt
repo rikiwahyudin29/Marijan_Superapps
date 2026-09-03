@@ -24,7 +24,7 @@ class PresensiKelasActivity : AppCompatActivity() {
 
     private lateinit var rvSiswa: RecyclerView
     private lateinit var adapter: PresensiSiswaAdapter
-    private lateinit var progressBar: ProgressBar
+    private lateinit var progressBar: View
     
     // Header & Banner
     private lateinit var btnBack: ImageView

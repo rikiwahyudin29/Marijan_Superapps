@@ -49,8 +49,8 @@ class JurnalMengajarActivity : AppCompatActivity() {
     private lateinit var etCatatan: EditText
     private lateinit var btnBatal: Button
     private lateinit var btnLanjut: Button
+    private lateinit var progressBar: View
     private lateinit var tvDetailPelajaran: TextView
-    private lateinit var progressBar: ProgressBar
 
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService

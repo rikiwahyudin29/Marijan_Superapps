@@ -59,5 +59,7 @@ dependencies {
     implementation("androidx.camera:camera-view:$camerax_version")
     // Library QR Code Scanner
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation("com.github.gcacace:signature-pad:1.3.1")
+    implementation("com.airbnb.android:lottie:6.3.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")
 }
