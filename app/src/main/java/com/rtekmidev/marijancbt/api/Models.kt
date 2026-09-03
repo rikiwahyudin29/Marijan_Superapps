@@ -404,6 +404,7 @@ data class SiswaJurnal(
     val id: Int,
     val nis: String?,
     val nama_lengkap: String?,
+    val jenis_kelamin: String?,
     var status_absen: String?
 )
 

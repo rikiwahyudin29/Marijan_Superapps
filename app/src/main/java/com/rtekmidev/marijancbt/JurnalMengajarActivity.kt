@@ -326,6 +326,7 @@ class JurnalMengajarActivity : AppCompatActivity() {
                         intent.putExtra("id_jurnal", idJurnal)
                         intent.putExtra("nama_kelas", namaKelas)
                         intent.putExtra("nama_mapel", namaMapel)
+                        intent.putExtra("jam_ke", jamKe)
                         startActivity(intent)
                         finish()
                     } else {

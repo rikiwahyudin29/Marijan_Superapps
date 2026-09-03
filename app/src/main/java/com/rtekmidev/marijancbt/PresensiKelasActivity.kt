@@ -1,13 +1,10 @@
 package com.rtekmidev.marijancbt
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +15,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @android.annotation.SuppressLint("SetTextI18n")
 class PresensiKelasActivity : AppCompatActivity() {
@@ -25,14 +25,37 @@ class PresensiKelasActivity : AppCompatActivity() {
     private lateinit var rvSiswa: RecyclerView
     private lateinit var adapter: PresensiSiswaAdapter
     private lateinit var progressBar: ProgressBar
-    private lateinit var tvDetailPresensi: TextView
-    private lateinit var btnSimpan: Button
     
-    private lateinit var rgSetSemua: RadioGroup
-    private lateinit var rbSetHadir: RadioButton
-    private lateinit var rbSetSakit: RadioButton
-    private lateinit var rbSetIzin: RadioButton
-    private lateinit var rbSetAlpa: RadioButton
+    // Header & Banner
+    private lateinit var btnBack: ImageView
+    private lateinit var tvKelasBadge: TextView
+    private lateinit var tvMapelBadge: TextView
+    private lateinit var tvJamKeBadge: TextView
+    private lateinit var tvMateri: TextView
+    private lateinit var tvTanggal: TextView
+    private lateinit var tvTotalSiswa: TextView
+    
+    // Summaries
+    private lateinit var tvSummaryHadir: TextView
+    private lateinit var tvSummarySakit: TextView
+    private lateinit var tvSummaryIzin: TextView
+    private lateinit var tvSummaryAlpa: TextView
+    
+    // Bulk Actions
+    private lateinit var btnSetHadir: Button
+    private lateinit var btnSetSakit: Button
+    private lateinit var btnSetIzin: Button
+    private lateinit var btnSetAlpa: Button
+    
+    // Search & Progress
+    private lateinit var etSearchSiswa: EditText
+    private lateinit var tvTitleDaftarSiswa: TextView
+    private lateinit var tvProgressAbsen: TextView
+    private lateinit var tvProgressBadge: TextView
+    
+    // Bottom Buttons
+    private lateinit var btnBatal: Button
+    private lateinit var btnSimpan: Button
 
     private var idJurnal: Int = 0
 
@@ -41,56 +64,80 @@ class PresensiKelasActivity : AppCompatActivity() {
         setContentView(R.layout.activity_presensi_kelas)
 
         idJurnal = intent.getIntExtra("id_jurnal", 0)
-        val namaKelas = intent.getStringExtra("nama_kelas") ?: ""
-        val namaMapel = intent.getStringExtra("nama_mapel") ?: ""
+        val namaKelas = intent.getStringExtra("nama_kelas") ?: "-"
+        val namaMapel = intent.getStringExtra("nama_mapel") ?: "-"
+        val jamKe = intent.getStringExtra("jam_ke") ?: "-"
 
-        tvDetailPresensi = findViewById(R.id.tvDetailPresensi)
-        rvSiswa = findViewById(R.id.rvSiswa)
-        progressBar = findViewById(R.id.progressBar)
-        btnSimpan = findViewById(R.id.btnSimpan)
+        initViews()
+
+        tvKelasBadge.text = namaKelas
+        tvMapelBadge.text = namaMapel
+        tvJamKeBadge.text = "Jam: $jamKe"
+        tvMateri.text = namaMapel // For now, materi isn't passed from intent, use mapel as fallback or we can add it to intent
         
-        rgSetSemua = findViewById(R.id.rgSetSemua)
-        rbSetHadir = findViewById(R.id.rbSetHadir)
-        rbSetSakit = findViewById(R.id.rbSetSakit)
-        rbSetIzin = findViewById(R.id.rbSetIzin)
-        rbSetAlpa = findViewById(R.id.rbSetAlpa)
+        val sdf = SimpleDateFormat("EEEE, d MMMM yyyy", Locale("id", "ID"))
+        tvTanggal.text = sdf.format(Date())
 
-        tvDetailPresensi.text = "$namaMapel - $namaKelas"
-
-        rvSiswa.layoutManager = LinearLayoutManager(this)
-        
-        // Listeners for "Set Semua"
-        rgSetSemua.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                R.id.rbSetHadir -> {
-                    if (::adapter.isInitialized) adapter.setSemuaStatus("H")
-                }
-                R.id.rbSetSakit -> {
-                    if (::adapter.isInitialized) adapter.setSemuaStatus("S")
-                }
-                R.id.rbSetIzin -> {
-                    if (::adapter.isInitialized) adapter.setSemuaStatus("I")
-                }
-                R.id.rbSetAlpa -> {
-                    if (::adapter.isInitialized) adapter.setSemuaStatus("A")
-                }
-            }
+        adapter = PresensiSiswaAdapter(emptyList()) {
+            updateSummary()
         }
+        rvSiswa.layoutManager = LinearLayoutManager(this)
+        rvSiswa.adapter = adapter
+
+        btnBack.setOnClickListener { finish() }
+        btnBatal.setOnClickListener { finish() }
+        
+        btnSetHadir.setOnClickListener { adapter.setSemuaStatus("H") }
+        btnSetSakit.setOnClickListener { adapter.setSemuaStatus("S") }
+        btnSetIzin.setOnClickListener { adapter.setSemuaStatus("I") }
+        btnSetAlpa.setOnClickListener { adapter.setSemuaStatus("A") }
+
+        etSearchSiswa.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                adapter.filter(s.toString())
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
 
         btnSimpan.setOnClickListener {
-            submitPresensi()
+            submitAbsen()
         }
 
-        loadDataSiswa()
+        loadData()
+    }
+    
+    private fun initViews() {
+        rvSiswa = findViewById(R.id.rvSiswa)
+        progressBar = findViewById(R.id.progressBar)
+        btnBack = findViewById(R.id.btnBack)
+        tvKelasBadge = findViewById(R.id.tvKelasBadge)
+        tvMapelBadge = findViewById(R.id.tvMapelBadge)
+        tvJamKeBadge = findViewById(R.id.tvJamKeBadge)
+        tvMateri = findViewById(R.id.tvMateri)
+        tvTanggal = findViewById(R.id.tvTanggal)
+        tvTotalSiswa = findViewById(R.id.tvTotalSiswa)
+        
+        tvSummaryHadir = findViewById(R.id.tvSummaryHadir)
+        tvSummarySakit = findViewById(R.id.tvSummarySakit)
+        tvSummaryIzin = findViewById(R.id.tvSummaryIzin)
+        tvSummaryAlpa = findViewById(R.id.tvSummaryAlpa)
+        
+        btnSetHadir = findViewById(R.id.btnSetHadir)
+        btnSetSakit = findViewById(R.id.btnSetSakit)
+        btnSetIzin = findViewById(R.id.btnSetIzin)
+        btnSetAlpa = findViewById(R.id.btnSetAlpa)
+        
+        etSearchSiswa = findViewById(R.id.etSearchSiswa)
+        tvTitleDaftarSiswa = findViewById(R.id.tvTitleDaftarSiswa)
+        tvProgressAbsen = findViewById(R.id.tvProgressAbsen)
+        tvProgressBadge = findViewById(R.id.tvProgressBadge)
+        
+        btnBatal = findViewById(R.id.btnBatal)
+        btnSimpan = findViewById(R.id.btnSimpan)
     }
 
-    private fun loadDataSiswa() {
-        if (idJurnal == 0) {
-            Toast.makeText(this, "ID Jurnal tidak valid", Toast.LENGTH_SHORT).show()
-            finish()
-            return
-        }
-
+    private fun loadData() {
         progressBar.visibility = View.VISIBLE
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -98,11 +145,13 @@ class PresensiKelasActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     progressBar.visibility = View.GONE
                     if (response.isSuccessful && response.body()?.status == true) {
-                        val listSiswa = response.body()?.data ?: emptyList()
-                        adapter = PresensiSiswaAdapter(listSiswa)
-                        rvSiswa.adapter = adapter
+                        val list = response.body()?.data ?: emptyList()
+                        adapter.updateData(list)
+                        tvTotalSiswa.text = list.size.toString()
+                        tvTitleDaftarSiswa.text = "DAFTAR SISWA (${list.size})"
+                        updateSummary()
                     } else {
-                        Toast.makeText(this@PresensiKelasActivity, "Gagal memuat daftar siswa", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@PresensiKelasActivity, "Gagal memuat data", Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
@@ -114,38 +163,71 @@ class PresensiKelasActivity : AppCompatActivity() {
         }
     }
 
-    private fun submitPresensi() {
-        if (!::adapter.isInitialized) return
-
-        val listSiswa = adapter.getData()
-        val dataAbsen = mutableListOf<DataAbsenItem>()
-
-        for (siswa in listSiswa) {
-            if (siswa.status_absen == null) {
-                Toast.makeText(this, "Ada siswa yang belum diisi presensinya (${siswa.nama_lengkap})", Toast.LENGTH_SHORT).show()
-                return
+    private fun updateSummary() {
+        val list = adapter.getData()
+        if (list.isEmpty()) return
+        
+        var hadir = 0
+        var sakit = 0
+        var izin = 0
+        var alpa = 0
+        
+        for (siswa in list) {
+            when (siswa.status_absen?.uppercase(Locale.ROOT)) {
+                "H" -> hadir++
+                "S" -> sakit++
+                "I" -> izin++
+                "A" -> alpa++
             }
-            dataAbsen.add(DataAbsenItem(id_siswa = siswa.id, status = siswa.status_absen!!))
         }
+        
+        tvSummaryHadir.text = "$hadir Hadir"
+        tvSummarySakit.text = "$sakit Sakit"
+        tvSummaryIzin.text = "$izin Izin"
+        tvSummaryAlpa.text = "$alpa Alpa"
+        
+        val totalDiabsen = hadir + sakit + izin + alpa
+        val totalSiswa = list.size
+        
+        tvProgressAbsen.text = "$totalDiabsen dari $totalSiswa Siswa telah diabsen"
+        
+        val percentage = if (totalSiswa > 0) (totalDiabsen * 100) / totalSiswa else 0
+        tvProgressBadge.text = "$percentage% Lengkap"
+        
+        if (percentage == 100) {
+            tvProgressBadge.setBackgroundResource(R.drawable.bg_badge_green_dark)
+            tvProgressBadge.setTextColor(android.graphics.Color.parseColor("#047857"))
+        } else {
+            tvProgressBadge.setBackgroundResource(R.drawable.bg_badge_yellow_outline)
+            tvProgressBadge.setTextColor(android.graphics.Color.parseColor("#B45309"))
+        }
+    }
 
-        val request = SubmitAbsenJurnalRequest(
-            id_jurnal = idJurnal,
-            data_absen = dataAbsen
-        )
+    private fun submitAbsen() {
+        val list = adapter.getData()
+        val absenData = list.map {
+            DataAbsenItem(
+                id_siswa = it.id,
+                status = it.status_absen ?: "H" // Default Hadir jika kosong saat submit
+            )
+        }
 
         progressBar.visibility = View.VISIBLE
         btnSimpan.isEnabled = false
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = ApiClient.instance.submitAbsenJurnal(request)
+                val req = SubmitAbsenJurnalRequest(
+                    id_jurnal = idJurnal,
+                    data_absen = absenData
+                )
+                val response = ApiClient.instance.submitAbsenJurnal(req)
                 withContext(Dispatchers.Main) {
                     progressBar.visibility = View.GONE
                     btnSimpan.isEnabled = true
-                    
                     if (response.isSuccessful && response.body()?.status == true) {
                         Toast.makeText(this@PresensiKelasActivity, "Presensi berhasil disimpan!", Toast.LENGTH_SHORT).show()
-                        finish() // Kembali ke dashboard
+                        finish()
                     } else {
                         Toast.makeText(this@PresensiKelasActivity, "Gagal: ${response.body()?.message}", Toast.LENGTH_SHORT).show()
                     }
@@ -154,7 +236,7 @@ class PresensiKelasActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     progressBar.visibility = View.GONE
                     btnSimpan.isEnabled = true
-                    Toast.makeText(this@PresensiKelasActivity, "Error koneksi: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@PresensiKelasActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }
