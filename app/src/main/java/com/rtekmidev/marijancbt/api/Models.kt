@@ -248,6 +248,7 @@ data class DataMateri(
     val file_materi: String?,
     val file: String?,
     val deskripsi: String?,
+    val status: String?,
     val jenis_file: String?,
     val link_youtube: String?,
     val ukuran_file: String?
@@ -355,7 +356,21 @@ data class DashboardGuruResponse(
 data class DashboardGuruData(
     val total_jam_minggu_ini: Int,
     val siswa_belum_absen: Int,
-    val jadwal_hari_ini: List<JadwalGuruHariIni>
+    val jadwal_hari_ini: List<JadwalGuruHariIni>?,
+    val mata_pelajaran_diampu: List<MataPelajaranDiampu>?,
+    val wali_kelas_info: WaliKelasInfo?
+)
+
+data class MataPelajaranDiampu(
+    val nama_mapel: String?,
+    val nama_kelas: String?,
+    val jp_per_minggu: Int?
+)
+
+data class WaliKelasInfo(
+    val nama_kelas: String?,
+    val total_siswa: Int?,
+    val siswa_belum_absen: Int?
 )
 
 data class JadwalGuruHariIni(
@@ -364,6 +379,7 @@ data class JadwalGuruHariIni(
     val id_mapel: String?,
     val jam_mulai: String?,
     val jam_selesai: String?,
+    val jam_ke: String?,
     val nama_kelas: String?,
     val nama_mapel: String?
 )
@@ -404,4 +420,19 @@ data class DataAbsenItem(
 data class SimpleResponse(
     val status: Boolean,
     val message: String
+)
+
+data class JurnalInfoResponse(
+    val status: Boolean,
+    val data: JurnalInfoData?
+)
+
+data class JurnalInfoData(
+    val total_siswa: Int,
+    val pertemuan_ke: Int,
+    val jam_ke: String?,
+    val hadir: Int,
+    val izin: Int,
+    val sakit: Int,
+    val alpha: Int
 )

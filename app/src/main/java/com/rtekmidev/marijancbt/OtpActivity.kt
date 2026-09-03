@@ -24,6 +24,17 @@ class OtpActivity : AppCompatActivity() {
         
         setContentView(R.layout.activity_otp)
 
+        // Terapkan bottom inset secara global agar konten tidak tertutup navigasi bawaan HP
+        findViewById<android.view.ViewGroup>(android.R.id.content).getChildAt(0)?.let { rootView ->
+            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
+                val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+                // Jika view sudah punya padding top (dari header dsb), pertahankan. Hanya tambah bottom.
+                view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, systemBars.bottom)
+                insets
+            }
+        }
+
+
         // Animated Background
         val vBackgroundGradient = findViewById<View>(R.id.vBackgroundGradient)
         val gradientAnimation = vBackgroundGradient.background as? android.graphics.drawable.AnimationDrawable

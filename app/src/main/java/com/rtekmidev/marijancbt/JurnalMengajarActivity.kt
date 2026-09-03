@@ -86,7 +86,20 @@ class JurnalMengajarActivity : AppCompatActivity() {
         tvDetailPelajaran = findViewById(R.id.tvDetailPelajaran)
         progressBar = findViewById(R.id.progressBar)
 
+        val tvTanggal = findViewById<TextView>(R.id.tvTanggal)
+        val tvKameraSiap = findViewById<TextView>(R.id.tvKameraSiap)
+        val tvCaptureHint = findViewById<TextView>(R.id.tvCaptureHint)
+        
+        val intentJamKe = intent.getStringExtra("jam_ke")
+        if (!intentJamKe.isNullOrEmpty()) {
+            etJamKe.setText(intentJamKe)
+        }
+
         tvDetailPelajaran.text = "$namaMapel - $namaKelas"
+        
+        // Set Date
+        val formatter = java.text.SimpleDateFormat("EEEE, d MMMM yyyy", java.util.Locale("id", "ID"))
+        tvTanggal.text = formatter.format(java.util.Date())
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
@@ -98,7 +111,11 @@ class JurnalMengajarActivity : AppCompatActivity() {
             )
         }
 
-        btnCapture.setOnClickListener { takePhoto() }
+        btnCapture.setOnClickListener { 
+            takePhoto() 
+            tvKameraSiap.visibility = View.GONE
+            tvCaptureHint.visibility = View.GONE
+        }
         btnSwitchCamera.setOnClickListener { switchCamera() }
         btnRetake.setOnClickListener {
             base64Image = ""
@@ -106,11 +123,56 @@ class JurnalMengajarActivity : AppCompatActivity() {
             viewFinder.visibility = View.VISIBLE
             btnCapture.visibility = View.VISIBLE
             btnSwitchCamera.visibility = View.VISIBLE
+            tvKameraSiap.visibility = View.VISIBLE
+            tvCaptureHint.visibility = View.VISIBLE
             btnRetake.visibility = View.GONE
         }
         
         btnBatal.setOnClickListener { finish() }
         btnLanjut.setOnClickListener { submitJurnal() }
+        findViewById<ImageButton>(R.id.btnBack).setOnClickListener { finish() }
+        
+        loadJurnalInfo()
+    }
+    
+    private fun loadJurnalInfo() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = ApiClient.instance.getJurnalInfo(idKelas, idMapel)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful && response.body()?.status == true) {
+                        val data = response.body()?.data
+                        if (data != null) {
+                            // Update UI
+                            val badgeView = findViewById<TextView>(R.id.tvPertemuanBadge)
+                            if (badgeView != null) {
+                                badgeView.text = "Pertemuan Ke-${data.pertemuan_ke}"
+                            }
+                            
+                            val tvTotalSiswa = findViewById<TextView>(R.id.tvTotalSiswa)
+                            if (tvTotalSiswa != null) {
+                                tvTotalSiswa.text = "Total: ${data.total_siswa} Siswa"
+                                findViewById<View>(R.id.layoutStats)?.visibility = View.VISIBLE
+                                
+                                findViewById<TextView>(R.id.tvHadir)?.text = "${data.hadir} Hadir"
+                                findViewById<TextView>(R.id.tvIzin)?.text = "${data.izin} Izin"
+                                findViewById<TextView>(R.id.tvSakit)?.text = "${data.sakit} Sakit"
+                                
+                                // Set Jam Ke if available
+                                if (!data.jam_ke.isNullOrEmpty()) {
+                                    val etJamKe = findViewById<EditText>(R.id.etJamKe)
+                                    if (etJamKe != null && etJamKe.text.toString().isEmpty()) {
+                                        etJamKe.setText(data.jam_ke)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                // Ignore errors
+            }
+        }
     }
 
     private fun startCamera() {

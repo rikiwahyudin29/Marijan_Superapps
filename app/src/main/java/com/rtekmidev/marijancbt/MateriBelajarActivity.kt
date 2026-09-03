@@ -35,6 +35,17 @@ class MateriBelajarActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_materi_belajar)
+
+        // Terapkan bottom inset secara global agar konten tidak tertutup navigasi bawaan HP
+        findViewById<android.view.ViewGroup>(android.R.id.content).getChildAt(0)?.let { rootView ->
+            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
+                val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+                // Jika view sudah punya padding top (dari header dsb), pertahankan. Hanya tambah bottom.
+                view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, systemBars.bottom)
+                insets
+            }
+        }
+
         androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = android.graphics.Color.TRANSPARENT
         val insetsController = androidx.core.view.WindowCompat.getInsetsController(window, window.decorView)

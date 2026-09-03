@@ -137,6 +137,7 @@ class PresensiFragment : Fragment() {
                 val intent = Intent(requireContext(), IzinActivity::class.java)
                 intent.putExtra("ROLE", userRole)
                 startActivity(intent)
+                requireActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
                 return@setOnClickListener
             }
             bukaScannerQR()
@@ -146,11 +147,13 @@ class PresensiFragment : Fragment() {
             val intent = Intent(requireContext(), IzinActivity::class.java)
             intent.putExtra("ROLE", userRole)
             startActivity(intent)
+            requireActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         }
         
         view.findViewById<CardView>(R.id.btnLihatRekap).setOnClickListener {
             val intent = Intent(requireContext(), RekapActivity::class.java)
             startActivity(intent)
+            requireActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         }
     }
 
@@ -401,7 +404,7 @@ class PresensiFragment : Fragment() {
         options.setDesiredBarcodeFormats(ScanOptions.QR_CODE)
         options.setPrompt("Arahkan ke QR Code Guru Piket")
         options.setBeepEnabled(true)
-        // options.setCaptureActivity(CustomScannerActivity::class.java)
+        options.setCaptureActivity(CustomScannerActivity::class.java)
         options.setOrientationLocked(true)
         barcodeLauncher.launch(options)
     }

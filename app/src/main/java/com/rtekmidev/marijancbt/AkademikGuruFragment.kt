@@ -34,14 +34,9 @@ class AkademikGuruFragment : Fragment() {
             startActivity(intent)
         }
         
-        view.findViewById<View>(R.id.btnWaliKelasKehadiran)?.setOnClickListener {
-            val intent = android.content.Intent(requireContext(), WaliKelasKehadiranActivity::class.java)
-            startActivity(intent)
-        }
 
-        view.findViewById<View>(R.id.btnWaliKelasKeuangan)?.setOnClickListener {
-            val intent = android.content.Intent(requireContext(), WaliKelasKeuanganActivity::class.java)
-            startActivity(intent)
+        view.findViewById<View>(R.id.btnJadwalMengajar)?.setOnClickListener {
+            android.widget.Toast.makeText(requireContext(), "Jadwal Mengajar belum tersedia", android.widget.Toast.LENGTH_SHORT).show()
         }
         
         return view
@@ -51,10 +46,15 @@ class AkademikGuruFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         
         val tvTotalJamMingguIni = view.findViewById<TextView>(R.id.tvTotalJamMingguIni)
+        val tvTotalJamMapelHeader = view.findViewById<TextView>(R.id.tvTotalJamMapelHeader)
         val tvSiswaBelumAbsen = view.findViewById<TextView>(R.id.tvSiswaBelumAbsen)
         val containerJadwal = view.findViewById<LinearLayout>(R.id.containerJadwalHariIni)
         val pbJadwal = view.findViewById<ProgressBar>(R.id.pbJadwal)
         val tvEmptyJadwal = view.findViewById<TextView>(R.id.tvEmptyJadwal)
+        val containerMapelDiampu = view.findViewById<LinearLayout>(R.id.containerMapelDiampu)
+        val btnWaliKelas = view.findViewById<View>(R.id.btnWaliKelas)
+        val tvWaliKelasTitle = view.findViewById<TextView>(R.id.tvWaliKelasTitle)
+        val tvWaliKelasSiswa = view.findViewById<TextView>(R.id.tvWaliKelasSiswa)
 
         val sharedPref = requireActivity().getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
         val idUser = sharedPref.getString("id_user", null)
@@ -71,26 +71,69 @@ class AkademikGuruFragment : Fragment() {
                             val data = response.body()?.data
                             if (data != null) {
                                 tvTotalJamMingguIni?.text = data.total_jam_minggu_ini.toString()
+                                tvTotalJamMapelHeader?.text = "Total: ${data.total_jam_minggu_ini}\nJam/Minggu"
                                 tvSiswaBelumAbsen?.text = data.siswa_belum_absen.toString()
 
-                                // Render Jadwal
                                 val inflater = LayoutInflater.from(requireContext())
-                                if (data.jadwal_hari_ini.isNotEmpty()) {
+
+                                // Render Wali Kelas
+                                if (data.wali_kelas_info != null) {
+                                    btnWaliKelas?.visibility = View.VISIBLE
+                                    tvWaliKelasTitle?.text = "Wali Kelas (${data.wali_kelas_info.nama_kelas})"
+                                    tvWaliKelasSiswa?.text = "${data.wali_kelas_info.total_siswa} Siswa"
+                                    
+                                    btnWaliKelas?.setOnClickListener {
+                                        val intent = android.content.Intent(requireContext(), WaliKelasKehadiranActivity::class.java)
+                                        startActivity(intent)
+                                    }
+                                } else {
+                                    btnWaliKelas?.visibility = View.GONE
+                                }
+
+                                // Render Mata Pelajaran Diampu
+                                containerMapelDiampu?.removeAllViews()
+                                if (data.mata_pelajaran_diampu != null && data.mata_pelajaran_diampu.isNotEmpty()) {
+                                    for (mapel in data.mata_pelajaran_diampu) {
+                                        val itemMapel = inflater.inflate(R.layout.item_mapel_diampu, containerMapelDiampu, false)
+                                        itemMapel.findViewById<TextView>(R.id.tvNamaMapel).text = mapel.nama_mapel ?: ""
+                                        
+                                        val kelasStr = mapel.nama_kelas
+                                        itemMapel.findViewById<TextView>(R.id.tvNamaKelas).text = if (!kelasStr.isNullOrEmpty()) "Kelas $kelasStr" else "-"
+                                        
+                                        itemMapel.findViewById<TextView>(R.id.tvTotalJam).text = (mapel.jp_per_minggu ?: 0).toString()
+                                        containerMapelDiampu?.addView(itemMapel)
+                                    }
+                                }
+
+                                // Render Jadwal
+                                if (data.jadwal_hari_ini != null && data.jadwal_hari_ini.isNotEmpty()) {
                                     for (jadwal in data.jadwal_hari_ini) {
                                         val itemJadwal = inflater.inflate(R.layout.item_jadwal_hari_ini, containerJadwal, false)
                                         
                                         itemJadwal.findViewById<TextView>(R.id.tvJamMulai).text = jadwal.jam_mulai?.substring(0, 5) ?: ""
                                         itemJadwal.findViewById<TextView>(R.id.tvJamSelesai).text = jadwal.jam_selesai?.substring(0, 5) ?: ""
+
                                         itemJadwal.findViewById<TextView>(R.id.tvMataPelajaran).text = jadwal.nama_mapel ?: ""
-                                        itemJadwal.findViewById<TextView>(R.id.tvKelas).text = "Kelas ${jadwal.nama_kelas ?: ""}"
+                                        itemJadwal.findViewById<TextView>(R.id.tvRuang)?.text = "Ruang Kelas"
+                                        itemJadwal.findViewById<TextView>(R.id.tvKelas).text = jadwal.nama_kelas ?: ""
                                         
-                                        // Play button can open JurnalMengajar directly for that class maybe
                                         itemJadwal.setOnClickListener {
                                             val intent = android.content.Intent(requireContext(), JurnalMengajarActivity::class.java)
                                             intent.putExtra("id_kelas", jadwal.id_kelas ?: "")
                                             intent.putExtra("id_mapel", jadwal.id_mapel ?: "")
                                             intent.putExtra("nama_kelas", jadwal.nama_kelas ?: "")
                                             intent.putExtra("nama_mapel", jadwal.nama_mapel ?: "")
+                                            
+                                            // Pass jam untuk di-autofill
+                                            if (!jadwal.jam_ke.isNullOrEmpty()) {
+                                                intent.putExtra("jam_ke", jadwal.jam_ke)
+                                            } else {
+                                                val jmMulai = jadwal.jam_mulai?.substring(0, 5) ?: ""
+                                                val jmSelesai = jadwal.jam_selesai?.substring(0, 5) ?: ""
+                                                if (jmMulai.isNotEmpty() && jmSelesai.isNotEmpty()) {
+                                                    intent.putExtra("jam_ke", "$jmMulai - $jmSelesai WIB")
+                                                }
+                                            }
                                             startActivity(intent)
                                         }
                                         
@@ -101,7 +144,8 @@ class AkademikGuruFragment : Fragment() {
                                 }
                             }
                         } else {
-                            Toast.makeText(requireContext(), "Gagal memuat dashboard", Toast.LENGTH_SHORT).show()
+                            val errorMsg = response.errorBody()?.string() ?: "Gagal memuat dashboard (HTTP ${response.code()})"
+                            Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
                         }
                     }
                 } catch (_: Exception) {

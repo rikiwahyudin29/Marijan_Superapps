@@ -30,7 +30,28 @@ class RekapActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Override transition (masuk mulus)
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        
         setContentView(R.layout.activity_rekap)
+
+        // Status bar transparan
+        @Suppress("DEPRECATION")
+        window.statusBarColor = android.graphics.Color.TRANSPARENT
+        androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
+        
+        val currentNightMode = resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
+        val isNightMode = currentNightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES
+        androidx.core.view.WindowCompat.getInsetsController(window, window.decorView)?.isAppearanceLightStatusBars = !isNightMode
+
+        val rootLayout = findViewById<View>(R.id.rootRekap)
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { view, insets ->
+            val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+            view.setPadding(0, systemBars.top, 0, systemBars.bottom)
+            insets
+        }
+
 
         val prefGuru = getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
         val prefSiswa = getSharedPreferences("SesiUjian", Context.MODE_PRIVATE)
@@ -225,5 +246,11 @@ class RekapActivity : AppCompatActivity() {
             tvPulang.text = "--:--"
             tvBadge.visibility = View.GONE
         }
+    }
+
+    override fun finish() {
+        super.finish()
+        // Override transition (keluar mulus)
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
 }

@@ -55,6 +55,17 @@ class DashboardActivity : AppCompatActivity() {
         
         setContentView(R.layout.activity_dashboard)
 
+        // Terapkan bottom inset secara global agar konten tidak tertutup navigasi bawaan HP
+        findViewById<android.view.ViewGroup>(android.R.id.content).getChildAt(0)?.let { rootView ->
+            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
+                val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+                // Jika view sudah punya padding top (dari header dsb), pertahankan. Hanya tambah bottom.
+                view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, systemBars.bottom)
+                insets
+            }
+        }
+
+
         // Add padding to headerLayout so it doesn't overlap the status bar icons
         val headerLayout = findViewById<LinearLayout>(R.id.headerLayout)
         ViewCompat.setOnApplyWindowInsetsListener(headerLayout) { view, insets ->

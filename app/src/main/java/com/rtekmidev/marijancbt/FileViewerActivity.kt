@@ -23,6 +23,17 @@ class FileViewerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_file_viewer)
 
+        // Terapkan bottom inset secara global agar konten tidak tertutup navigasi bawaan HP
+        findViewById<android.view.ViewGroup>(android.R.id.content).getChildAt(0)?.let { rootView ->
+            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
+                val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+                // Jika view sudah punya padding top (dari header dsb), pertahankan. Hanya tambah bottom.
+                view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, systemBars.bottom)
+                insets
+            }
+        }
+
+
         // Setup Edge-to-Edge Transparent Status Bar
         @Suppress("DEPRECATION")
         window.statusBarColor = Color.TRANSPARENT

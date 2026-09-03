@@ -110,6 +110,13 @@ interface ApiService {
         @Part file: MultipartBody.Part
     ): Response<SubmitTugasResponse>
 
+    // --- AKADEMIK GURU JURNAL & WALI KELAS ---
+    @GET("api/akademik-guru/get-jurnal-info")
+    suspend fun getJurnalInfo(
+        @Query("id_kelas") idKelas: String,
+        @Query("id_mapel") idMapel: String
+    ): retrofit2.Response<JurnalInfoResponse>
+
     // --- API KHUSUS GURU ---
     @FormUrlEncoded
     @POST("api/presensi-guru/submit")

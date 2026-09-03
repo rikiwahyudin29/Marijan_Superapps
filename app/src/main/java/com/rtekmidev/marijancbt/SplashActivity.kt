@@ -27,6 +27,17 @@ class SplashActivity : AppCompatActivity() {
         
         setContentView(R.layout.activity_splash)
 
+        // Terapkan bottom inset secara global agar konten tidak tertutup navigasi bawaan HP
+        findViewById<android.view.ViewGroup>(android.R.id.content).getChildAt(0)?.let { rootView ->
+            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
+                val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+                // Jika view sudah punya padding top (dari header dsb), pertahankan. Hanya tambah bottom.
+                view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, systemBars.bottom)
+                insets
+            }
+        }
+
+
         val ivLogo = findViewById<ImageView>(R.id.ivLogo)
         val tvJudul = findViewById<TextView>(R.id.tvJudul)
         val tvSubJudul = findViewById<TextView>(R.id.tvSubJudul)
@@ -114,8 +125,10 @@ class SplashActivity : AppCompatActivity() {
 
         // 3. Percabangan Halaman
         if (isGuruLoggedIn) {
+            com.rtekmidev.marijancbt.api.ApiClient.authToken = prefGuru.getString("token", "") ?: ""
             startActivity(Intent(this, DashboardGuruActivity::class.java))
         } else if (isSiswaLoggedIn) {
+            com.rtekmidev.marijancbt.api.ApiClient.authToken = prefSiswa.getString("token", "") ?: ""
             startActivity(Intent(this, DashboardActivity::class.java))
         } else {
             // Kalau dua-duanya kosong, lempar ke Login

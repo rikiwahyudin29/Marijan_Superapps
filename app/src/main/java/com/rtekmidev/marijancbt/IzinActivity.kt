@@ -51,6 +51,8 @@ class IzinActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        
         // Transparent Status Bar (Samakan dengan Dashboard)
         @Suppress("DEPRECATION")
         window.statusBarColor = android.graphics.Color.TRANSPARENT
@@ -62,6 +64,17 @@ class IzinActivity : AppCompatActivity() {
         insetsController.isAppearanceLightStatusBars = !isNightMode
 
         setContentView(R.layout.activity_izin)
+
+        // Terapkan bottom inset secara global agar konten tidak tertutup navigasi bawaan HP
+        findViewById<android.view.ViewGroup>(android.R.id.content).getChildAt(0)?.let { rootView ->
+            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
+                val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+                // Jika view sudah punya padding top (dari header dsb), pertahankan. Hanya tambah bottom.
+                view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, systemBars.bottom)
+                insets
+            }
+        }
+
 
         // Padding untuk headerLayout agar tidak menabrak status bar
         val headerLayout = findViewById<LinearLayout>(R.id.headerLayout)
@@ -341,5 +354,10 @@ class IzinActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
 }
