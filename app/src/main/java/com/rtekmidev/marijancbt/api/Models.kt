@@ -381,7 +381,8 @@ data class JadwalGuruHariIni(
     val jam_selesai: String?,
     val jam_ke: String?,
     val nama_kelas: String?,
-    val nama_mapel: String?
+    val nama_mapel: String?,
+    val is_jurnal_filled: Boolean?
 )
 
 // --- MODEL UNTUK JURNAL DAN PRESENSI GURU ---

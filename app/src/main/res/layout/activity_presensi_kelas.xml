@@ -145,7 +145,7 @@
                             android:layout_weight="1"
                             android:background="@drawable/bg_badge_blue_outline"
                             android:text="Mata Pelajaran"
-                            android:textColor="#E0E7FF"
+                            android:textColor="#1E3A8A"
                             android:textSize="11sp"
                             android:maxLines="1"
                             android:ellipsize="end"
@@ -216,7 +216,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="TOTAL SISWA"
-                                android:textColor="#C7D2FE"
+                                android:textColor="#1E3A8A"
                                 android:textSize="9sp"
                                 android:textStyle="bold"/>
                                 
@@ -225,7 +225,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0"
-                                android:textColor="#FFFFFF"
+                                android:textColor="#1E40AF"
                                 android:textSize="20sp"
                                 android:textStyle="bold"/>
                         </LinearLayout>

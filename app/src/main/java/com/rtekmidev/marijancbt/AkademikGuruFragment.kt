@@ -117,24 +117,39 @@ class AkademikGuruFragment : Fragment() {
                                         itemJadwal.findViewById<TextView>(R.id.tvRuang)?.text = "Ruang Kelas"
                                         itemJadwal.findViewById<TextView>(R.id.tvKelas).text = jadwal.nama_kelas ?: ""
                                         
-                                        itemJadwal.setOnClickListener {
-                                            val intent = android.content.Intent(requireContext(), JurnalMengajarActivity::class.java)
-                                            intent.putExtra("id_kelas", jadwal.id_kelas ?: "")
-                                            intent.putExtra("id_mapel", jadwal.id_mapel ?: "")
-                                            intent.putExtra("nama_kelas", jadwal.nama_kelas ?: "")
-                                            intent.putExtra("nama_mapel", jadwal.nama_mapel ?: "")
-                                            
-                                            // Pass jam untuk di-autofill
-                                            if (!jadwal.jam_ke.isNullOrEmpty()) {
-                                                intent.putExtra("jam_ke", jadwal.jam_ke)
-                                            } else {
-                                                val jmMulai = jadwal.jam_mulai?.substring(0, 5) ?: ""
-                                                val jmSelesai = jadwal.jam_selesai?.substring(0, 5) ?: ""
-                                                if (jmMulai.isNotEmpty() && jmSelesai.isNotEmpty()) {
-                                                    intent.putExtra("jam_ke", "$jmMulai - $jmSelesai WIB")
-                                                }
+                                        val ivAction = itemJadwal.findViewById<android.widget.ImageView>(R.id.ivAction)
+                                        if (jadwal.is_jurnal_filled == true) {
+                                            // Sudah diisi
+                                            ivAction?.setImageResource(android.R.drawable.ic_menu_edit) // Or any check icon
+                                            ivAction?.imageTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#10B981")) // Green
+                                            itemJadwal.alpha = 0.7f // Dim the item to indicate it's done
+                                            itemJadwal.setOnClickListener {
+                                                Toast.makeText(requireContext(), "Jurnal untuk kelas ini sudah diisi hari ini", Toast.LENGTH_SHORT).show()
                                             }
-                                            startActivity(intent)
+                                        } else {
+                                            // Belum diisi
+                                            ivAction?.setImageResource(android.R.drawable.ic_media_play)
+                                            ivAction?.imageTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#4F46E5")) // Primary Blue
+                                            itemJadwal.alpha = 1.0f
+                                            itemJadwal.setOnClickListener {
+                                                val intent = android.content.Intent(requireContext(), JurnalMengajarActivity::class.java)
+                                                intent.putExtra("id_kelas", jadwal.id_kelas ?: "")
+                                                intent.putExtra("id_mapel", jadwal.id_mapel ?: "")
+                                                intent.putExtra("nama_kelas", jadwal.nama_kelas ?: "")
+                                                intent.putExtra("nama_mapel", jadwal.nama_mapel ?: "")
+                                                
+                                                // Pass jam untuk di-autofill
+                                                if (!jadwal.jam_ke.isNullOrEmpty()) {
+                                                    intent.putExtra("jam_ke", jadwal.jam_ke)
+                                                } else {
+                                                    val jmMulai = jadwal.jam_mulai?.substring(0, 5) ?: ""
+                                                    val jmSelesai = jadwal.jam_selesai?.substring(0, 5) ?: ""
+                                                    if (jmMulai.isNotEmpty() && jmSelesai.isNotEmpty()) {
+                                                        intent.putExtra("jam_ke", "$jmMulai - $jmSelesai WIB")
+                                                    }
+                                                }
+                                                startActivity(intent)
+                                            }
                                         }
                                         
                                         containerJadwal?.addView(itemJadwal)
