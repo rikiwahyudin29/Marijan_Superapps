@@ -7,9 +7,12 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -190,21 +193,63 @@ object PengingatMengajarManager {
     }
 
     /**
+     * Memeriksa apakah notifikasi diizinkan di sistem HP guru
+     * Berlaku akurat untuk semua versi Android (< API 33 maupun >= API 33)
+     */
+    fun apakahNotifikasiDiizinkan(context: Context): Boolean {
+        // 1. Cek NotificationManagerCompat (bekerja di semua versi Android)
+        if (!NotificationManagerCompat.from(context).areNotificationsEnabled()) {
+            return false
+        }
+
+        // 2. Di Android 13+ (API 33+), periksa juga runtime permission POST_NOTIFICATIONS
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val granted = ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+            if (!granted) return false
+        }
+
+        return true
+    }
+
+    /**
      * Minta izin notifikasi runtime di Android 13+ (API 33+)
      */
-    fun cekDanMintaIzinNotifikasi(activity: Activity) {
+    fun mintaIzinNotifikasiRuntime(activity: Activity, requestCode: Int = 1011) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(
-                    activity,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                ActivityCompat.requestPermissions(
-                    activity,
-                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                    1011
-                )
+            ActivityCompat.requestPermissions(
+                activity,
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                requestCode
+            )
+        } else {
+            bukaPengaturanNotifikasiAplikasi(activity)
+        }
+    }
+
+    /**
+     * Buka layar pengaturan notifikasi aplikasi di Setting sistem HP
+     */
+    fun bukaPengaturanNotifikasiAplikasi(activity: Activity) {
+        try {
+            val intent = Intent()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                intent.action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                intent.putExtra(Settings.EXTRA_APP_PACKAGE, activity.packageName)
+            } else {
+                intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                intent.data = Uri.parse("package:${activity.packageName}")
             }
+            activity.startActivity(intent)
+        } catch (_: Exception) {
+            try {
+                val fallbackIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.parse("package:${activity.packageName}")
+                }
+                activity.startActivity(fallbackIntent)
+            } catch (_: Exception) {}
         }
     }
 

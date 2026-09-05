@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_dialog_wajib_izin"
+    android:padding="22dp"
+    android:gravity="center_horizontal">
+
+    <!-- Icon Badge Lingkaran -->
+    <FrameLayout
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/bg_rounded_border"
+        android:backgroundTint="#EEF2FF"
+        android:layout_marginBottom="14dp">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_notification"
+            app:tint="#4338CA" />
+    </FrameLayout>
+
+    <!-- Judul Dialog -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Izin Notifikasi Wajib Diaktifkan"
+        android:textColor="#0F172A"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:gravity="center" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sistem Pengingat Jadwal Mengajar Guru SMK RJ"
+        android:textColor="#64748B"
+        android:textSize="11.5sp"
+        android:gravity="center"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Kotak Penjelasan -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_rounded_border"
+        android:backgroundTint="#F8FAFC"
+        android:padding="14dp"
+        android:layout_marginBottom="18dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Untuk memastikan Anda selalu mendapatkan pengingat jam mulai &amp; jam akhir mengajar serta tidak melewatkan KBM di kelas, aplikasi ini mewajibkan izin notifikasi selalu aktif di handphone Anda."
+            android:textColor="#334155"
+            android:textSize="12sp"
+            android:lineSpacingExtra="3dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E2E8F0"
+            android:layout_marginVertical="10dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="6dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🔔"
+                android:textSize="13sp"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Alarm &amp; getar panjang saat jam mengajar mulai"
+                android:textColor="#475569"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="6dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⏰"
+                android:textSize="13sp"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Pengingat jam selesai &amp; pengisian Jurnal KBM"
+                android:textColor="#475569"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🔒"
+                android:textSize="13sp"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Aplikasi tidak dapat digunakan sebelum izin diaktifkan"
+                android:textColor="#DC2626"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Tombol Utama: Aktifkan Izin Notifikasi -->
+    <LinearLayout
+        android:id="@+id/btnAktifkanIzinNotif"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:background="@drawable/bg_rounded_border"
+        android:backgroundTint="#4338CA"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground">
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/ic_notification"
+            app:tint="#FFFFFF"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Aktifkan Izin Notifikasi"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Tombol Buka Pengaturan HP (Jika sudah pernah ditolak permanen) -->
+    <TextView
+        android:id="@+id/btnBukaPengaturanHp"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:text="Buka Pengaturan Notifikasi HP ›"
+        android:textColor="#4338CA"
+        android:textSize="11.5sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginTop="6dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground" />
+
+    <!-- Tombol Keluar Aplikasi -->
+    <TextView
+        android:id="@+id/btnKeluarAplikasi"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:text="Keluar dari Aplikasi"
+        android:textColor="#94A3B8"
+        android:textSize="11.5sp"
+        android:gravity="center"
+        android:layout_marginTop="4dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground" />
+
+</LinearLayout>

@@ -32,6 +32,8 @@ class DashboardGuruActivity : AppCompatActivity() {
 
     private lateinit var viewPager: ViewPager2
     private val PERMISSION_REQUEST_CODE = 1001
+    private val NOTIF_PERMISSION_REQUEST_CODE = 1011
+    private var dialogWajibNotif: android.app.Dialog? = null
 
     private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
         if (result.contents != null) {
@@ -58,8 +60,8 @@ class DashboardGuruActivity : AppCompatActivity() {
         
         setContentView(R.layout.activity_dashboard_guru)
 
-        // Cek dan minta izin notifikasi runtime (Android 13+) untuk pengingat jadwal mengajar
-        PengingatMengajarManager.cekDanMintaIzinNotifikasi(this)
+        // Cek dan wajibkan izin notifikasi aktif agar aplikasi bisa digunakan
+        cekDanTampilkanWajibNotifikasi()
 
         // Terapkan bottom inset secara global agar konten tidak tertutup navigasi bawaan HP
         findViewById<android.view.ViewGroup>(android.R.id.content).getChildAt(0)?.let { rootView ->
@@ -206,6 +208,88 @@ class DashboardGuruActivity : AppCompatActivity() {
         val targetPos = intent.getIntExtra("NAV_POSITION", -1)
         if (targetPos in 0..3) {
             viewPager.currentItem = targetPos
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Validasi status izin notifikasi setiap kali kembali ke aplikasi
+        cekDanTampilkanWajibNotifikasi()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        dialogWajibNotif?.dismiss()
+        dialogWajibNotif = null
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == NOTIF_PERMISSION_REQUEST_CODE) {
+            val isGranted = grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
+            if (isGranted) {
+                dialogWajibNotif?.dismiss()
+                dialogWajibNotif = null
+                Toast.makeText(this, "Izin notifikasi aktif. Pengingat KBM siap!", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Izin notifikasi wajib aktif untuk menggunakan aplikasi.", Toast.LENGTH_LONG).show()
+                PengingatMengajarManager.bukaPengaturanNotifikasiAplikasi(this)
+            }
+        }
+    }
+
+    private fun cekDanTampilkanWajibNotifikasi() {
+        val isGranted = PengingatMengajarManager.apakahNotifikasiDiizinkan(this)
+        if (!isGranted) {
+            if (dialogWajibNotif?.isShowing == true) return
+
+            val dialog = android.app.Dialog(this).apply {
+                requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
+                setContentView(R.layout.dialog_wajib_izin_notifikasi)
+                setCancelable(false)
+                setCanceledOnTouchOutside(false)
+                window?.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
+                window?.setLayout(
+                    (resources.displayMetrics.widthPixels * 0.90).toInt(),
+                    android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+
+                setOnKeyListener { _, keyCode, event ->
+                    if (keyCode == android.view.KeyEvent.KEYCODE_BACK && event.action == android.view.KeyEvent.ACTION_UP) {
+                        finishAffinity()
+                        true
+                    } else false
+                }
+
+                findViewById<View>(R.id.btnAktifkanIzinNotif)?.setOnClickListener {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                        PengingatMengajarManager.mintaIzinNotifikasiRuntime(
+                            this@DashboardGuruActivity,
+                            NOTIF_PERMISSION_REQUEST_CODE
+                        )
+                    } else {
+                        PengingatMengajarManager.bukaPengaturanNotifikasiAplikasi(this@DashboardGuruActivity)
+                    }
+                }
+
+                findViewById<View>(R.id.btnBukaPengaturanHp)?.setOnClickListener {
+                    PengingatMengajarManager.bukaPengaturanNotifikasiAplikasi(this@DashboardGuruActivity)
+                }
+
+                findViewById<View>(R.id.btnKeluarAplikasi)?.setOnClickListener {
+                    dismiss()
+                    finishAffinity()
+                }
+            }
+            dialogWajibNotif = dialog
+            dialog.show()
+        } else {
+            dialogWajibNotif?.dismiss()
+            dialogWajibNotif = null
         }
     }
 
