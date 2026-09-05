@@ -81,7 +81,7 @@ object PengingatMengajarManager {
         val now = System.currentTimeMillis()
 
         for (item in jadwalList) {
-            val idBase = item.id.hashCode()
+            val idBase = kotlin.math.abs(item.id.hashCode())
 
             // 1. Jadwal Jam Mulai Mengajar
             val calMulai = parseWaktuHariIni(item.jam_mulai)
@@ -144,7 +144,7 @@ object PengingatMengajarManager {
     private fun parseWaktuHariIni(jamStr: String?): Calendar? {
         if (jamStr.isNullOrEmpty()) return null
         return try {
-            val clean = jamStr.trim()
+            val clean = jamStr.trim().replace(".", ":")
             val parts = clean.split(":")
             if (parts.size >= 2) {
                 val jam = parts[0].toInt()
@@ -169,7 +169,7 @@ object PengingatMengajarManager {
             val list: List<JadwalGuruHariIni> = Gson().fromJson(json, type)
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager ?: return
             for (item in list) {
-                val idBase = item.id.hashCode()
+                val idBase = kotlin.math.abs(item.id.hashCode())
                 val piMulai = PendingIntent.getBroadcast(
                     context,
                     (10000 + (idBase % 10000)),

@@ -31,8 +31,8 @@ class PengingatMengajarReceiver : BroadcastReceiver() {
         const val EXTRA_JAM_KE = "extra_jam_ke"
         const val EXTRA_JAM_SELESAI = "extra_jam_selesai"
 
-        // Pola getar panjang: jeda 0ms, getar 1000ms, jeda 300ms, getar 1200ms, jeda 300ms, getar 1500ms
-        val POLA_GETAR_PANJANG = longArrayOf(0, 1000, 300, 1200, 300, 1500)
+        // Pola getar panjang: jeda 0ms, getar 1200ms, jeda 400ms, getar 1500ms, jeda 400ms, getar 2000ms (~5.5 detik total)
+        val POLA_GETAR_PANJANG = longArrayOf(0, 1200, 400, 1500, 400, 2000)
     }
 
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
@@ -60,12 +60,12 @@ class PengingatMengajarReceiver : BroadcastReceiver() {
                 } else {
                     "KBM kelas $kelas sedang dimulai. Selamat mengajar!"
                 }
-                (10000 + (idJadwal.hashCode() % 10000))
+                (10000 + (kotlin.math.abs(idJadwal.hashCode()) % 10000))
             }
             ACTION_SELESAI_MENGAJAR -> {
                 title = "⏰ Sesi Mengajar Berakhir: $mapel"
                 message = "Jam pelajaran di kelas $kelas telah selesai. Jangan lupa isi Jurnal KBM!"
-                (20000 + (idJadwal.hashCode() % 10000))
+                (20000 + (kotlin.math.abs(idJadwal.hashCode()) % 10000))
             }
             ACTION_TEST_PENGINGAT -> {
                 title = "🔔 Tes Pengingat Jadwal Mengajar"
@@ -84,31 +84,45 @@ class PengingatMengajarReceiver : BroadcastReceiver() {
 
     private fun getarkanHandphone(context: Context) {
         try {
-            val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val audioAttributes = android.media.AudioAttributes.Builder()
+                .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setUsage(android.media.AudioAttributes.USAGE_ALARM)
+                .build()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 val vm = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager
-                vm?.defaultVibrator
+                vm?.defaultVibrator?.vibrate(
+                    VibrationEffect.createWaveform(POLA_GETAR_PANJANG, -1),
+                    audioAttributes
+                )
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                @Suppress("DEPRECATION")
+                val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+                vibrator?.vibrate(
+                    VibrationEffect.createWaveform(POLA_GETAR_PANJANG, -1),
+                    audioAttributes
+                )
             } else {
                 @Suppress("DEPRECATION")
-                context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+                val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+                vibrator?.vibrate(POLA_GETAR_PANJANG, -1)
             }
-
-            vibrator?.let { v ->
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    v.vibrate(VibrationEffect.createWaveform(POLA_GETAR_PANJANG, -1))
-                } else {
-                    @Suppress("DEPRECATION")
-                    v.vibrate(POLA_GETAR_PANJANG, -1)
-                }
-            }
-        } catch (_: Exception) {}
+        } catch (e: Exception) {
+            android.util.Log.e("PengingatMengajar", "Error getar: ${e.message}")
+        }
     }
 
     private fun tampilkanNotifikasi(context: Context, notifId: Int, title: String, message: String) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
+        val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        val audioAttributes = android.media.AudioAttributes.Builder()
+            .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .setUsage(android.media.AudioAttributes.USAGE_ALARM)
+            .build()
+
         // Buat Notification Channel untuk Android 8.0+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             val channel = NotificationChannel(
                 CHANNEL_ID,
                 CHANNEL_NAME,
@@ -119,14 +133,15 @@ class PengingatMengajarReceiver : BroadcastReceiver() {
                 vibrationPattern = POLA_GETAR_PANJANG
                 enableLights(true)
                 lightColor = Color.parseColor("#4338CA")
-                setSound(soundUri, null)
+                lockscreenVisibility = NotificationCompat.VISIBILITY_PUBLIC
+                setSound(soundUri, audioAttributes)
             }
             notificationManager.createNotificationChannel(channel)
         }
 
         // Intent saat notifikasi diklik -> Buka DashboardGuruActivity tab Akademik (posisi 2)
         val clickIntent = Intent(context, DashboardGuruActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             putExtra("NAV_POSITION", 2)
         }
 
@@ -137,15 +152,14 @@ class PengingatMengajarReceiver : BroadcastReceiver() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(message)
             .setStyle(NotificationCompat.BigTextStyle().bigText(message))
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setAutoCancel(true)
             .setSound(soundUri)
             .setVibrate(POLA_GETAR_PANJANG)

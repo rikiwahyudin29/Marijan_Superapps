@@ -164,7 +164,13 @@ class DashboardGuruActivity : AppCompatActivity() {
             }
         }
 
-        updateNavSelection(0)
+        val initialPos = intent.getIntExtra("NAV_POSITION", 0)
+        if (initialPos in 0..3) {
+            viewPager.currentItem = initialPos
+            updateNavSelection(initialPos)
+        } else {
+            updateNavSelection(0)
+        }
 
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -192,6 +198,15 @@ class DashboardGuruActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        val targetPos = intent.getIntExtra("NAV_POSITION", -1)
+        if (targetPos in 0..3) {
+            viewPager.currentItem = targetPos
+        }
     }
 
     fun cekRadiusDanScan() {

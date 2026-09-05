@@ -372,6 +372,13 @@ class BerandaGuruFragment : Fragment() {
                         val data = response.body()?.data
                         if (data != null) {
                             renderDashboard(data)
+                            context?.let { ctx ->
+                                PengingatMengajarManager.sinkronkanJadwalHariIni(
+                                    ctx,
+                                    data.jadwal_hari_ini,
+                                    data.is_libur == true
+                                )
+                            }
                         }
                     }
                 }
