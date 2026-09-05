@@ -305,7 +305,7 @@ class DashboardGuruActivity : AppCompatActivity() {
                 0 -> BerandaGuruFragment()
                 1 -> PresensiGuruFragment()
                 2 -> AkademikGuruFragment()
-                3 -> ProfilFragment()
+                3 -> ProfilGuruFragment()
                 else -> BerandaGuruFragment()
             }
         }

@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object ApiClient {
-    private val BASE_URL = "https://smkriyadhuljannahjalancagak.sch.id/"
+    const val BASE_URL = "https://smkriyadhuljannahjalancagak.sch.id/"
 
     var authToken: String = ""
 

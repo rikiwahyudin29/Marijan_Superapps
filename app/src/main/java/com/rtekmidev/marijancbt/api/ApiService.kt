@@ -207,4 +207,26 @@ interface ApiService {
     suspend fun getJadwalMengajar(
         @Query("id_user") idUser: String? = null
     ): Response<JadwalMengajarResponse>
+
+    @GET("api/akademik-guru/profil")
+    suspend fun getProfilGuru(
+        @Query("id_user") idUser: String? = null
+    ): Response<ProfilGuruResponse>
+
+    @FormUrlEncoded
+    @POST("api/akademik-guru/update-profil")
+    suspend fun updateProfilGuru(
+        @Field("id_user") idUser: String,
+        @Field("no_whatsapp") noWhatsapp: String,
+        @Field("email") email: String,
+        @Field("alamat") alamat: String
+    ): Response<SimpleResponse>
+
+    @FormUrlEncoded
+    @POST("api/akademik-guru/ganti-password")
+    suspend fun gantiPasswordGuru(
+        @Field("id_user") idUser: String,
+        @Field("password_lama") passwordLama: String,
+        @Field("password_baru") passwordBaru: String
+    ): Response<SimpleResponse>
 }

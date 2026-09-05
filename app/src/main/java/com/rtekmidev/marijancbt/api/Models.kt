@@ -753,3 +753,86 @@ data class PortalRiwayatItem(
     val status_tipe: String? = null
 )
 
+// --- PROFIL GURU MODELS ---
+data class ProfilGuruResponse(
+    val status: Boolean,
+    val message: String? = null,
+    val data: ProfilGuruData? = null
+)
+
+data class ProfilGuruData(
+    val hero: ProfilGuruHero? = null,
+    val metrics: ProfilGuruMetrics? = null,
+    val informasi_personal: ProfilInformasiPersonal? = null,
+    val kepegawaian: ProfilKepegawaian? = null,
+    val administrasi_wali_kelas: ProfilAdministrasiWaliKelas? = null,
+    val keamanan: ProfilKeamanan? = null,
+    val app_info: ProfilAppInfo? = null
+)
+
+data class ProfilGuruHero(
+    val nama: String? = null,
+    val nip: String? = null,
+    val nuptk: String? = null,
+    val foto_url: String? = null,
+    val status_kepegawaian_badge: String? = null,
+    val is_2fa_active: Boolean = true,
+    val mapel_badge: String? = null,
+    val wali_kelas_badge: String? = null
+)
+
+data class ProfilGuruMetrics(
+    val beban_mengajar: MetricItem? = null,
+    val presensi_bulan_ini: MetricItem? = null,
+    val siswa_binaan: MetricItem? = null
+)
+
+data class MetricItem(
+    val value: String? = null,
+    val title: String? = null,
+    val badge: String? = null
+)
+
+data class ProfilInformasiPersonal(
+    val no_whatsapp: String? = null,
+    val email: String? = null,
+    val tempat_tgl_lahir: String? = null,
+    val jenis_kelamin: String? = null,
+    val alamat_lengkap: String? = null
+)
+
+data class ProfilKepegawaian(
+    val status_kepegawaian: String? = null,
+    val status_badge: String? = null,
+    val pendidikan_terakhir: String? = null,
+    val sertifikasi: String? = null,
+    val sk_beban_mengajar: ProfilSkMengajar? = null
+)
+
+data class ProfilSkMengajar(
+    val judul: String? = null,
+    val keterangan: String? = null,
+    val download_url: String? = null
+)
+
+data class ProfilAdministrasiWaliKelas(
+    val is_wali_kelas: Boolean = false,
+    val nama_kelas: String? = null,
+    val jurusan: String? = null,
+    val total_siswa: Int = 0,
+    val status_semester: String? = null
+)
+
+data class ProfilKeamanan(
+    val terakhir_ganti_password: String? = null,
+    val two_factor_auth: String? = null,
+    val device_name: String? = null,
+    val device_status: String? = null
+)
+
+data class ProfilAppInfo(
+    val app_name: String? = null,
+    val portal_desc: String? = null
+)
+
+
