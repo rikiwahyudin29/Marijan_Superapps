@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="#FFFFFF"
+    tools:ignore="HardcodedText,ContentDescription,UseCompoundDrawables">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@drawable/bg_rounded_border_outline">
+
+        <!-- Top Row: Badge Jam, Waktu, Badge Kelas -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:id="@+id/tvJamKeBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Jam 4 - 5"
+                android:textSize="10sp"
+                android:textColor="#6D28D9"
+                android:textStyle="bold"
+                android:background="#EDE9FE"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="3dp"/>
+
+            <TextView
+                android:id="@+id/tvWaktuPelajaran"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="🕒 08:20 - 09:40 WIB"
+                android:textSize="11sp"
+                android:textColor="#6B7280"
+                android:layout_marginStart="8dp"
+                android:singleLine="true"/>
+
+            <TextView
+                android:id="@+id/tvKelasPelajaranBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kelas"
+                tools:text="10 RPL 1"
+                android:textSize="10sp"
+                android:textColor="#6D28D9"
+                android:textStyle="bold"
+                android:background="#F5F3FF"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="3dp"/>
+        </LinearLayout>
+
+        <!-- Nama Mata Pelajaran -->
+        <TextView
+            android:id="@+id/tvNamaMapelPelajaran"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mata Pelajaran"
+            tools:text="Dasar Dasar Program Keahlian"
+            android:textSize="14sp"
+            android:textColor="#1E1B4B"
+            android:textStyle="bold"
+            android:lineSpacingExtra="2dp"
+            android:layout_marginBottom="6dp"/>
+
+        <!-- Lokasi / Kategori -->
+        <TextView
+            android:id="@+id/tvRuangKategori"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🏢 Ruang Lab Komputer 2 • Kategori: Teori &amp; Praktik"
+            android:textSize="11sp"
+            android:textColor="#6B7280"/>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

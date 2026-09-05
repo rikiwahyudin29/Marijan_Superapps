@@ -356,6 +356,8 @@ data class DashboardGuruResponse(
 data class DashboardGuruData(
     val total_jam_minggu_ini: Int,
     val siswa_belum_absen: Int,
+    val is_libur: Boolean? = false,
+    val keterangan_libur: String? = null,
     val jadwal_hari_ini: List<JadwalGuruHariIni>?,
     val mata_pelajaran_diampu: List<MataPelajaranDiampu>?,
     val wali_kelas_info: WaliKelasInfo?
@@ -370,7 +372,9 @@ data class MataPelajaranDiampu(
 data class WaliKelasInfo(
     val nama_kelas: String?,
     val total_siswa: Int?,
-    val siswa_belum_absen: Int?
+    val siswa_belum_absen: Int?,
+    val is_libur: Boolean? = false,
+    val keterangan_libur: String? = null
 )
 
 data class JadwalGuruHariIni(
@@ -473,5 +477,105 @@ data class RekapJurnalItem(
     val id_jurnal: Int?,
     val status: String?,
     val materi: String?,
-    val presensi_summary: String?
+    val presensi_summary: String?,
+    val foto_kegiatan: String? = null,
+    val total_alfa: Int? = 0,
+    val siswa_alfa: List<String>? = null,
+    val alfa_names: String? = null
+)
+
+// --- MODEL UNTUK JADWAL MENGAJAR GURU LENGKAP ---
+data class JadwalMengajarResponse(
+    val status: Boolean,
+    val message: String?,
+    val data: JadwalMengajarData?
+)
+
+data class JadwalMengajarData(
+    val guru: GuruJadwalInfo?,
+    val stats: JadwalStats?,
+    val hari_list: List<HariJadwalData>?,
+    val semua_jadwal: List<com.google.gson.JsonElement>?,
+    val legenda_list: List<LegendaItemModel>?,
+    val matriks_rows: List<MatriksRowModel>?
+)
+
+data class LegendaItemModel(
+    val type: String?,
+    val title: String?,
+    val badge: String?,
+    val color_hex: String?,
+    val bg_hex: String?,
+    val border_hex: String?,
+    val text_hex: String?
+)
+
+data class MatriksRowModel(
+    val urutan: Int?,
+    val nama_jam: String?,
+    val waktu: String?,
+    val is_istirahat: Boolean?,
+    val cells: Map<String, MatriksCellModel>?
+)
+
+data class MatriksCellModel(
+    val type: String?, // "pelajaran", "istirahat", "empty"
+    val id_jadwal: Int?,
+    val id_kelas: String?,
+    val id_mapel: String?,
+    val nama_mapel: String?,
+    val nama_kelas: String?,
+    val jp: Int?,
+    val position: String?, // "single", "start", "middle", "end"
+    val is_start: Boolean?,
+    val color_hex: String?,
+    val bg_hex: String?,
+    val border_hex: String?,
+    val text_hex: String?,
+    val text: String?,
+    val nama_jam: String?
+)
+
+data class GuruJadwalInfo(
+    val id: Int?,
+    val nama_lengkap: String?,
+    val nip: String?,
+    val foto: String?,
+    val jabatan: String?,
+    val semester_info: String?,
+    val nama_sekolah: String?
+)
+
+data class JadwalStats(
+    val total_jam_minggu: Int?,
+    val total_siswa: Int?,
+    val total_rombel: Int?,
+    val total_mapel: Int?,
+    val kelas_ringkasan: String?
+)
+
+data class HariJadwalData(
+    val nama_hari: String?,
+    val singkatan: String?,
+    val total_jam: Int?,
+    val is_libur: Boolean?,
+    val is_hari_ini: Boolean?,
+    val items: List<JadwalItemModel>?
+)
+
+data class JadwalItemModel(
+    val type: String?, // "pelajaran" atau "istirahat"
+    val id_jadwal: Int?,
+    val id_kelas: String?,
+    val id_mapel: String?,
+    val nama_mapel: String?,
+    val nama_kelas: String?,
+    val jam_mulai: String?,
+    val jam_selesai: String?,
+    val jam_ke: String?,
+    val durasi_jp: Int?,
+    val ruang: String?,
+    val kategori: String?,
+    val is_jurnal_filled: Boolean?,
+    val id_jurnal: Int?
 )

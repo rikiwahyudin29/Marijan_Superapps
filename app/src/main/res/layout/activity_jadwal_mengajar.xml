@@ -1,0 +1,906 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg_animated_gradient"
+    tools:ignore="HardcodedText,ContentDescription,Autofill,UseCompoundDrawables">
+
+    <!-- AppBar / Toolbar (Senada dengan Rekap Mengajar) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:background="@android:color/transparent"
+        android:elevation="2dp">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_baseline_arrow_back_24"
+            app:tint="#1E293B"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="14dp"
+            android:src="@drawable/logo_marj" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SMK RJ SUPERAPPS"
+                android:textSize="9sp"
+                android:letterSpacing="0.05"
+                android:textColor="#64748B"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Jadwal Mengajar"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#1E293B" />
+        </LinearLayout>
+
+        <!-- Tombol Cetak Jadwal -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/btnCetak"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginEnd="10dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#EEF2FF"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:paddingHorizontal="12dp">
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_modern_jadwal"
+                    app:tint="#4338CA"
+                    android:layout_marginEnd="4dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cetak"
+                    android:textSize="11sp"
+                    android:textColor="#4338CA"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Profile Pic -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvProfilPic"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="0dp"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground">
+            <ImageView
+                android:id="@+id/ivProfilPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@android:drawable/ic_menu_myplaces"
+                android:scaleType="centerCrop"/>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="32dp">
+
+            <!-- Banner Header Profil Guru (Navy Elegan) -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="14dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#1E1B4B">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="18dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <!-- Avatar / Inisial Guru -->
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="52dp"
+                            android:layout_height="52dp"
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#312E81">
+                            <FrameLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+                                <ImageView
+                                    android:id="@+id/ivAvatarGuru"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:scaleType="centerCrop"
+                                    android:visibility="gone"/>
+                                <TextView
+                                    android:id="@+id/tvInisialGuru"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:text="RW"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold" />
+                            </FrameLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginStart="14dp">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+                                <TextView
+                                    android:id="@+id/tvNamaGuru"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Riki Wahyudin"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold"
+                                    android:textColor="#FFFFFF" />
+                                <TextView
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_marginStart="6dp"
+                                    android:background="@drawable/bg_circle_primary"
+                                    android:backgroundTint="#3B82F6"
+                                    android:gravity="center"
+                                    android:text="✓"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="9sp"
+                                    android:textStyle="bold"/>
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tvJabatanGuru"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Guru Pengajar"
+                                android:textSize="12sp"
+                                android:textColor="#C7D2FE"
+                                android:layout_marginTop="2dp" />
+
+                            <TextView
+                                android:id="@+id/tvNipGuru"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="NIP/ID: -"
+                                android:textSize="10sp"
+                                android:textColor="#818CF8"
+                                android:layout_marginTop="2dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Chips Info Bawah Banner -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="14dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/tvSemesterBadge"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Semester Ganjil TA 2026/2027"
+                            android:textSize="10sp"
+                            android:textColor="#E0E7FF"
+                            android:background="#2E2875"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="5dp"
+                            android:gravity="center"
+                            android:singleLine="true"
+                            android:ellipsize="end"
+                            android:layout_marginEnd="6dp"/>
+
+                        <TextView
+                            android:id="@+id/tvNamaSekolahBadge"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="SMKS Riyadhul Jannah"
+                            android:textSize="10sp"
+                            android:textColor="#E0E7FF"
+                            android:background="#2E2875"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="5dp"
+                            android:gravity="center"
+                            android:singleLine="true"
+                            android:ellipsize="end"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- 3 Card Statistik Horizontal -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <!-- Card 1: Total Jam -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#FFFFFF">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="TOTAL JAM"
+                            android:textSize="9sp"
+                            android:textColor="#059669"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.05"/>
+                        <TextView
+                            android:id="@+id/tvTotalJamStat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="14"
+                            android:textSize="22sp"
+                            android:textColor="#1F2937"
+                            android:textStyle="bold"
+                            android:layout_marginTop="2dp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Jam/Minggu"
+                            android:textSize="10sp"
+                            android:textColor="#6B7280"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Target Terpenuhi"
+                            android:textSize="8sp"
+                            android:textColor="#047857"
+                            android:background="#D1FAE5"
+                            android:paddingHorizontal="6dp"
+                            android:paddingVertical="2dp"
+                            android:layout_marginTop="6dp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Card 2: Siswa -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="3dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#FFFFFF">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="SISWA"
+                            android:textSize="9sp"
+                            android:textColor="#D97706"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.05"/>
+                        <TextView
+                            android:id="@+id/tvTotalSiswaStat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="67"
+                            android:textSize="22sp"
+                            android:textColor="#1F2937"
+                            android:textStyle="bold"
+                            android:layout_marginTop="2dp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Siswa Diajar"
+                            android:textSize="10sp"
+                            android:textColor="#6B7280"/>
+                        <TextView
+                            android:id="@+id/tvTotalRombelBadge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="2 Rombel"
+                            android:textSize="8sp"
+                            android:textColor="#B45309"
+                            android:background="#FEF3C7"
+                            android:paddingHorizontal="6dp"
+                            android:paddingVertical="2dp"
+                            android:layout_marginTop="6dp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Card 3: Kelas -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#FFFFFF">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="KELAS"
+                            android:textSize="9sp"
+                            android:textColor="#7C3AED"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.05"/>
+                        <TextView
+                            android:id="@+id/tvKelasStat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Semua Kelas"
+                            android:textSize="13sp"
+                            android:textColor="#1F2937"
+                            android:textStyle="bold"
+                            android:singleLine="true"
+                            android:ellipsize="end"
+                            android:layout_marginTop="6dp"/>
+                        <TextView
+                            android:id="@+id/tvTotalMapelStat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="2 Mata Pelajaran"
+                            android:textSize="10sp"
+                            android:textColor="#6B7280"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Lab &amp; Teori"
+                            android:textSize="8sp"
+                            android:textColor="#6D28D9"
+                            android:background="#EDE9FE"
+                            android:paddingHorizontal="6dp"
+                            android:paddingVertical="2dp"
+                            android:layout_marginTop="6dp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
+            <!-- Tab Switcher (Tampilan Per Hari | Matriks Mingguan) -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="23dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#E2E8F0">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:padding="3dp">
+
+                    <TextView
+                        android:id="@+id/btnTabPerHari"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="🗂️  Tampilan Per Hari"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="#1E1B4B"
+                        android:background="#FFFFFF"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                    <TextView
+                        android:id="@+id/btnTabMatriks"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="▦  Matriks Mingguan"
+                        android:textSize="12sp"
+                        android:textColor="#64748B"
+                        android:background="@android:color/transparent"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- VIEW: TAMPILAN PER HARI -->
+            <LinearLayout
+                android:id="@+id/layoutTampilanPerHari"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Header PILIH HARI KBM -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="10dp">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="🗓️  PILIH HARI KBM"
+                        android:textSize="12sp"
+                        android:textColor="#1E293B"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05"/>
+                    <TextView
+                        android:id="@+id/tvSelectedHariBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Senin terpilih (4 Jam)"
+                        android:textSize="10sp"
+                        android:textColor="#3B82F6"
+                        android:background="#EFF6FF"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="4dp"/>
+                </LinearLayout>
+
+                <!-- Selector Tombol Hari (Senin - Sabtu) Horizontal Grid -->
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none"
+                    android:layout_marginBottom="18dp">
+                    <LinearLayout
+                        android:id="@+id/containerSelectorHari"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <!-- Di-inject secara dinamis via Kotlin -->
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+                <!-- Header Rincian Jam Mengajar -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+                    <TextView
+                        android:id="@+id/tvTitleRincianHari"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="RINCIAN JAM MENGAJAR (SENIN)"
+                        android:textSize="12sp"
+                        android:textColor="#1E293B"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05"/>
+                    <TextView
+                        android:id="@+id/tvBadgeStatusHari"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="● Sedang Berlangsung"
+                        android:textSize="10sp"
+                        android:textColor="#059669"
+                        android:background="#ECFDF5"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="3dp"
+                        android:visibility="gone"/>
+                </LinearLayout>
+
+                <!-- Loading State -->
+                <ProgressBar
+                    android:id="@+id/pbLoadingJadwal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="24dp"
+                    android:visibility="gone"/>
+
+                <!-- Container List Kartu Jadwal Pelajaran & Istirahat -->
+                <LinearLayout
+                    android:id="@+id/containerJadwalHari"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <!-- Cards will be populated dynamically -->
+                </LinearLayout>
+
+                <!-- Empty State (Jika Hari Libur / Tidak ada jadwal) -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cvEmptyHari"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    android:visibility="gone">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="32dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🏖️"
+                            android:textSize="40sp"
+                            android:layout_marginBottom="8dp"/>
+                        <TextView
+                            android:id="@+id/tvEmptyHariTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Hari Libur / Tidak Ada Jadwal"
+                            android:textSize="14sp"
+                            android:textColor="#1F2937"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:id="@+id/tvEmptyHariSub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tidak ada kegiatan belajar mengajar pada hari ini."
+                            android:textSize="12sp"
+                            android:textColor="#6B7280"
+                            android:textAlignment="center"
+                            android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
+            <!-- VIEW: MATRIKS MINGGUAN -->
+            <LinearLayout
+                android:id="@+id/layoutMatriksMingguan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!-- Filter Row: Dropdown Kelas, Filter Button, & Geser Grid Badge -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <LinearLayout
+                        android:id="@+id/btnFilterKelasMatriks"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="36dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/bg_rounded_border_outline"
+                        android:paddingHorizontal="12dp"
+                        android:layout_marginEnd="8dp">
+                        <TextView
+                            android:id="@+id/tvFilterKelasText"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Semua Kelas"
+                            android:textSize="11sp"
+                            android:textColor="#1E293B"
+                            android:textStyle="bold"
+                            android:singleLine="true"
+                            android:ellipsize="end"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="▼"
+                            android:textSize="9sp"
+                            android:textColor="#64748B"
+                            android:layout_marginStart="4dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:gravity="center"
+                        android:background="@drawable/bg_rounded_border_outline"
+                        android:layout_marginEnd="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🎚️"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:gravity="center_vertical"
+                        android:background="#ECFEFF"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="4dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="👆 Geser Grid"
+                            android:textSize="10sp"
+                            android:textColor="#0E7490"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- CARD 1: LEGENDA MATA PELAJARAN & JADWAL -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#FFFFFF">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="14dp"
+                        android:background="@drawable/bg_rounded_border_outline">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🧭 LEGENDA MATA PELAJARAN &amp; JADWAL"
+                            android:textSize="11sp"
+                            android:textColor="#1E293B"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.05"
+                            android:layout_marginBottom="10dp"/>
+
+                        <LinearLayout
+                            android:id="@+id/containerLegendaMatriks"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <!-- Populated dynamically -->
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- CARD 2: MATRIKS JADWAL PELAJARAN MINGGUAN -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#FFFFFF">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_rounded_border_outline">
+
+                        <!-- Header Card Matriks -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:padding="14dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="📊 Matriks Jadwal Pelajaran Mingguan"
+                                android:textSize="12sp"
+                                android:textColor="#1E293B"
+                                android:textStyle="bold"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Senin - Sabtu"
+                                android:textSize="10sp"
+                                android:textColor="#64748B"/>
+                        </LinearLayout>
+
+                        <!-- Horizontal ScrollView untuk Table Matriks Grid -->
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:scrollbars="none">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <!-- Header Tabel Kolom (Dark Navy #1E1B4B) -->
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="38dp"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical"
+                                    android:background="#1E1B4B">
+
+                                    <TextView
+                                        android:layout_width="45dp"
+                                        android:layout_height="match_parent"
+                                        android:gravity="center"
+                                        android:text="Jam"
+                                        android:textSize="10sp"
+                                        android:textColor="#FFFFFF"
+                                        android:textStyle="bold"/>
+
+                                    <TextView
+                                        android:layout_width="85dp"
+                                        android:layout_height="match_parent"
+                                        android:gravity="center"
+                                        android:text="Waktu"
+                                        android:textSize="10sp"
+                                        android:textColor="#FFFFFF"
+                                        android:textStyle="bold"/>
+
+                                    <TextView
+                                        android:layout_width="115dp"
+                                        android:layout_height="match_parent"
+                                        android:gravity="center"
+                                        android:text="SENIN"
+                                        android:textSize="10sp"
+                                        android:textColor="#FFFFFF"
+                                        android:textStyle="bold"/>
+
+                                    <TextView
+                                        android:layout_width="115dp"
+                                        android:layout_height="match_parent"
+                                        android:gravity="center"
+                                        android:text="SELASA"
+                                        android:textSize="10sp"
+                                        android:textColor="#FFFFFF"
+                                        android:textStyle="bold"/>
+
+                                    <TextView
+                                        android:layout_width="115dp"
+                                        android:layout_height="match_parent"
+                                        android:gravity="center"
+                                        android:text="RABU"
+                                        android:textSize="10sp"
+                                        android:textColor="#FFFFFF"
+                                        android:textStyle="bold"/>
+
+                                    <TextView
+                                        android:layout_width="115dp"
+                                        android:layout_height="match_parent"
+                                        android:gravity="center"
+                                        android:text="KAMIS"
+                                        android:textSize="10sp"
+                                        android:textColor="#FFFFFF"
+                                        android:textStyle="bold"/>
+
+                                    <TextView
+                                        android:layout_width="115dp"
+                                        android:layout_height="match_parent"
+                                        android:gravity="center"
+                                        android:text="JUMAT"
+                                        android:textSize="10sp"
+                                        android:textColor="#FFFFFF"
+                                        android:textStyle="bold"/>
+
+                                    <TextView
+                                        android:layout_width="115dp"
+                                        android:layout_height="match_parent"
+                                        android:gravity="center"
+                                        android:text="SABTU"
+                                        android:textSize="10sp"
+                                        android:textColor="#FFFFFF"
+                                        android:textStyle="bold"/>
+                                </LinearLayout>
+
+                                <!-- Rows Matriks (Diisi secara dinamis via Kotlin) -->
+                                <LinearLayout
+                                    android:id="@+id/containerMatriksTableRows"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+                                </LinearLayout>
+                            </LinearLayout>
+                        </HorizontalScrollView>
+
+                        <!-- Footer Matriks Info -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:padding="12dp"
+                            android:background="#F8FAFC">
+
+                            <TextView
+                                android:id="@+id/tvTotalJamTatapMukaFooter"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="ℹ️ Total Jam Tatap Muka: - JP"
+                                android:textSize="10sp"
+                                android:textColor="#475569"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Status: Validasi Kurikulum Sesuai"
+                                android:textSize="10sp"
+                                android:textColor="#1E1B4B"
+                                android:textStyle="bold"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>
