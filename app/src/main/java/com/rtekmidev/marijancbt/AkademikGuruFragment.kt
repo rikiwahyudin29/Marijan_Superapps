@@ -1,321 +1,375 @@
 package com.rtekmidev.marijancbt
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.rtekmidev.marijancbt.api.ApiClient
+import com.rtekmidev.marijancbt.api.DashboardGuruData
+import com.rtekmidev.marijancbt.api.KbmAktifInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.NumberFormat
+import java.util.Locale
 
-@android.annotation.SuppressLint("SetTextI18n")
+@SuppressLint("SetTextI18n")
 class AkademikGuruFragment : Fragment() {
+
+    private var cachedData: DashboardGuruData? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_akademik_guru, container, false)
-        
-        view.findViewById<View>(R.id.btnJurnalMengajar)?.setOnClickListener {
-            Toast.makeText(requireContext(), "Sedang memuat data jadwal...", Toast.LENGTH_SHORT).show()
-        }
-
-        view.findViewById<View>(R.id.btnRekapMengajar)?.setOnClickListener {
-            val intent = android.content.Intent(requireContext(), RekapMengajarActivity::class.java)
-            startActivity(intent)
-            requireActivity().applyEnterTransition()
-        }
-        
-
-        view.findViewById<View>(R.id.btnJadwalMengajar)?.setOnClickListener {
-            val intent = Intent(requireContext(), JadwalMengajarActivity::class.java)
-            startActivity(intent)
-            requireActivity().applyEnterTransition()
-        }
-        
-        return view
+        return inflater.inflate(R.layout.fragment_akademik_guru, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
-        val tvTotalJamMingguIni = view.findViewById<TextView>(R.id.tvTotalJamMingguIni)
-        val tvTotalJamMapelHeader = view.findViewById<TextView>(R.id.tvTotalJamMapelHeader)
-        val tvSiswaBelumAbsen = view.findViewById<TextView>(R.id.tvSiswaBelumAbsen)
-        val containerJadwal = view.findViewById<LinearLayout>(R.id.containerJadwalHariIni)
-        val pbJadwal = view.findViewById<View>(R.id.pbJadwal)
-        val tvEmptyJadwal = view.findViewById<TextView>(R.id.tvEmptyJadwal)
-        val containerMapelDiampu = view.findViewById<LinearLayout>(R.id.containerMapelDiampu)
-        val sectionWaliKelas = view.findViewById<View>(R.id.sectionWaliKelas)
-        val tvWaliKelasBadge = view.findViewById<TextView>(R.id.tvWaliKelasBadge)
-        val btnWaliAbsenHarian = view.findViewById<View>(R.id.btnWaliAbsenHarian)
-        val btnWaliRekapKehadiran = view.findViewById<View>(R.id.btnWaliRekapKehadiran)
-        val btnWaliKeuanganKelas = view.findViewById<View>(R.id.btnWaliKeuanganKelas)
+        initStaticClickListeners(view)
+        loadDashboardData(view)
+    }
 
-        view.findViewById<View>(R.id.btnLihatSemuaJadwal)?.setOnClickListener {
+    override fun onResume() {
+        super.onResume()
+        view?.let { loadDashboardData(it) }
+    }
+
+    private fun initStaticClickListeners(view: View) {
+        // Quick Action 2: Rekap Mengajar
+        view.findViewById<View>(R.id.btnAksiRekapMengajar)?.setOnClickListener {
+            val intent = Intent(requireContext(), RekapMengajarActivity::class.java)
+            startActivity(intent)
+            requireActivity().applyEnterTransition()
+        }
+
+        // Quick Action 3: Jadwal Mengajar
+        view.findViewById<View>(R.id.btnAksiJadwalMengajar)?.setOnClickListener {
             val intent = Intent(requireContext(), JadwalMengajarActivity::class.java)
             startActivity(intent)
             requireActivity().applyEnterTransition()
         }
 
+        // Quick Action 4: Bank Materi
+        view.findViewById<View>(R.id.btnAksiBankMateri)?.setOnClickListener {
+            Toast.makeText(requireContext(), "Fitur Bank Materi & Modul Ajar segera hadir.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun loadDashboardData(view: View) {
         val sharedPref = requireActivity().getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
         val idUser = sharedPref.getString("id_user", null)
 
-        if (!idUser.isNullOrEmpty()) {
-            lifecycleScope.launch(Dispatchers.IO) {
-                try {
-                    val response = ApiClient.instance.getAkademikGuruDashboard(idUser)
-                    
-                    withContext(Dispatchers.Main) {
-                        pbJadwal?.visibility = View.GONE
-                        
-                        if (response.isSuccessful && response.body()?.status == true) {
-                            val data = response.body()?.data
-                            if (data != null) {
-                                tvTotalJamMingguIni?.text = data.total_jam_minggu_ini.toString()
-                                tvTotalJamMapelHeader?.text = "Total: ${data.total_jam_minggu_ini}\nJam/Minggu"
-                                
-                                val tvLabelSiswaBelumAbsen = view?.findViewById<TextView>(R.id.tvLabelSiswaBelumAbsen)
-                                val ivSiswaBelumAbsenIcon = view?.findViewById<android.widget.ImageView>(R.id.ivSiswaBelumAbsenIcon)
-                                if (data.is_libur == true) {
-                                    tvSiswaBelumAbsen?.text = "0"
-                                    tvLabelSiswaBelumAbsen?.text = "Libur"
-                                    tvSiswaBelumAbsen?.setTextColor(android.graphics.Color.parseColor("#059669"))
-                                    tvLabelSiswaBelumAbsen?.setTextColor(android.graphics.Color.parseColor("#10B981"))
-                                    ivSiswaBelumAbsenIcon?.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#ECFDF5"))
-                                    ivSiswaBelumAbsenIcon?.imageTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#10B981"))
-                                } else {
-                                    val belumAbsen = data.siswa_belum_absen ?: 0
-                                    tvSiswaBelumAbsen?.text = belumAbsen.toString()
-                                    tvLabelSiswaBelumAbsen?.text = "Siswa"
-                                    if (belumAbsen > 0) {
-                                        tvSiswaBelumAbsen?.setTextColor(android.graphics.Color.parseColor("#DC2626"))
-                                        tvLabelSiswaBelumAbsen?.setTextColor(android.graphics.Color.parseColor("#EF4444"))
-                                        ivSiswaBelumAbsenIcon?.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#FEF2F2"))
-                                        ivSiswaBelumAbsenIcon?.imageTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#EF4444"))
-                                    } else {
-                                        tvSiswaBelumAbsen?.setTextColor(android.graphics.Color.parseColor("#059669"))
-                                        tvLabelSiswaBelumAbsen?.setTextColor(android.graphics.Color.parseColor("#10B981"))
-                                        ivSiswaBelumAbsenIcon?.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#ECFDF5"))
-                                        ivSiswaBelumAbsenIcon?.imageTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#10B981"))
-                                    }
-                                }
+        if (idUser.isNullOrEmpty()) return
 
-                                val inflater = LayoutInflater.from(requireContext())
-
-                                // Render Section Wali Kelas (Hanya muncul jika guru adalah wali kelas)
-                                if (data.wali_kelas_info != null && !data.wali_kelas_info.nama_kelas.isNullOrEmpty()) {
-                                    sectionWaliKelas?.visibility = View.VISIBLE
-                                    val namaKelas = data.wali_kelas_info.nama_kelas ?: "-"
-                                    val totalSiswa = data.wali_kelas_info.total_siswa ?: 0
-                                    
-                                    tvWaliKelasBadge?.text = "Kelas: $namaKelas ($totalSiswa Siswa)"
-
-                                    btnWaliAbsenHarian?.setOnClickListener {
-                                        val intent = Intent(requireContext(), WaliKelasAbsenHarianActivity::class.java)
-                                        intent.putExtra("nama_kelas", namaKelas)
-                                        startActivity(intent)
-                                        requireActivity().applyEnterTransition()
-                                    }
-
-                                    btnWaliRekapKehadiran?.setOnClickListener {
-                                        val intent = Intent(requireContext(), WaliKelasKehadiranActivity::class.java)
-                                        intent.putExtra("nama_kelas", namaKelas)
-                                        intent.putExtra("mode", "rekap")
-                                        startActivity(intent)
-                                        requireActivity().applyEnterTransition()
-                                    }
-
-                                    btnWaliKeuanganKelas?.setOnClickListener {
-                                        val intent = Intent(requireContext(), WaliKelasKeuanganActivity::class.java)
-                                        intent.putExtra("nama_kelas", namaKelas)
-                                        startActivity(intent)
-                                        requireActivity().applyEnterTransition()
-                                    }
-                                } else {
-                                    sectionWaliKelas?.visibility = View.GONE
-                                }
-
-                                // Render Mata Pelajaran Diampu
-                                val cvMapelDiampu = view?.findViewById<View>(R.id.cvMapelDiampu)
-                                containerMapelDiampu?.removeAllViews()
-                                if (data.mata_pelajaran_diampu != null && data.mata_pelajaran_diampu.isNotEmpty()) {
-                                    cvMapelDiampu?.visibility = View.VISIBLE
-                                    for (mapel in data.mata_pelajaran_diampu) {
-                                        val itemMapel = inflater.inflate(R.layout.item_mapel_diampu, containerMapelDiampu, false)
-                                        itemMapel.findViewById<TextView>(R.id.tvNamaMapel).text = mapel.nama_mapel ?: ""
-                                        
-                                        val kelasStr = mapel.nama_kelas
-                                        itemMapel.findViewById<TextView>(R.id.tvNamaKelas).text = if (!kelasStr.isNullOrEmpty()) "Kelas $kelasStr" else "-"
-                                        
-                                        itemMapel.findViewById<TextView>(R.id.tvTotalJam).text = (mapel.jp_per_minggu ?: 0).toString()
-                                        containerMapelDiampu?.addView(itemMapel)
-                                    }
-                                } else {
-                                    cvMapelDiampu?.visibility = View.GONE
-                                }
-
-                                // Quick Action: Jurnal Mengajar
-                                view?.findViewById<View>(R.id.btnJurnalMengajar)?.setOnClickListener {
-                                    val jadwalHariIniList = data.jadwal_hari_ini ?: emptyList()
-                                    if (jadwalHariIniList.isEmpty()) {
-                                        Toast.makeText(requireContext(), "Tidak ada jadwal mengajar hari ini", Toast.LENGTH_SHORT).show()
-                                        return@setOnClickListener
-                                    }
-                                    
-                                    val currentTimeStr = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault()).format(java.util.Date())
-                                    var activeJadwal: com.rtekmidev.marijancbt.api.JadwalGuruHariIni? = null
-                                    
-                                    for (j in jadwalHariIniList) {
-                                        val start = j.jam_mulai?.substring(0, 5) ?: ""
-                                        val end = j.jam_selesai?.substring(0, 5) ?: ""
-                                        if (start.isNotEmpty() && end.isNotEmpty()) {
-                                            if (currentTimeStr >= start && currentTimeStr <= end) {
-                                                activeJadwal = j
-                                                break
-                                            }
-                                        }
-                                    }
-                                    
-                                    if (activeJadwal == null) {
-                                        Toast.makeText(requireContext(), "Tidak ada jadwal yang sedang berlangsung saat ini", Toast.LENGTH_SHORT).show()
-                                    } else if (activeJadwal.is_jurnal_filled == true) {
-                                        Toast.makeText(requireContext(), "Jurnal untuk jadwal aktif sudah diisi", Toast.LENGTH_SHORT).show()
-                                    } else {
-                                        val intent = android.content.Intent(requireContext(), JurnalMengajarActivity::class.java)
-                                        intent.putExtra("id_kelas", activeJadwal.id_kelas ?: "")
-                                        intent.putExtra("id_mapel", activeJadwal.id_mapel ?: "")
-                                        intent.putExtra("nama_kelas", activeJadwal.nama_kelas ?: "")
-                                        intent.putExtra("nama_mapel", activeJadwal.nama_mapel ?: "")
-                                        if (!activeJadwal.jam_ke.isNullOrEmpty()) {
-                                            intent.putExtra("jam_ke", activeJadwal.jam_ke)
-                                        } else {
-                                            val jmMulai = activeJadwal.jam_mulai?.substring(0, 5) ?: ""
-                                            val jmSelesai = activeJadwal.jam_selesai?.substring(0, 5) ?: ""
-                                            intent.putExtra("jam_ke", "$jmMulai - $jmSelesai WIB")
-                                        }
-                                        startActivity(intent)
-                                        requireActivity().applyEnterTransition()
-                                    }
-                                }
-
-                                // Render Jadwal
-                                if (data.jadwal_hari_ini != null && data.jadwal_hari_ini.isNotEmpty()) {
-                                    for (jadwal in data.jadwal_hari_ini) {
-                                        val itemJadwal = inflater.inflate(R.layout.item_jadwal_hari_ini, containerJadwal, false)
-                                        
-                                        itemJadwal.findViewById<TextView>(R.id.tvJamMulai).text = jadwal.jam_mulai?.substring(0, 5) ?: ""
-                                        itemJadwal.findViewById<TextView>(R.id.tvJamSelesai).text = jadwal.jam_selesai?.substring(0, 5) ?: ""
-
-                                        itemJadwal.findViewById<TextView>(R.id.tvMataPelajaran).text = jadwal.nama_mapel ?: ""
-                                        val klsNama = jadwal.nama_kelas?.trim().orEmpty()
-                                        itemJadwal.findViewById<TextView>(R.id.tvRuang)?.text = if (klsNama.isNotEmpty()) "Ruang $klsNama" else "Ruang Kelas"
-                                        itemJadwal.findViewById<TextView>(R.id.tvKelas).text = klsNama
-                                        
-                                        val ivAction = itemJadwal.findViewById<android.widget.ImageView>(R.id.ivAction)
-                                        val llJurnalDetail = itemJadwal.findViewById<LinearLayout>(R.id.llJurnalDetail)
-                                        val tvJurnalMateri = itemJadwal.findViewById<TextView>(R.id.tvJurnalMateri)
-                                        val tvJurnalPresensi = itemJadwal.findViewById<TextView>(R.id.tvJurnalPresensi)
-                                        val cvFotoPreview = itemJadwal.findViewById<androidx.cardview.widget.CardView>(R.id.cvFotoPreview)
-                                        val ivFotoPreview = itemJadwal.findViewById<android.widget.ImageView>(R.id.ivFotoPreview)
-                                        
-                                        if (jadwal.is_jurnal_filled == true) {
-                                            // Sudah diisi
-                                            ivAction?.setImageResource(android.R.drawable.ic_menu_edit) // Or any check icon
-                                            ivAction?.imageTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#10B981")) // Green
-                                            itemJadwal.alpha = 0.7f // Dim the item to indicate it's done
-                                            llJurnalDetail?.visibility = View.VISIBLE
-                                            tvJurnalMateri?.text = "Materi: ${jadwal.jurnal_materi ?: "-"}"
-                                            tvJurnalPresensi?.text = jadwal.jurnal_presensi ?: "Presensi Belum Tersedia"
-                                            
-                                            if (!jadwal.jurnal_foto.isNullOrEmpty()) {
-                                                cvFotoPreview?.visibility = View.VISIBLE
-                                                ivFotoPreview?.let {
-                                                    com.bumptech.glide.Glide.with(requireContext())
-                                                        .load(jadwal.jurnal_foto)
-                                                        .into(it)
-                                                }
-                                                cvFotoPreview?.setOnClickListener {
-                                                    try {
-                                                        val intent = android.content.Intent(android.content.Intent.ACTION_VIEW)
-                                                        intent.data = android.net.Uri.parse(jadwal.jurnal_foto)
-                                                        startActivity(intent)
-                                                    } catch (e: Exception) {
-                                                        Toast.makeText(requireContext(), "Tidak dapat membuka foto", Toast.LENGTH_SHORT).show()
-                                                    }
-                                                }
-                                            } else {
-                                                cvFotoPreview?.visibility = View.GONE
-                                            }
-                                            
-                                            itemJadwal.setOnClickListener {
-                                                Toast.makeText(requireContext(), "Jurnal untuk kelas ini sudah diisi hari ini", Toast.LENGTH_SHORT).show()
-                                            }
-                                        } else {
-                                            // Belum diisi
-                                            ivAction?.setImageResource(android.R.drawable.ic_media_play)
-                                            ivAction?.imageTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#4F46E5")) // Primary Blue
-                                            itemJadwal.alpha = 1.0f
-                                            itemJadwal.setOnClickListener {
-                                                val intent = android.content.Intent(requireContext(), JurnalMengajarActivity::class.java)
-                                                intent.putExtra("id_kelas", jadwal.id_kelas ?: "")
-                                                intent.putExtra("id_mapel", jadwal.id_mapel ?: "")
-                                                intent.putExtra("nama_kelas", jadwal.nama_kelas ?: "")
-                                                intent.putExtra("nama_mapel", jadwal.nama_mapel ?: "")
-                                                
-                                                // Pass jam untuk di-autofill
-                                                if (!jadwal.jam_ke.isNullOrEmpty()) {
-                                                    intent.putExtra("jam_ke", jadwal.jam_ke)
-                                                } else {
-                                                    val jmMulai = jadwal.jam_mulai?.substring(0, 5) ?: ""
-                                                    val jmSelesai = jadwal.jam_selesai?.substring(0, 5) ?: ""
-                                                    if (jmMulai.isNotEmpty() && jmSelesai.isNotEmpty()) {
-                                                        intent.putExtra("jam_ke", "$jmMulai - $jmSelesai WIB")
-                                                    }
-                                                }
-                                                startActivity(intent)
-                                                requireActivity().applyEnterTransition()
-                                            }
-                                        }
-                                        
-                                        containerJadwal?.addView(itemJadwal)
-                                    }
-                                } else {
-                                    tvEmptyJadwal?.visibility = View.VISIBLE
-                                    if (data.is_libur == true) {
-                                        val ket = data.keterangan_libur ?: "Libur Akhir Pekan"
-                                        tvEmptyJadwal?.text = "Hari Libur ($ket)\nTidak ada kegiatan belajar mengajar hari ini"
-                                    } else {
-                                        tvEmptyJadwal?.text = "Tidak ada jadwal mengajar hari ini"
-                                    }
-                                }
-                            }
-                        } else {
-                            val errorMsg = response.errorBody()?.string() ?: "Gagal memuat dashboard (HTTP ${response.code()})"
-                            Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val response = ApiClient.instance.getAkademikGuruDashboard(idUser)
+                withContext(Dispatchers.Main) {
+                    if (isAdded && response.isSuccessful && response.body()?.status == true) {
+                        val data = response.body()?.data
+                        if (data != null) {
+                            cachedData = data
+                            renderDashboard(view, data)
                         }
                     }
-                } catch (_: Exception) {
-                    withContext(Dispatchers.Main) {
-                        pbJadwal?.visibility = View.GONE
-                        tvEmptyJadwal?.visibility = View.VISIBLE
-                        tvEmptyJadwal?.text = "Koneksi bermasalah"
-                    }
                 }
+            } catch (e: Exception) {
+                // Ignore network errors on background refresh
+            }
+        }
+    }
+
+    private fun renderDashboard(view: View, data: DashboardGuruData) {
+        // 1. HERO BANNER
+        view.findViewById<TextView>(R.id.tvHeroTahunAjaran)?.text =
+            data.tahun_ajaran_aktif ?: "● TA 2026/2027 • Ganjil"
+
+        view.findViewById<TextView>(R.id.tvHeroTanggal)?.text =
+            data.tanggal_hari_ini_formatted ?: "Hari Ini"
+
+        val namaGuru = data.guru_info?.nama ?: "Bapak/Ibu Guru"
+        view.findViewById<TextView>(R.id.tvHeroNamaGuru)?.text = namaGuru
+
+        val nipStr = data.guru_info?.nip ?: "-"
+        val mapelUtama = data.guru_info?.mapel_utama ?: "Guru Pengajar"
+        view.findViewById<TextView>(R.id.tvHeroNipMapel)?.text = "NIP: $nipStr • $mapelUtama"
+
+        val badgeHeroWali = view.findViewById<View>(R.id.badgeHeroWaliKelas)
+        val tvHeroWaliText = view.findViewById<TextView>(R.id.tvHeroWaliKelasText)
+        if (data.wali_kelas_info != null && !data.wali_kelas_info.nama_kelas.isNullOrEmpty()) {
+            badgeHeroWali?.visibility = View.VISIBLE
+            val kls = data.wali_kelas_info.nama_kelas
+            val jml = data.wali_kelas_info.total_siswa ?: 0
+            tvHeroWaliText?.text = "Wali Kelas $kls ($jml Siswa)"
+        } else {
+            badgeHeroWali?.visibility = View.GONE
+        }
+
+        val statusKbm = data.status_kbm ?: "Aktif Mengajar"
+        view.findViewById<TextView>(R.id.tvHeroStatusKbm)?.text = "● Status KBM: $statusKbm"
+
+        val mingguKe = data.minggu_efektif_ke ?: 7
+        val totalMinggu = data.total_minggu_efektif ?: 18
+        view.findViewById<TextView>(R.id.tvHeroMingguEfektif)?.text =
+            "Minggu Efektif ke-$mingguKe dari $totalMinggu"
+
+        val pbMinggu = view.findViewById<ProgressBar>(R.id.pbMingguEfektif)
+        val progressPct = data.progress_minggu ?: ((mingguKe.toFloat() / totalMinggu.toFloat()) * 100).toInt()
+        pbMinggu?.progress = progressPct
+
+
+        // 2. STATISTIK BEBAN MENGAJAR
+        view.findViewById<TextView>(R.id.tvBadgeJjm)?.text = data.badge_jjm ?: "Sesuai JJM"
+        view.findViewById<TextView>(R.id.tvPersenTargetJam)?.text = "${data.persen_target_jam ?: 100}% Target"
+        view.findViewById<TextView>(R.id.tvTotalJamMingguIni)?.text = data.total_jam_minggu_ini.toString()
+
+        val sesiTerisi = data.progres_jurnal_bulan_ini?.sesi_terisi ?: 0
+        val totalSesi = data.progres_jurnal_bulan_ini?.total_sesi ?: 24
+        val persenJurnal = data.progres_jurnal_bulan_ini?.persentase ?: 0
+        view.findViewById<TextView>(R.id.tvRasioSesiJurnal)?.text = "$sesiTerisi/$totalSesi Sesi"
+        view.findViewById<TextView>(R.id.tvPersenJurnalTerisi)?.text = "$persenJurnal%"
+
+        view.findViewById<TextView>(R.id.tvTotalRombel)?.text = "${data.total_rombel ?: 3} Kelas"
+        view.findViewById<TextView>(R.id.tvRombelSummary)?.text = data.rombel_summary ?: "Semua Rombel"
+
+        view.findViewById<TextView>(R.id.tvTotalSiswaDiajar)?.text = "${data.total_siswa_diajar ?: 0} Siswa"
+        view.findViewById<TextView>(R.id.tvStatusSiswaDiajar)?.text = data.status_siswa_diajar ?: "Semua Aktif"
+
+
+        // 3. KBM SEDANG BERLANGSUNG (LIVE SESSION)
+        renderKbmAktif(view, data.kbm_aktif, data)
+
+
+        // 4. MATA PELAJARAN DIAMPU
+        view.findViewById<TextView>(R.id.tvTotalJamMapelHeader)?.text =
+            "Total: ${data.total_jam_minggu_ini} Jam/Mg"
+
+        view.findViewById<TextView>(R.id.tvKurikulumText)?.text =
+            data.kurikulum_text ?: "Kurikulum Merdeka SMK PK"
+
+        val containerMapel = view.findViewById<LinearLayout>(R.id.containerMapelDiampu)
+        containerMapel?.removeAllViews()
+
+        val listMapel = data.mata_pelajaran_diampu
+        if (!listMapel.isNullOrEmpty()) {
+            val inflater = LayoutInflater.from(requireContext())
+            val iconBgs = listOf("#EDE9FE", "#CCFBF1", "#E0F2FE")
+            val iconTints = listOf("#6D28D9", "#0D9488", "#0284C7")
+            val progressDrawables = listOf(R.drawable.bg_progress_blue, R.drawable.bg_progress_blue, R.drawable.bg_progress_blue)
+
+            listMapel.forEachIndexed { index, mapel ->
+                val item = inflater.inflate(R.layout.item_mapel_diampu, containerMapel, false)
+
+                item.findViewById<TextView>(R.id.tvNamaMapel)?.text = mapel.nama_mapel ?: "-"
+                item.findViewById<TextView>(R.id.tvNamaKelas)?.text = mapel.nama_kelas ?: "-"
+                item.findViewById<TextView>(R.id.tvModulInfo)?.text = mapel.modul_info ?: "Modul 4 / 12"
+                item.findViewById<TextView>(R.id.tvTotalJam)?.text = (mapel.jp_per_minggu ?: 0).toString()
+
+                val pbModul = item.findViewById<ProgressBar>(R.id.pbMapelModul)
+                pbModul?.progress = mapel.progress_persen ?: 35
+
+                // Vary icon color themes
+                val colorIdx = index % iconBgs.size
+                val flIcon = item.findViewById<FrameLayout>(R.id.flMapelIconBg)
+                val ivIcon = item.findViewById<ImageView>(R.id.ivMapelIcon)
+                flIcon?.backgroundTintList = ColorStateList.valueOf(Color.parseColor(iconBgs[colorIdx]))
+                ivIcon?.imageTintList = ColorStateList.valueOf(Color.parseColor(iconTints[colorIdx]))
+
+                containerMapel?.addView(item)
+            }
+        }
+
+
+        // 5. AKSI CEPAT (QUICK ACTIONS)
+        view.findViewById<View>(R.id.btnAksiIsiJurnal)?.setOnClickListener {
+            handleIsiJurnalAction(data.kbm_aktif, data)
+        }
+
+
+        // 6. MENU WALI KELAS & MONITORING SPP
+        val sectionWaliKelas = view.findViewById<View>(R.id.sectionWaliKelas)
+        if (data.wali_kelas_info != null && !data.wali_kelas_info.nama_kelas.isNullOrEmpty()) {
+            sectionWaliKelas?.visibility = View.VISIBLE
+            val namaKelas = data.wali_kelas_info.nama_kelas ?: "-"
+            val totalSiswa = data.wali_kelas_info.total_siswa ?: 0
+
+            view.findViewById<TextView>(R.id.tvWaliKelasBadge)?.text = "$namaKelas ($totalSiswa Siswa)"
+
+            view.findViewById<View>(R.id.btnWaliAbsenHarian)?.setOnClickListener {
+                val intent = Intent(requireContext(), WaliKelasAbsenHarianActivity::class.java)
+                intent.putExtra("nama_kelas", namaKelas)
+                startActivity(intent)
+                requireActivity().applyEnterTransition()
+            }
+
+            view.findViewById<View>(R.id.btnWaliRekapKehadiran)?.setOnClickListener {
+                val intent = Intent(requireContext(), WaliKelasKehadiranActivity::class.java)
+                intent.putExtra("nama_kelas", namaKelas)
+                intent.putExtra("mode", "rekap")
+                startActivity(intent)
+                requireActivity().applyEnterTransition()
+            }
+
+            view.findViewById<View>(R.id.btnWaliKeuanganKelas)?.setOnClickListener {
+                val intent = Intent(requireContext(), WaliKelasKeuanganActivity::class.java)
+                intent.putExtra("nama_kelas", namaKelas)
+                startActivity(intent)
+                requireActivity().applyEnterTransition()
+            }
+
+            // Banner Monitoring SPP Kelas
+            view.findViewById<TextView>(R.id.tvMonitoringSppTitle)?.text = "Monitoring SPP Kelas $namaKelas"
+
+            val tagihan = data.keuangan_kelas_summary?.total_tagihan ?: 0L
+            val terbayar = data.keuangan_kelas_summary?.total_terbayar ?: 0L
+            val localeId = Locale.forLanguageTag("id-ID")
+            val nf = NumberFormat.getCurrencyInstance(localeId)
+            val strTerbayar = nf.format(terbayar).replace(",00", "")
+            val strTagihan = nf.format(tagihan).replace(",00", "")
+            view.findViewById<TextView>(R.id.tvMonitoringSppNominal)?.text = "$strTerbayar / $strTagihan"
+
+            view.findViewById<View>(R.id.cardMonitoringSpp)?.setOnClickListener {
+                val intent = Intent(requireContext(), WaliKelasKeuanganActivity::class.java)
+                intent.putExtra("nama_kelas", namaKelas)
+                startActivity(intent)
+                requireActivity().applyEnterTransition()
             }
         } else {
-            pbJadwal?.visibility = View.GONE
-            tvEmptyJadwal?.visibility = View.VISIBLE
-            tvEmptyJadwal?.text = "Silakan login ulang"
+            sectionWaliKelas?.visibility = View.GONE
+        }
+    }
+
+    private fun renderKbmAktif(view: View, kbm: KbmAktifInfo?, fullData: DashboardGuruData) {
+        val tvStatus = view.findViewById<TextView>(R.id.tvKbmStatusBadge)
+        val tvJamKe = view.findViewById<TextView>(R.id.tvKbmJamKe)
+        val tvNamaMapel = view.findViewById<TextView>(R.id.tvKbmNamaMapel)
+        val tvKelas = view.findViewById<TextView>(R.id.tvKbmKelas)
+        val tvRuang = view.findViewById<TextView>(R.id.tvKbmRuang)
+        val btnIsiJurnal = view.findViewById<View>(R.id.btnKbmIsiJurnal)
+        val tvBtnIsiText = view.findViewById<TextView>(R.id.tvBtnKbmIsiJurnalText)
+        val btnPresensiSiswa = view.findViewById<View>(R.id.btnKbmPresensiSiswa)
+
+        if (kbm != null) {
+            tvStatus?.text = "● ${kbm.status_badge ?: "Sedang Berlangsung"}"
+            if (kbm.is_active) {
+                tvStatus?.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#DCFCE7"))
+                tvStatus?.setTextColor(Color.parseColor("#166534"))
+            } else {
+                tvStatus?.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#E0F2FE"))
+                tvStatus?.setTextColor(Color.parseColor("#0369A1"))
+            }
+
+            tvJamKe?.text = kbm.jam_ke ?: "-"
+            tvNamaMapel?.text = kbm.nama_mapel ?: "-"
+            tvKelas?.text = kbm.nama_kelas ?: "-"
+            tvRuang?.text = kbm.ruang ?: "Lab Komputer"
+
+            if (kbm.is_jurnal_filled) {
+                tvBtnIsiText?.text = "Jurnal Terisi ✓"
+                btnIsiJurnal?.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#059669"))
+            } else {
+                tvBtnIsiText?.text = "Isi Jurnal KBM"
+                btnIsiJurnal?.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#1E1B4B"))
+            }
+
+            btnIsiJurnal?.setOnClickListener {
+                bukaJurnalMengajar(kbm)
+            }
+
+            btnPresensiSiswa?.setOnClickListener {
+                bukaPresensiSiswa(kbm)
+            }
+        } else {
+            // State ketika tidak ada jadwal aktif
+            tvStatus?.text = "● Tidak Ada KBM Aktif"
+            tvStatus?.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#F1F5F9"))
+            tvStatus?.setTextColor(Color.parseColor("#64748B"))
+
+            tvJamKe?.text = fullData.tanggal_hari_ini_formatted ?: "-"
+            tvNamaMapel?.text = "Tidak Ada KBM Sedang Berlangsung"
+            tvKelas?.text = "Cek Jadwal Mingguan"
+            tvRuang?.text = "Ruang Kelas"
+
+            tvBtnIsiText?.text = "Lihat Jadwal"
+            btnIsiJurnal?.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#1E1B4B"))
+            btnIsiJurnal?.setOnClickListener {
+                startActivity(Intent(requireContext(), JadwalMengajarActivity::class.java))
+                requireActivity().applyEnterTransition()
+            }
+
+            btnPresensiSiswa?.setOnClickListener {
+                startActivity(Intent(requireContext(), JadwalMengajarActivity::class.java))
+                requireActivity().applyEnterTransition()
+            }
+        }
+    }
+
+    private fun handleIsiJurnalAction(kbm: KbmAktifInfo?, fullData: DashboardGuruData) {
+        if (kbm != null && !kbm.id_kelas.isNullOrEmpty()) {
+            bukaJurnalMengajar(kbm)
+        } else {
+            val list = fullData.jadwal_hari_ini
+            if (!list.isNullOrEmpty()) {
+                val first = list.first()
+                val intent = Intent(requireContext(), JurnalMengajarActivity::class.java)
+                intent.putExtra("id_kelas", first.id_kelas ?: "")
+                intent.putExtra("id_mapel", first.id_mapel ?: "")
+                intent.putExtra("nama_kelas", first.nama_kelas ?: "")
+                intent.putExtra("nama_mapel", first.nama_mapel ?: "")
+                intent.putExtra("jam_ke", first.jam_ke ?: "")
+                startActivity(intent)
+                requireActivity().applyEnterTransition()
+            } else {
+                Toast.makeText(requireContext(), "Tidak ada jadwal mengajar aktif hari ini.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun bukaJurnalMengajar(kbm: KbmAktifInfo) {
+        val intent = Intent(requireContext(), JurnalMengajarActivity::class.java)
+        intent.putExtra("id_kelas", kbm.id_kelas ?: "")
+        intent.putExtra("id_mapel", kbm.id_mapel ?: "")
+        intent.putExtra("nama_kelas", kbm.nama_kelas?.replace("Kelas ", "") ?: "")
+        intent.putExtra("nama_mapel", kbm.nama_mapel ?: "")
+        intent.putExtra("jam_ke", kbm.jam_ke ?: "")
+        startActivity(intent)
+        requireActivity().applyEnterTransition()
+    }
+
+    private fun bukaPresensiSiswa(kbm: KbmAktifInfo) {
+        val idJurnal = kbm.id_jurnal ?: 0
+        if (kbm.is_jurnal_filled && idJurnal > 0) {
+            val intent = Intent(requireContext(), PresensiKelasActivity::class.java)
+            intent.putExtra("id_jurnal", idJurnal)
+            intent.putExtra("nama_kelas", kbm.nama_kelas ?: "")
+            intent.putExtra("nama_mapel", kbm.nama_mapel ?: "")
+            intent.putExtra("jam_ke", kbm.jam_ke ?: "")
+            intent.putExtra("materi", kbm.materi ?: "")
+            startActivity(intent)
+            requireActivity().applyEnterTransition()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                "Silakan isi Jurnal KBM terlebih dahulu sebelum melakukan presensi siswa.",
+                Toast.LENGTH_LONG
+            ).show()
+            bukaJurnalMengajar(kbm)
         }
     }
 }

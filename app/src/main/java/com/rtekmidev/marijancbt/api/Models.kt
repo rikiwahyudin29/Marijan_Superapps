@@ -355,6 +355,19 @@ data class DashboardGuruResponse(
 
 data class DashboardGuruData(
     val total_jam_minggu_ini: Int,
+    val target_jam: Int? = 24,
+    val persen_target_jam: Int? = 100,
+    val badge_jjm: String? = "Sesuai JJM",
+    val total_rombel: Int? = 0,
+    val rombel_summary: String? = null,
+    val total_siswa_diajar: Int? = 0,
+    val status_siswa_diajar: String? = "Semua Aktif",
+    val status_kbm: String? = "Aktif Mengajar",
+    val minggu_efektif_ke: Int? = 7,
+    val total_minggu_efektif: Int? = 18,
+    val progress_minggu: Int? = 39,
+    val kbm_aktif: KbmAktifInfo? = null,
+    val kurikulum_text: String? = "Kurikulum Merdeka SMK PK",
     val siswa_belum_absen: Int,
     val is_libur: Boolean? = false,
     val keterangan_libur: String? = null,
@@ -368,6 +381,21 @@ data class DashboardGuruData(
     val presensi_binaan_summary: PresensiBinaanSummary? = null,
     val progres_jurnal_bulan_ini: ProgresJurnal? = null,
     val keuangan_kelas_summary: KeuanganKelasSummary? = null
+)
+
+data class KbmAktifInfo(
+    val is_active: Boolean = false,
+    val id_jadwal: Int? = null,
+    val id_kelas: String? = null,
+    val id_mapel: String? = null,
+    val id_jurnal: Int? = null,
+    val nama_mapel: String? = null,
+    val nama_kelas: String? = null,
+    val ruang: String? = null,
+    val jam_ke: String? = null,
+    val is_jurnal_filled: Boolean = false,
+    val materi: String? = null,
+    val status_badge: String? = "Sedang Berlangsung"
 )
 
 data class PresensiGuruHariIni(
@@ -427,9 +455,12 @@ data class KeuanganKelasSummary(
 )
 
 data class MataPelajaranDiampu(
+    val id_mapel: Any? = null,
     val nama_mapel: String?,
     val nama_kelas: String?,
-    val jp_per_minggu: Int?
+    val jp_per_minggu: Int?,
+    val modul_info: String? = null,
+    val progress_persen: Int? = 0
 )
 
 data class WaliKelasInfo(
