@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8FAFC"
+    android:background="@android:color/transparent"
     android:clipToPadding="false"
     android:paddingBottom="120dp">
 
@@ -798,7 +798,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Data Kepegawaian &amp; Sertifikasi"
+                            android:text="Data Kepegawaian"
                             android:textColor="#0F172A"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -870,37 +870,6 @@
                         android:text="D4 / S1 Teknik Komputer &amp; Jaringan"
                         android:textColor="#0F172A"
                         android:textSize="11.5sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#F1F5F9"
-                    android:layout_marginVertical="10dp" />
-
-                <!-- Row 3: Sertifikasi -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Sertifikasi"
-                        android:textColor="#64748B"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/tvKepegawaianSertifikasi"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="✓ Bersertifikat Pendidik (Serdik TKJT)"
-                        android:textColor="#059669"
-                        android:textSize="11sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -1112,112 +1081,70 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- 3 Quick Action Buttons for Wali Kelas -->
+                <!-- Quick Action Button for Wali Kelas: Rekap Kehadiran -->
                 <LinearLayout
+                    android:id="@+id/btnWaliRekapKehadiran"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_rounded_border"
+                    android:backgroundTint="#F8FAFC"
+                    android:padding="12dp"
                     android:layout_marginTop="12dp"
-                    android:baselineAligned="false">
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
 
-                    <!-- Button 1: Buku Kasus -->
-                    <LinearLayout
-                        android:id="@+id/btnWaliBukuKasus"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="4dp"
-                        android:orientation="vertical"
-                        android:gravity="center"
+                    <FrameLayout
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
                         android:background="@drawable/bg_rounded_border"
-                        android:backgroundTint="#F8FAFC"
-                        android:padding="10dp"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?attr/selectableItemBackground">
+                        android:backgroundTint="#CCFBF1"
+                        android:layout_marginEnd="12dp">
 
                         <ImageView
                             android:layout_width="18dp"
                             android:layout_height="18dp"
-                            android:src="@drawable/ic_modern_tugas"
-                            app:tint="#4338CA" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Buku Kasus\nSiswa"
-                            android:textColor="#0F172A"
-                            android:textSize="10.5sp"
-                            android:textStyle="bold"
-                            android:textAlignment="center"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
-
-                    <!-- Button 2: Rekap Kehadiran -->
-                    <LinearLayout
-                        android:id="@+id/btnWaliRekapKehadiran"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginHorizontal="3dp"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:background="@drawable/bg_rounded_border"
-                        android:backgroundTint="#F8FAFC"
-                        android:padding="10dp"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?attr/selectableItemBackground">
-
-                        <ImageView
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
+                            android:layout_gravity="center"
                             android:src="@drawable/ic_modern_kalender"
                             app:tint="#0D9488" />
+                    </FrameLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Rekap\nKehadiran"
-                            android:textColor="#0F172A"
-                            android:textSize="10.5sp"
-                            android:textStyle="bold"
-                            android:textAlignment="center"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
-
-                    <!-- Button 3: Paguyuban Ortu / Keuangan -->
                     <LinearLayout
-                        android:id="@+id/btnWaliPaguyubanOrtu"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_marginStart="4dp"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:background="@drawable/bg_rounded_border"
-                        android:backgroundTint="#F8FAFC"
-                        android:padding="10dp"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?attr/selectableItemBackground">
-
-                        <ImageView
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:src="@drawable/ic_modern_users"
-                            app:tint="#6366F1" />
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Paguyuban\nOrtu"
+                            android:text="Rekap Kehadiran Siswa"
                             android:textColor="#0F172A"
+                            android:textSize="12.5sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Lihat persentase &amp; rekap bulanan kelas binaan"
+                            android:textColor="#64748B"
                             android:textSize="10.5sp"
-                            android:textStyle="bold"
-                            android:textAlignment="center"
-                            android:layout_marginTop="4dp" />
+                            android:layout_marginTop="1dp" />
                     </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Buka ›"
+                        android:textColor="#0D9488"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#CCFBF1"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="5dp" />
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>

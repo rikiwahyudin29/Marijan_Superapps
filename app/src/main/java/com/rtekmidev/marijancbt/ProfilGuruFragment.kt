@@ -79,21 +79,9 @@ class ProfilGuruFragment : Fragment() {
         view.findViewById<View>(R.id.btnUnduhSk)?.setOnClickListener(downloadSkAction)
         view.findViewById<View>(R.id.cardDownloadSk)?.setOnClickListener(downloadSkAction)
 
-        // Administrasi Wali Kelas Quick Actions
-        view.findViewById<View>(R.id.btnWaliBukuKasus)?.setOnClickListener {
-            val intent = Intent(requireContext(), WaliKelasAbsenHarianActivity::class.java)
-            startActivity(intent)
-            requireActivity().applyEnterTransition()
-        }
-
+        // Administrasi Wali Kelas Quick Action: Rekap Kehadiran
         view.findViewById<View>(R.id.btnWaliRekapKehadiran)?.setOnClickListener {
             val intent = Intent(requireContext(), WaliKelasKehadiranActivity::class.java)
-            startActivity(intent)
-            requireActivity().applyEnterTransition()
-        }
-
-        view.findViewById<View>(R.id.btnWaliPaguyubanOrtu)?.setOnClickListener {
-            val intent = Intent(requireContext(), WaliKelasKeuanganActivity::class.java)
             startActivity(intent)
             requireActivity().applyEnterTransition()
         }
@@ -207,9 +195,6 @@ class ProfilGuruFragment : Fragment() {
             kepeg?.status_badge ?: "GTY (Guru Tetap Yayasan)"
         view.findViewById<TextView>(R.id.tvKepegawaianPendidikan)?.text =
             kepeg?.pendidikan_terakhir ?: "D4 / S1 Teknik Komputer & Jaringan"
-        view.findViewById<TextView>(R.id.tvKepegawaianSertifikasi)?.text =
-            kepeg?.sertifikasi ?: "✓ Bersertifikat Pendidik (Serdik TKJT)"
-
         val sk = kepeg?.sk_beban_mengajar
         if (sk != null) {
             view.findViewById<TextView>(R.id.tvSkJudul)?.text = sk.judul ?: "SK Beban Mengajar 2026/2027"
