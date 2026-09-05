@@ -46,7 +46,7 @@ class OtpActivity : AppCompatActivity() {
 
         val etOtpCode = findViewById<EditText>(R.id.etOtpCode)
         val btnVerifyOtp = findViewById<Button>(R.id.btnVerifyOtp)
-        val pbLoadingOtp = findViewById<ProgressBar>(R.id.pbLoadingOtp)
+        val pbLoadingOtp = findViewById<View>(R.id.pbLoadingOtp)
 
         btnVerifyOtp.setOnClickListener {
             val otpCode = etOtpCode.text.toString().trim()

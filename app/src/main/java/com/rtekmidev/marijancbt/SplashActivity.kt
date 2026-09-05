@@ -135,7 +135,7 @@ class SplashActivity : AppCompatActivity() {
             startActivity(Intent(this, LoginActivity::class.java))
         }
 
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        applyEnterTransition()
         finish()
     }
 }

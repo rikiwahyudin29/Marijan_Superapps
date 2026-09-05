@@ -111,7 +111,7 @@ class PresensiActivity : AppCompatActivity() {
                 val intent = Intent(this, IzinActivity::class.java)
                 intent.putExtra("ROLE", userRole)
                 startActivity(intent)
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                applyEnterTransition()
                 return@setOnClickListener
             }
 
@@ -122,13 +122,13 @@ class PresensiActivity : AppCompatActivity() {
             val intent = Intent(this, IzinActivity::class.java)
             intent.putExtra("ROLE", userRole)
             startActivity(intent)
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            applyEnterTransition()
         }
         
         findViewById<CardView>(R.id.btnLihatRekap)?.setOnClickListener {
             val intent = Intent(this, RekapActivity::class.java)
             startActivity(intent)
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            applyEnterTransition()
         }
     }
 
@@ -329,6 +329,11 @@ class PresensiActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun finish() {
+        super.finish()
+        applyExitTransition()
     }
 }
 

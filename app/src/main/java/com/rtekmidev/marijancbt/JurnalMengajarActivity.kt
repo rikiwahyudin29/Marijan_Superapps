@@ -1,7 +1,9 @@
 package com.rtekmidev.marijancbt
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
+import com.bumptech.glide.Glide
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -65,7 +67,7 @@ class JurnalMengajarActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        applyEnterTransition()
         
         // Transparent Status Bar
         @Suppress("DEPRECATION")
@@ -79,29 +81,36 @@ class JurnalMengajarActivity : AppCompatActivity() {
         
         setContentView(R.layout.activity_jurnal_mengajar)
         
-        // Handle insets for root view (bottom navigation bar)
-        findViewById<android.view.ViewGroup>(android.R.id.content).getChildAt(0)?.let { rootView ->
-            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
-                val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
-                view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, systemBars.bottom)
-                insets
-            }
-        }
-        
-        // Handle insets for appBar (status bar padding)
-        val appBar = findViewById<View>(R.id.appBar)
-        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(appBar) { view, insets ->
+        // Handle insets for root view (samakan dengan RekapMengajar)
+        val rootLayout = findViewById<View>(R.id.main)
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { view, insets ->
             val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
-            val defaultPadding = (16 * resources.displayMetrics.density).toInt()
-            view.setPadding(defaultPadding, systemBars.top + defaultPadding, defaultPadding, defaultPadding)
+            view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
+        val prefGuru = getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
+        val fotoProfilUrl = prefGuru.getString("foto_profil", null)
+        val ivProfilPhoto = findViewById<ImageView>(R.id.ivProfilPhoto)
+        if (!fotoProfilUrl.isNullOrEmpty() && ivProfilPhoto != null) {
+            val fullUrl = if (fotoProfilUrl.startsWith("http")) fotoProfilUrl else "https://smkriyadhuljannahjalancagak.sch.id/uploads/guru/$fotoProfilUrl"
+            try {
+                Glide.with(this)
+                    .load(fullUrl)
+                    .placeholder(android.R.drawable.ic_menu_myplaces)
+                    .error(android.R.drawable.ic_menu_myplaces)
+                    .circleCrop()
+                    .into(ivProfilPhoto)
+            } catch (e: Exception) {
+                // Ignore glide errors
+            }
+        }
+
         // Initialize Intent Data
-        idKelas = intent.getStringExtra("id_kelas") ?: ""
-        idMapel = intent.getStringExtra("id_mapel") ?: ""
-        namaKelas = intent.getStringExtra("nama_kelas") ?: "Kelas"
-        namaMapel = intent.getStringExtra("nama_mapel") ?: "Mata Pelajaran"
+        idKelas = intent.getStringExtra("id_kelas") ?: intent.getStringExtra("ID_KELAS") ?: ""
+        idMapel = intent.getStringExtra("id_mapel") ?: intent.getStringExtra("ID_MAPEL") ?: ""
+        namaKelas = intent.getStringExtra("nama_kelas") ?: intent.getStringExtra("NAMA_KELAS") ?: "Kelas"
+        namaMapel = intent.getStringExtra("nama_mapel") ?: intent.getStringExtra("NAMA_MAPEL") ?: "Mata Pelajaran"
 
         viewFinder = findViewById(R.id.viewFinder)
         ivPreview = findViewById(R.id.ivPreview)
@@ -121,16 +130,28 @@ class JurnalMengajarActivity : AppCompatActivity() {
         val tvKameraSiap = findViewById<TextView>(R.id.tvKameraSiap)
         val tvCaptureHint = findViewById<TextView>(R.id.tvCaptureHint)
         
-        val intentJamKe = intent.getStringExtra("jam_ke")
+        val intentJamKe = intent.getStringExtra("jam_ke") ?: intent.getStringExtra("JAM_KE")
         if (!intentJamKe.isNullOrEmpty()) {
             etJamKe.setText(intentJamKe)
         }
 
+        val intentTanggal = intent.getStringExtra("tanggal") ?: intent.getStringExtra("TANGGAL")
+
         tvDetailPelajaran.text = "$namaMapel - $namaKelas"
         
         // Set Date
+        val dateToDisplay = if (!intentTanggal.isNullOrEmpty()) {
+            try {
+                val parser = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
+                parser.parse(intentTanggal) ?: java.util.Date()
+            } catch (e: Exception) {
+                java.util.Date()
+            }
+        } else {
+            java.util.Date()
+        }
         val formatter = java.text.SimpleDateFormat("EEEE, d MMMM yyyy", java.util.Locale("id", "ID"))
-        tvTanggal.text = formatter.format(java.util.Date())
+        tvTanggal.text = formatter.format(dateToDisplay)
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
@@ -161,15 +182,17 @@ class JurnalMengajarActivity : AppCompatActivity() {
         
         btnBatal.setOnClickListener { finish() }
         btnLanjut.setOnClickListener { submitJurnal() }
-        findViewById<ImageButton>(R.id.btnBack).setOnClickListener { finish() }
+        findViewById<View>(R.id.btnBack).setOnClickListener { finish() }
         
         loadJurnalInfo()
     }
     
     private fun loadJurnalInfo() {
+        if (idKelas.isEmpty() || idMapel.isEmpty()) return
+        val intentTanggal = intent.getStringExtra("tanggal") ?: intent.getStringExtra("TANGGAL")
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = ApiClient.instance.getJurnalInfo(idKelas, idMapel)
+                val response = ApiClient.instance.getJurnalInfo(idKelas, idMapel, intentTanggal)
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful && response.body()?.status == true) {
                         val data = response.body()?.data
@@ -312,6 +335,7 @@ class JurnalMengajarActivity : AppCompatActivity() {
         progressBar.visibility = View.VISIBLE
         btnLanjut.isEnabled = false
 
+        val intentTanggal = intent.getStringExtra("tanggal") ?: intent.getStringExtra("TANGGAL")
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = ApiClient.instance.submitJurnal(
@@ -320,7 +344,8 @@ class JurnalMengajarActivity : AppCompatActivity() {
                     jamKe = jamKe,
                     materi = materi,
                     keterangan = catatan,
-                    fotoKegiatan = base64Image
+                    fotoKegiatan = base64Image,
+                    tanggal = intentTanggal
                 )
 
                 withContext(Dispatchers.Main) {
@@ -337,6 +362,8 @@ class JurnalMengajarActivity : AppCompatActivity() {
                         intent.putExtra("nama_kelas", namaKelas)
                         intent.putExtra("nama_mapel", namaMapel)
                         intent.putExtra("jam_ke", jamKe)
+                        intent.putExtra("materi", materi)
+                        intent.putExtra("tanggal", intentTanggal)
                         startActivity(intent)
                         finish()
                     } else {
@@ -379,6 +406,11 @@ class JurnalMengajarActivity : AppCompatActivity() {
                 finish()
             }
         }
+    }
+
+    override fun finish() {
+        super.finish()
+        applyExitTransition()
     }
 
     override fun onDestroy() {

@@ -51,7 +51,7 @@ class IzinActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        applyEnterTransition()
         
         // Transparent Status Bar (Samakan dengan Dashboard)
         @Suppress("DEPRECATION")
@@ -65,32 +65,19 @@ class IzinActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_izin)
 
-        // Terapkan bottom inset secara global agar konten tidak tertutup navigasi bawaan HP
-        findViewById<android.view.ViewGroup>(android.R.id.content).getChildAt(0)?.let { rootView ->
-            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
-                val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
-                // Jika view sudah punya padding top (dari header dsb), pertahankan. Hanya tambah bottom.
-                view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, systemBars.bottom)
-                insets
-            }
-        }
-
-
-        // Padding untuk headerLayout agar tidak menabrak status bar
-        val headerLayout = findViewById<LinearLayout>(R.id.headerLayout)
-        ViewCompat.setOnApplyWindowInsetsListener(headerLayout) { view, insets ->
+        // Terapkan system bar insets pada root view (samakan dengan RekapMengajar)
+        val rootLayout = findViewById<View>(R.id.main)
+        ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            val topPaddingPx = (20 * resources.displayMetrics.density).toInt()
-            view.setPadding(view.paddingLeft, systemBars.top + topPaddingPx, view.paddingRight, view.paddingBottom)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // Update Header Text Colors based on theme (Samakan dengan Dashboard)
-        val headerTitleColor = if (isNightMode) android.graphics.Color.parseColor("#FFFFFF") else android.graphics.Color.parseColor("#1A1B41")
-        val headerSubtextColor = if (isNightMode) android.graphics.Color.parseColor("#D1D5DB") else android.graphics.Color.parseColor("#6B7280")
-        findViewById<TextView>(R.id.tvAppTitle).setTextColor(headerTitleColor)
-        findViewById<TextView>(R.id.tvNamaDashboard).setTextColor(headerTitleColor)
-        findViewById<TextView>(R.id.tvKelas).setTextColor(headerSubtextColor)
+        findViewById<View>(R.id.btnBack)?.setOnClickListener { finish() }
+
+        // Update Header Text Colors based on theme
+        val headerTitleColor = if (isNightMode) android.graphics.Color.parseColor("#FFFFFF") else android.graphics.Color.parseColor("#1E293B")
+        findViewById<TextView>(R.id.tvHeaderTitle)?.setTextColor(headerTitleColor)
 
         // 🔥 LOGIKA HYBRID BACA SESI (ANTI-NYASAR) 🔥
         val prefGuru = getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
@@ -117,8 +104,9 @@ class IzinActivity : AppCompatActivity() {
             return
         }
 
-        findViewById<TextView>(R.id.tvNamaDashboard).text = "Selamat Datang, $namaUser"
-        findViewById<TextView>(R.id.tvKelas).text = "Form Pengajuan Izin / Sakit"
+        val userLabel = if (userRole == "GURU") "Guru: $namaUser" else "Siswa: $namaUser"
+        findViewById<TextView>(R.id.tvKelas)?.text = userLabel
+        findViewById<TextView>(R.id.tvNamaDashboard)?.text = "Pengajuan Izin Tidak Masuk"
 
         val ivProfilPhoto = findViewById<ImageView>(R.id.ivProfilPhoto)
         if (ivProfilPhoto != null && fotoProfilUrl.isNotEmpty()) {
@@ -358,6 +346,6 @@ class IzinActivity : AppCompatActivity() {
 
     override fun finish() {
         super.finish()
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        applyExitTransition()
     }
 }

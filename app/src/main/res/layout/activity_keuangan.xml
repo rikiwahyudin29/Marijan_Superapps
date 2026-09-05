@@ -161,7 +161,12 @@
         android:orientation="vertical"
         android:visibility="gone"
         android:clickable="true">
-        <ProgressBar android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <com.airbnb.lottie.LottieAnimationView 
+            android:layout_width="80dp" 
+            android:layout_height="80dp"
+            app:lottie_url="https://lottie.host/ff71b2dd-787e-4f88-9f79-79f0eb2c8641/OqV9rU5oMu.json"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true" />
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Memuat Data..." android:textColor="#111827" android:textStyle="bold" android:layout_marginTop="16dp"/>
     </LinearLayout>
 </RelativeLayout>

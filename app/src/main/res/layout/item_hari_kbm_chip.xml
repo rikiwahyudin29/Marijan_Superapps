@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cvHariChip"
+    android:layout_width="72dp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="#FFFFFF"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    tools:ignore="HardcodedText">
+
+    <LinearLayout
+        android:id="@+id/llHariChipContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingVertical="12dp"
+        android:paddingHorizontal="6dp"
+        android:background="@drawable/bg_rounded_border_outline">
+
+        <!-- Singkatan Hari: SEN, SEL, RAB... -->
+        <TextView
+            android:id="@+id/tvSingkatanHari"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SEN"
+            android:textSize="9sp"
+            android:textColor="#94A3B8"
+            android:textStyle="bold"
+            android:letterSpacing="0.05"/>
+
+        <!-- Nama Hari: Senin, Selasa... -->
+        <TextView
+            android:id="@+id/tvNamaHari"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Senin"
+            android:textSize="13sp"
+            android:textColor="#1E293B"
+            android:textStyle="bold"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Badge Jam: 4 Jam / Libur -->
+        <TextView
+            android:id="@+id/tvBadgeJamHari"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4 Jam"
+            android:textSize="9sp"
+            android:textColor="#6D28D9"
+            android:textStyle="bold"
+            android:background="#EDE9FE"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="2dp"/>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

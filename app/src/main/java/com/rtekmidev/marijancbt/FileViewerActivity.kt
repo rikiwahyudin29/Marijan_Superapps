@@ -54,7 +54,7 @@ class FileViewerActivity : AppCompatActivity() {
         val btnBack = findViewById<ImageView>(R.id.btnBackViewer)
         val tvTitle = findViewById<TextView>(R.id.tvViewerTitle)
         val webView = findViewById<WebView>(R.id.webViewFile)
-        val progressBar = findViewById<ProgressBar>(R.id.progressBarViewer)
+        val progressBar = findViewById<View>(R.id.progressBarViewer)
 
         val fileUrl = intent.getStringExtra("FILE_URL") ?: ""
         val fileTitle = intent.getStringExtra("TITLE") ?: "Dokumen"

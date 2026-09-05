@@ -193,14 +193,16 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <ProgressBar
+            <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/pbMulaiUjian"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_gravity="center"
-                android:indeterminateTint="#2563EB"
                 android:visibility="gone"
-                android:layout_marginBottom="16dp"/>
+                android:layout_marginBottom="16dp"
+                app:lottie_url="https://lottie.host/ff71b2dd-787e-4f88-9f79-79f0eb2c8641/OqV9rU5oMu.json"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true" />
 
             <Button
                 android:id="@+id/btnMulaiUjian"

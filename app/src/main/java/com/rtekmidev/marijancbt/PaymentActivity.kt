@@ -31,7 +31,7 @@ class PaymentActivity : AppCompatActivity() {
         findViewById<ImageView>(R.id.btnBackPayment).setOnClickListener { finish() }
 
         val webView = findViewById<WebView>(R.id.webViewPayment)
-        val progressBar = findViewById<ProgressBar>(R.id.progressBarPayment)
+        val progressBar = findViewById<View>(R.id.progressBarPayment)
 
         // Konfigurasi WebView agar mendukung script Tripay
         webView.settings.javaScriptEnabled = true

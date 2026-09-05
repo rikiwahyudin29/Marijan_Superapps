@@ -299,10 +299,14 @@
                 <!-- Items will be injected here -->
                 
                 <!-- Loading State / Fallback -->
-                <ProgressBar
+                <com.airbnb.lottie.LottieAnimationView
                     android:id="@+id/progressBarNilai"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    app:lottie_url="https://lottie.host/ff71b2dd-787e-4f88-9f79-79f0eb2c8641/OqV9rU5oMu.json"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true" />
                     android:layout_gravity="center"
                     android:layout_marginTop="20dp"/>
             </LinearLayout>

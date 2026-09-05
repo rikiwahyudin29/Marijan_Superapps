@@ -18,6 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -26,7 +27,7 @@ class RekapMengajarActivity : AppCompatActivity() {
 
     private lateinit var rvRekapJurnal: RecyclerView
     private lateinit var adapter: RekapMengajarAdapter
-    private lateinit var pbLoading: ProgressBar
+    private lateinit var pbLoading: View
     private lateinit var tvEmpty: TextView
     private lateinit var tvSemesterInfo: TextView
     private lateinit var tvSelectedMonth: TextView
@@ -48,7 +49,7 @@ class RekapMengajarActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        applyEnterTransition()
         
         // Transparent Status Bar
         @Suppress("DEPRECATION")
@@ -97,6 +98,26 @@ class RekapMengajarActivity : AppCompatActivity() {
         chipBelumDiisi = findViewById(R.id.chipBelumDiisi)
         
         updateMonthText()
+        loadProfilePhoto()
+    }
+
+    private fun loadProfilePhoto() {
+        val sharedPref = getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
+        val fotoProfilUrl = sharedPref.getString("foto_profil", null)
+        val ivProfilPhoto = findViewById<ImageView>(R.id.ivProfilPhoto)
+        if (!fotoProfilUrl.isNullOrEmpty() && ivProfilPhoto != null) {
+            val fullUrl = if (fotoProfilUrl.startsWith("http")) fotoProfilUrl else "https://smkriyadhuljannahjalancagak.sch.id/uploads/guru/$fotoProfilUrl"
+            try {
+                Glide.with(this)
+                    .load(fullUrl)
+                    .placeholder(android.R.drawable.ic_menu_myplaces)
+                    .error(android.R.drawable.ic_menu_myplaces)
+                    .circleCrop()
+                    .into(ivProfilPhoto)
+            } catch (e: Exception) {
+                // Ignore glide errors
+            }
+        }
     }
 
     private fun setupListeners() {
@@ -123,13 +144,30 @@ class RekapMengajarActivity : AppCompatActivity() {
         adapter = RekapMengajarAdapter(this, emptyList()) { item ->
             if (item.status == "Belum Diisi") {
                 val intent = Intent(this, JurnalMengajarActivity::class.java)
-                intent.putExtra("ID_KELAS", item.id_kelas)
-                intent.putExtra("ID_MAPEL", item.id_mapel)
-                intent.putExtra("JAM_KE", item.jam_ke)
-                intent.putExtra("TANGGAL", item.tanggal)
+                intent.putExtra("id_kelas", item.id_kelas ?: "")
+                intent.putExtra("id_mapel", item.id_mapel ?: "")
+                intent.putExtra("nama_kelas", item.nama_kelas ?: "")
+                intent.putExtra("nama_mapel", item.nama_mapel ?: "")
+
+                val jamKeVal = if (!item.jam_ke.isNullOrEmpty()) {
+                    item.jam_ke
+                } else {
+                    val jmMulai = item.jam_mulai?.substring(0, 5) ?: ""
+                    val jmSelesai = item.jam_selesai?.substring(0, 5) ?: ""
+                    if (jmMulai.isNotEmpty() && jmSelesai.isNotEmpty()) "$jmMulai - $jmSelesai WIB" else ""
+                }
+                intent.putExtra("jam_ke", jamKeVal)
+                intent.putExtra("tanggal", item.tanggal ?: "")
+
+                // Fallback for uppercase keys
+                intent.putExtra("ID_KELAS", item.id_kelas ?: "")
+                intent.putExtra("ID_MAPEL", item.id_mapel ?: "")
+                intent.putExtra("JAM_KE", jamKeVal)
+                intent.putExtra("TANGGAL", item.tanggal ?: "")
                 startActivity(intent)
+                applyEnterTransition()
             } else if (item.status == "Terisi") {
-                Toast.makeText(this, "Lihat Jurnal belum diimplementasi detail", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Jurnal untuk jadwal ini sudah diisi.", Toast.LENGTH_SHORT).show()
             }
         }
         rvRekapJurnal.layoutManager = LinearLayoutManager(this)
@@ -269,6 +307,6 @@ class RekapMengajarActivity : AppCompatActivity() {
     
     override fun finish() {
         super.finish()
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        applyExitTransition()
     }
 }

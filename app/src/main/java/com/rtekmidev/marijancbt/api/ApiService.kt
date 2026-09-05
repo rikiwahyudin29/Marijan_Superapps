@@ -114,7 +114,8 @@ interface ApiService {
     @GET("api/akademik-guru/get-jurnal-info")
     suspend fun getJurnalInfo(
         @Query("id_kelas") idKelas: String,
-        @Query("id_mapel") idMapel: String
+        @Query("id_mapel") idMapel: String,
+        @Query("tanggal") tanggal: String? = null
     ): retrofit2.Response<JurnalInfoResponse>
 
     // --- API KHUSUS GURU ---
@@ -159,7 +160,8 @@ interface ApiService {
         @Field("jam_ke") jamKe: String,
         @Field("materi") materi: String,
         @Field("keterangan") keterangan: String,
-        @Field("foto_kegiatan") fotoKegiatan: String
+        @Field("foto_kegiatan") fotoKegiatan: String,
+        @Field("tanggal") tanggal: String? = null
     ): Response<SubmitJurnalResponse>
 
     @GET("api/akademik-guru/get-siswa-jurnal")
@@ -183,4 +185,9 @@ interface ApiService {
     suspend fun getWaliKelasRekapTagihan(
         @Query("id_user") idUser: String
     ): Response<JsonElement>
+
+    @GET("api/akademik-guru/jadwal")
+    suspend fun getJadwalMengajar(
+        @Query("id_user") idUser: String? = null
+    ): Response<JadwalMengajarResponse>
 }

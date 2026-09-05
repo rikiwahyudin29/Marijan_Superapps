@@ -50,7 +50,7 @@ class JadwalActivity : AppCompatActivity() {
     }
 
     private fun fetchJadwal() {
-        val pbLoading = findViewById<ProgressBar>(R.id.pbLoading)
+        val pbLoading = findViewById<View>(R.id.pbLoading)
         val containerJadwal = findViewById<LinearLayout>(R.id.containerJadwal)
         val tvInfoJadwal = findViewById<TextView>(R.id.tvInfoJadwal)
 

@@ -174,13 +174,15 @@
                             android:textStyle="bold"
                             android:textColor="#FFFFFF" />
                             
-                        <ProgressBar
+                        <com.airbnb.lottie.LottieAnimationView
                             android:id="@+id/pbLoadingLogin"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_gravity="center"
                             android:visibility="gone"
-                            android:indeterminateTint="#FFFFFF" />
+                            app:lottie_url="https://lottie.host/ff71b2dd-787e-4f88-9f79-79f0eb2c8641/OqV9rU5oMu.json"
+                            app:lottie_autoPlay="true"
+                            app:lottie_loop="true" />
                     </FrameLayout>
 
                 </LinearLayout>

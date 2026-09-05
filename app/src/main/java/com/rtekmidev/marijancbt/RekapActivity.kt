@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rtekmidev.marijancbt.api.ApiClient
 import com.rtekmidev.marijancbt.api.DataRekap
 import kotlinx.coroutines.*
+import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -32,7 +33,7 @@ class RekapActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         
         // Override transition (masuk mulus)
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        applyEnterTransition()
         
         setContentView(R.layout.activity_rekap)
 
@@ -48,7 +49,7 @@ class RekapActivity : AppCompatActivity() {
         val rootLayout = findViewById<View>(R.id.rootRekap)
         androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { view, insets ->
             val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
-            view.setPadding(0, systemBars.top, 0, systemBars.bottom)
+            view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
@@ -56,12 +57,15 @@ class RekapActivity : AppCompatActivity() {
         val prefGuru = getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
         val prefSiswa = getSharedPreferences("SesiUjian", Context.MODE_PRIVATE)
 
+        var fotoProfilUrl = ""
         if (prefGuru.getBoolean("isLoggedIn", false)) {
             userRole = "GURU"
             identifier = prefGuru.getString("id_user", "") ?: ""
+            fotoProfilUrl = prefGuru.getString("foto_profil", "") ?: ""
         } else if (prefSiswa.getBoolean("isLoggedIn", false)) {
             userRole = "SISWA"
             identifier = prefSiswa.getString("nisn", "") ?: ""
+            fotoProfilUrl = prefSiswa.getString("foto_profil", "") ?: ""
         } else {
             Toast.makeText(this, "Sesi tidak valid!", Toast.LENGTH_SHORT).show()
             finish()
@@ -70,7 +74,26 @@ class RekapActivity : AppCompatActivity() {
 
         findViewById<ImageView>(R.id.btnBackRekap).setOnClickListener { finish() }
 
-        findViewById<ImageView>(R.id.btnBackRekap).setOnClickListener { finish() }
+        val ivProfilPhoto = findViewById<ImageView>(R.id.ivProfilPhoto)
+        if (ivProfilPhoto != null && fotoProfilUrl.isNotEmpty()) {
+            val finalUrl = if (fotoProfilUrl.startsWith("http")) {
+                fotoProfilUrl
+            } else if (userRole == "GURU") {
+                "https://smkriyadhuljannahjalancagak.sch.id/uploads/guru/$fotoProfilUrl"
+            } else {
+                "https://smkriyadhuljannahjalancagak.sch.id/uploads/siswa/$fotoProfilUrl"
+            }
+            try {
+                Glide.with(this)
+                    .load(finalUrl)
+                    .placeholder(android.R.drawable.ic_menu_myplaces)
+                    .error(android.R.drawable.ic_menu_myplaces)
+                    .circleCrop()
+                    .into(ivProfilPhoto)
+            } catch (e: Exception) {
+                // Ignore glide errors
+            }
+        }
 
         findViewById<ImageView>(R.id.btnPrevMonth).setOnClickListener {
             currentMonthCalendar.add(Calendar.MONTH, -1)
@@ -251,6 +274,6 @@ class RekapActivity : AppCompatActivity() {
     override fun finish() {
         super.finish()
         // Override transition (keluar mulus)
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        applyExitTransition()
     }
 }

@@ -2,93 +2,77 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8FAFC"
+    android:background="@drawable/bg_animated_gradient"
     tools:ignore="HardcodedText,Autofill,ContentDescription">
 
     <!-- Top App Bar -->
     <LinearLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:layout_alignParentTop="true"
-        android:background="#FFFFFF"
-        android:elevation="4dp"
+        android:background="@android:color/transparent"
+        android:elevation="2dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:paddingHorizontal="16dp">
 
-        <!-- Back Button -->
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:src="@drawable/ic_back_circle"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_baseline_arrow_back_24"
+            app:tint="#1E293B"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"/>
 
-        <!-- School Brand Identity -->
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/logo_marj" />
+            
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
             android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-            
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/logo_marj" />
-                
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginStart="8dp">
-                
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Presensi Kelas"
-                    android:textColor="#0F172A"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="SMK RJ SuperApps"
-                    android:textColor="#64748B"
-                    android:textSize="10sp" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Live Session Badge -->
-        <LinearLayout
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_badge_green_dark"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="4dp">
-            
-            <View
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:background="@drawable/bg_circle_green"
-                android:layout_marginEnd="6dp"/>
-                
+            android:orientation="vertical"
+            android:layout_marginStart="8dp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sesi Aktif"
-                android:textColor="#047857"
-                android:textSize="11sp"
-                android:textStyle="bold"/>
+                android:text="SMK RJ SuperApps"
+                android:textColor="#64748B"
+                android:textSize="10sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Presensi Kelas"
+                android:textColor="#1E293B"
+                android:textSize="18sp"
+                android:textStyle="bold" />
         </LinearLayout>
+
+        <!-- Profile Pic -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvProfilPic"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="0dp"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground">
+            <ImageView
+                android:id="@+id/ivProfilPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@android:drawable/ic_menu_myplaces"
+                android:scaleType="centerCrop"/>
+        </androidx.cardview.widget.CardView>
     </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -109,33 +93,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="8dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#1E1B4B"
                 android:layout_marginBottom="16dp">
                 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_gradient_banner"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="20dp">
                     
                     <!-- Filter Badges Row -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
                         
                         <TextView
                             android:id="@+id/tvKelasBadge"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/bg_badge_light_blue"
+                            android:background="@drawable/bg_rounded_border"
+                            android:backgroundTint="#312E81"
                             android:text="KELAS"
-                            android:textColor="#FFFFFF"
+                            android:textColor="#A5B4FC"
                             android:textSize="11sp"
                             android:textStyle="bold"
                             android:paddingHorizontal="8dp"
-                            android:paddingVertical="2dp"
+                            android:paddingVertical="4dp"
                             android:layout_marginEnd="8dp"/>
                             
                         <TextView
@@ -143,27 +129,30 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_badge_blue_outline"
+                            android:background="@drawable/bg_rounded_border"
+                            android:backgroundTint="#312E81"
                             android:text="Mata Pelajaran"
-                            android:textColor="#1E3A8A"
+                            android:textColor="#FFFFFF"
                             android:textSize="11sp"
+                            android:textStyle="bold"
                             android:maxLines="1"
                             android:ellipsize="end"
-                            android:paddingHorizontal="8dp"
-                            android:paddingVertical="2dp"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="4dp"
                             android:layout_marginEnd="8dp"/>
                             
                         <TextView
                             android:id="@+id/tvJamKeBadge"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/bg_badge_light_blue"
+                            android:background="@drawable/bg_rounded_border"
+                            android:backgroundTint="#312E81"
                             android:text="Jam: -"
-                            android:textColor="#FFFFFF"
+                            android:textColor="#A5B4FC"
                             android:textSize="11sp"
                             android:textStyle="bold"
                             android:paddingHorizontal="8dp"
-                            android:paddingVertical="2dp"/>
+                            android:paddingVertical="4dp"/>
                     </LinearLayout>
                     
                     <!-- Subject Topic Title & Total Card -->
@@ -171,7 +160,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginTop="12dp">
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="16dp">
                         
                         <LinearLayout
                             android:layout_width="0dp"
@@ -185,7 +175,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Materi Pelajaran"
                                 android:textColor="#FFFFFF"
-                                android:textSize="16sp"
+                                android:textSize="18sp"
                                 android:textStyle="bold"
                                 android:maxLines="2"
                                 android:ellipsize="end"/>
@@ -195,7 +185,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Tanggal Hari Ini"
-                                android:textColor="#C7D2FE"
+                                android:textColor="#A5B4FC"
                                 android:textSize="12sp"
                                 android:layout_marginTop="4dp"
                                 android:drawablePadding="6dp"/>
@@ -206,9 +196,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:background="@drawable/bg_badge_blue_outline"
-                            android:paddingHorizontal="12dp"
-                            android:paddingVertical="6dp"
+                            android:background="@drawable/bg_rounded_border"
+                            android:backgroundTint="#312E81"
+                            android:paddingHorizontal="14dp"
+                            android:paddingVertical="8dp"
                             android:gravity="center"
                             android:layout_marginStart="12dp">
                             
@@ -216,7 +207,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="TOTAL SISWA"
-                                android:textColor="#1E3A8A"
+                                android:textColor="#A5B4FC"
                                 android:textSize="9sp"
                                 android:textStyle="bold"/>
                                 
@@ -225,7 +216,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0"
-                                android:textColor="#1E40AF"
+                                android:textColor="#FFFFFF"
                                 android:textSize="20sp"
                                 android:textStyle="bold"/>
                         </LinearLayout>
@@ -234,9 +225,9 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="#33FFFFFF"
-                        android:layout_marginTop="12dp"
-                        android:layout_marginBottom="8dp"/>
+                        android:background="#20FFFFFF"
+                        android:layout_marginTop="14dp"
+                        android:layout_marginBottom="10dp"/>
                         
                     <!-- Realtime Attendance Summary Chips -->
                     <LinearLayout

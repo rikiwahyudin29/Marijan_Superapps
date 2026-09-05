@@ -169,6 +169,7 @@
                             android:textStyle="bold"
                             android:layout_marginEnd="4dp"/>
                         <TextView
+                            android:id="@+id/tvLabelSiswaBelumAbsen"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Siswa"
@@ -385,12 +386,17 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
             <TextView
+                android:id="@+id/btnLihatSemuaJadwal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Lihat Semua"
                 android:textColor="#0284C7"
                 android:textSize="12sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:padding="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"/>
         </LinearLayout>
 
         <!-- Dynamic Container for Jadwal Items -->
@@ -402,12 +408,15 @@
             <!-- Items will be injected here dynamically via code -->
             
             <!-- Loading Indicator -->
-            <ProgressBar
+            <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/pbJadwal"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_gravity="center"
-                android:layout_margin="20dp" />
+                android:layout_margin="20dp"
+                app:lottie_url="https://lottie.host/ff71b2dd-787e-4f88-9f79-79f0eb2c8641/OqV9rU5oMu.json"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true" />
                 
             <TextView
                 android:id="@+id/tvEmptyJadwal"

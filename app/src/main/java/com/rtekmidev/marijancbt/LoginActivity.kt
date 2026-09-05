@@ -89,7 +89,7 @@ class LoginActivity : AppCompatActivity() {
         val etUsername = findViewById<EditText>(R.id.etNISN)
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
-        val progressBar = findViewById<ProgressBar>(R.id.pbLoadingLogin)
+        val progressBar = findViewById<View>(R.id.pbLoadingLogin)
 
         // 🌟 Start Background Gradient Animation
         val vBackgroundGradient = findViewById<View>(R.id.vBackgroundGradient)
@@ -143,7 +143,7 @@ class LoginActivity : AppCompatActivity() {
 
     @SuppressLint("HardwareIds")
     private fun doLogin(username: String, pass: String, otp: String?) {
-        val progressBar = findViewById<ProgressBar>(R.id.pbLoadingLogin)
+        val progressBar = findViewById<View>(R.id.pbLoadingLogin)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
 
         progressBar.visibility = View.VISIBLE
@@ -211,6 +211,7 @@ class LoginActivity : AppCompatActivity() {
                             } else {
                                 startActivity(Intent(this@LoginActivity, DashboardActivity::class.java))
                             }
+                            applyEnterTransition()
                             finish() // Tutup halaman login
                         }
                     } else {

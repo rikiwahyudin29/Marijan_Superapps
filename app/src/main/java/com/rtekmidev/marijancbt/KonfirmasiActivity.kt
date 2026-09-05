@@ -52,7 +52,7 @@ class KonfirmasiActivity : AppCompatActivity() {
         // Paksa semua teks jadi huruf besar tanpa merusak kursor
         etToken.filters = arrayOf(android.text.InputFilter.AllCaps())
         val btnMulai = findViewById<Button>(R.id.btnMulaiUjian)
-        val pbLoading = findViewById<ProgressBar>(R.id.pbMulaiUjian)
+        val pbLoading = findViewById<View>(R.id.pbMulaiUjian)
 
         // Pasang Teks
         tvMapel.text = mapel

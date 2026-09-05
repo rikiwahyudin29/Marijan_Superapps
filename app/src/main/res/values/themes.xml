@@ -1,10 +1,24 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.MarijanCBT" parent="Theme.Material3.Light.NoActionBar">
-        <!-- Customize your light theme here. -->
+    <!-- Base application theme with global smooth transitions -->
+    <style name="Theme.MarijanCBT" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">#FFFFFF</item>
+        <item name="android:windowBackground">#F8FAFC</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimation.Smooth</item>
     </style>
 
-    <style name="Theme.MarijanCBT" parent="Base.Theme.MarijanCBT" />
+    <style name="WindowAnimation.Smooth" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/fade_in_smooth</item>
+        <item name="android:activityOpenExitAnimation">@anim/stay_smooth</item>
+        <item name="android:activityCloseEnterAnimation">@anim/stay_smooth</item>
+        <item name="android:activityCloseExitAnimation">@anim/fade_out_smooth</item>
+        <item name="android:taskOpenEnterAnimation">@anim/fade_in_smooth</item>
+        <item name="android:taskOpenExitAnimation">@anim/stay_smooth</item>
+        <item name="android:taskCloseEnterAnimation">@anim/stay_smooth</item>
+        <item name="android:taskCloseExitAnimation">@anim/fade_out_smooth</item>
+        <item name="android:taskToFrontEnterAnimation">@anim/fade_in_smooth</item>
+        <item name="android:taskToFrontExitAnimation">@anim/stay_smooth</item>
+        <item name="android:taskToBackEnterAnimation">@anim/stay_smooth</item>
+        <item name="android:taskToBackExitAnimation">@anim/fade_out_smooth</item>
+    </style>
 </resources>

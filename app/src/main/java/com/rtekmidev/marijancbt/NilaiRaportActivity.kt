@@ -36,7 +36,7 @@ class NilaiRaportActivity : AppCompatActivity() {
     private lateinit var tvTotalSiswa: TextView
     private lateinit var tvPeringkatParalel: TextView
     private lateinit var wadahDaftarNilai: LinearLayout
-    private lateinit var progressBarNilai: ProgressBar
+    private lateinit var progressBarNilai: View
     private lateinit var btnDownloadPdf: LinearLayout
     private var downloadUrl: String? = null
 

@@ -137,7 +137,7 @@ class PresensiFragment : Fragment() {
                 val intent = Intent(requireContext(), IzinActivity::class.java)
                 intent.putExtra("ROLE", userRole)
                 startActivity(intent)
-                requireActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                requireActivity().applyEnterTransition()
                 return@setOnClickListener
             }
             bukaScannerQR()
@@ -147,13 +147,13 @@ class PresensiFragment : Fragment() {
             val intent = Intent(requireContext(), IzinActivity::class.java)
             intent.putExtra("ROLE", userRole)
             startActivity(intent)
-            requireActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            requireActivity().applyEnterTransition()
         }
         
         view.findViewById<CardView>(R.id.btnLihatRekap).setOnClickListener {
             val intent = Intent(requireContext(), RekapActivity::class.java)
             startActivity(intent)
-            requireActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            requireActivity().applyEnterTransition()
         }
     }
 

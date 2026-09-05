@@ -1,6 +1,7 @@
 package com.rtekmidev.marijancbt
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,11 +32,14 @@ class AkademikGuruFragment : Fragment() {
         view.findViewById<View>(R.id.btnRekapMengajar)?.setOnClickListener {
             val intent = android.content.Intent(requireContext(), RekapMengajarActivity::class.java)
             startActivity(intent)
+            requireActivity().applyEnterTransition()
         }
         
 
         view.findViewById<View>(R.id.btnJadwalMengajar)?.setOnClickListener {
-            android.widget.Toast.makeText(requireContext(), "Jadwal Mengajar belum tersedia", android.widget.Toast.LENGTH_SHORT).show()
+            val intent = Intent(requireContext(), JadwalMengajarActivity::class.java)
+            startActivity(intent)
+            requireActivity().applyEnterTransition()
         }
         
         return view
@@ -48,12 +52,18 @@ class AkademikGuruFragment : Fragment() {
         val tvTotalJamMapelHeader = view.findViewById<TextView>(R.id.tvTotalJamMapelHeader)
         val tvSiswaBelumAbsen = view.findViewById<TextView>(R.id.tvSiswaBelumAbsen)
         val containerJadwal = view.findViewById<LinearLayout>(R.id.containerJadwalHariIni)
-        val pbJadwal = view.findViewById<ProgressBar>(R.id.pbJadwal)
+        val pbJadwal = view.findViewById<View>(R.id.pbJadwal)
         val tvEmptyJadwal = view.findViewById<TextView>(R.id.tvEmptyJadwal)
         val containerMapelDiampu = view.findViewById<LinearLayout>(R.id.containerMapelDiampu)
         val btnWaliKelas = view.findViewById<View>(R.id.btnWaliKelas)
         val tvWaliKelasTitle = view.findViewById<TextView>(R.id.tvWaliKelasTitle)
         val tvWaliKelasSiswa = view.findViewById<TextView>(R.id.tvWaliKelasSiswa)
+
+        view.findViewById<View>(R.id.btnLihatSemuaJadwal)?.setOnClickListener {
+            val intent = Intent(requireContext(), JadwalMengajarActivity::class.java)
+            startActivity(intent)
+            requireActivity().applyEnterTransition()
+        }
 
         val sharedPref = requireActivity().getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
         val idUser = sharedPref.getString("id_user", null)
@@ -71,7 +81,15 @@ class AkademikGuruFragment : Fragment() {
                             if (data != null) {
                                 tvTotalJamMingguIni?.text = data.total_jam_minggu_ini.toString()
                                 tvTotalJamMapelHeader?.text = "Total: ${data.total_jam_minggu_ini}\nJam/Minggu"
-                                tvSiswaBelumAbsen?.text = data.siswa_belum_absen.toString()
+                                
+                                val tvLabelSiswaBelumAbsen = view?.findViewById<TextView>(R.id.tvLabelSiswaBelumAbsen)
+                                if (data.is_libur == true) {
+                                    tvSiswaBelumAbsen?.text = "0"
+                                    tvLabelSiswaBelumAbsen?.text = "Libur"
+                                } else {
+                                    tvSiswaBelumAbsen?.text = data.siswa_belum_absen.toString()
+                                    tvLabelSiswaBelumAbsen?.text = "Siswa"
+                                }
 
                                 val inflater = LayoutInflater.from(requireContext())
 
@@ -84,6 +102,7 @@ class AkademikGuruFragment : Fragment() {
                                     btnWaliKelas?.setOnClickListener {
                                         val intent = android.content.Intent(requireContext(), WaliKelasKehadiranActivity::class.java)
                                         startActivity(intent)
+                                        requireActivity().applyEnterTransition()
                                     }
                                 } else {
                                     btnWaliKelas?.visibility = View.GONE
@@ -144,6 +163,7 @@ class AkademikGuruFragment : Fragment() {
                                             intent.putExtra("jam_ke", "$jmMulai - $jmSelesai WIB")
                                         }
                                         startActivity(intent)
+                                        requireActivity().applyEnterTransition()
                                     }
                                 }
 
@@ -221,6 +241,7 @@ class AkademikGuruFragment : Fragment() {
                                                     }
                                                 }
                                                 startActivity(intent)
+                                                requireActivity().applyEnterTransition()
                                             }
                                         }
                                         
@@ -228,6 +249,12 @@ class AkademikGuruFragment : Fragment() {
                                     }
                                 } else {
                                     tvEmptyJadwal?.visibility = View.VISIBLE
+                                    if (data.is_libur == true) {
+                                        val ket = data.keterangan_libur ?: "Libur Akhir Pekan"
+                                        tvEmptyJadwal?.text = "Hari Libur ($ket)\nTidak ada kegiatan belajar mengajar hari ini"
+                                    } else {
+                                        tvEmptyJadwal?.text = "Tidak ada jadwal mengajar hari ini"
+                                    }
                                 }
                             }
                         } else {

@@ -1,6 +1,8 @@
 package com.rtekmidev.marijancbt
 
+import android.content.Context
 import android.os.Bundle
+import com.bumptech.glide.Glide
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -61,7 +63,45 @@ class PresensiKelasActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        applyEnterTransition()
+        
+        // Transparent Status Bar
+        @Suppress("DEPRECATION")
+        window.statusBarColor = android.graphics.Color.TRANSPARENT
+        androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
+        
+        val currentNightMode = resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
+        val isNightMode = currentNightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES
+        val insetsController = androidx.core.view.WindowCompat.getInsetsController(window, window.decorView)
+        insetsController.isAppearanceLightStatusBars = !isNightMode
+
         setContentView(R.layout.activity_presensi_kelas)
+
+        // Handle insets for root view (samakan dengan RekapMengajar)
+        val rootLayout = findViewById<View>(R.id.main)
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { view, insets ->
+            val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+            view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        val prefGuru = getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
+        val fotoProfilUrl = prefGuru.getString("foto_profil", null)
+        val ivProfilPhoto = findViewById<ImageView>(R.id.ivProfilPhoto)
+        if (!fotoProfilUrl.isNullOrEmpty() && ivProfilPhoto != null) {
+            val fullUrl = if (fotoProfilUrl.startsWith("http")) fotoProfilUrl else "https://smkriyadhuljannahjalancagak.sch.id/uploads/guru/$fotoProfilUrl"
+            try {
+                Glide.with(this)
+                    .load(fullUrl)
+                    .placeholder(android.R.drawable.ic_menu_myplaces)
+                    .error(android.R.drawable.ic_menu_myplaces)
+                    .circleCrop()
+                    .into(ivProfilPhoto)
+            } catch (e: Exception) {
+                // Ignore glide errors
+            }
+        }
 
         idJurnal = intent.getIntExtra("id_jurnal", 0)
         val namaKelas = intent.getStringExtra("nama_kelas") ?: "-"
@@ -73,10 +113,21 @@ class PresensiKelasActivity : AppCompatActivity() {
         tvKelasBadge.text = namaKelas
         tvMapelBadge.text = namaMapel
         tvJamKeBadge.text = "Jam: $jamKe"
-        tvMateri.text = namaMapel // For now, materi isn't passed from intent, use mapel as fallback or we can add it to intent
+        val materi = intent.getStringExtra("materi")
+        tvMateri.text = if (!materi.isNullOrEmpty()) materi else namaMapel
         
+        val intentTanggal = intent.getStringExtra("tanggal")
+        val dateToDisplay = if (!intentTanggal.isNullOrEmpty()) {
+            try {
+                SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(intentTanggal) ?: Date()
+            } catch (e: Exception) {
+                Date()
+            }
+        } else {
+            Date()
+        }
         val sdf = SimpleDateFormat("EEEE, d MMMM yyyy", Locale("id", "ID"))
-        tvTanggal.text = sdf.format(Date())
+        tvTanggal.text = sdf.format(dateToDisplay)
 
         adapter = PresensiSiswaAdapter(emptyList()) {
             updateSummary()
@@ -240,5 +291,10 @@ class PresensiKelasActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun finish() {
+        super.finish()
+        applyExitTransition()
     }
 }
