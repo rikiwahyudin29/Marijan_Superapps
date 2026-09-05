@@ -58,6 +58,9 @@ class DashboardGuruActivity : AppCompatActivity() {
         
         setContentView(R.layout.activity_dashboard_guru)
 
+        // Cek dan minta izin notifikasi runtime (Android 13+) untuk pengingat jadwal mengajar
+        PengingatMengajarManager.cekDanMintaIzinNotifikasi(this)
+
         // Terapkan bottom inset secara global agar konten tidak tertutup navigasi bawaan HP
         findViewById<android.view.ViewGroup>(android.R.id.content).getChildAt(0)?.let { rootView ->
             androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->

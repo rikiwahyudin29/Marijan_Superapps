@@ -93,6 +93,12 @@ class ProfilGuruFragment : Fragment() {
         view.findViewById<View>(R.id.cardGantiPassword)?.setOnClickListener(gantiPwAction)
         view.findViewById<View>(R.id.btnGantiPassword)?.setOnClickListener(gantiPwAction)
 
+        // Tes Notifikasi & Getar Panjang Pengingat Mengajar
+        view.findViewById<View>(R.id.btnTesPengingat)?.setOnClickListener {
+            Toast.makeText(requireContext(), "Menguji pengingat KBM & getar panjang...", Toast.LENGTH_SHORT).show()
+            PengingatMengajarManager.testNotifikasiGetarPanjang(requireContext())
+        }
+
         // Tombol Keluar Akun (Logout)
         view.findViewById<View>(R.id.btnKeluarAkun)?.setOnClickListener {
             konfirmasiKeluarAkun()

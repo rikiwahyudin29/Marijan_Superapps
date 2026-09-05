@@ -82,6 +82,13 @@ class AkademikGuruFragment : Fragment() {
                         if (data != null) {
                             cachedData = data
                             renderDashboard(view, data)
+                            context?.let { ctx ->
+                                PengingatMengajarManager.sinkronkanJadwalHariIni(
+                                    ctx,
+                                    data.jadwal_hari_ini,
+                                    data.is_libur == true
+                                )
+                            }
                         }
                     }
                 }
