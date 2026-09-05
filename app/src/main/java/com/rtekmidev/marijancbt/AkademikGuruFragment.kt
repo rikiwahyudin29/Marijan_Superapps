@@ -65,10 +65,6 @@ class AkademikGuruFragment : Fragment() {
             requireActivity().applyEnterTransition()
         }
 
-        // Quick Action 4: Bank Materi
-        view.findViewById<View>(R.id.btnAksiBankMateri)?.setOnClickListener {
-            Toast.makeText(requireContext(), "Fitur Bank Materi & Modul Ajar segera hadir.", Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun loadDashboardData(view: View) {
@@ -178,11 +174,7 @@ class AkademikGuruFragment : Fragment() {
 
                 item.findViewById<TextView>(R.id.tvNamaMapel)?.text = mapel.nama_mapel ?: "-"
                 item.findViewById<TextView>(R.id.tvNamaKelas)?.text = mapel.nama_kelas ?: "-"
-                item.findViewById<TextView>(R.id.tvModulInfo)?.text = mapel.modul_info ?: "Modul 4 / 12"
                 item.findViewById<TextView>(R.id.tvTotalJam)?.text = (mapel.jp_per_minggu ?: 0).toString()
-
-                val pbModul = item.findViewById<ProgressBar>(R.id.pbMapelModul)
-                pbModul?.progress = mapel.progress_persen ?: 35
 
                 // Vary icon color themes
                 val colorIdx = index % iconBgs.size
@@ -256,6 +248,8 @@ class AkademikGuruFragment : Fragment() {
     }
 
     private fun renderKbmAktif(view: View, kbm: KbmAktifInfo?, fullData: DashboardGuruData) {
+        val tvHeaderTitle = view.findViewById<TextView>(R.id.tvHeaderKbmTitle)
+        val tvLiveIndicator = view.findViewById<TextView>(R.id.tvLiveIndicator)
         val tvStatus = view.findViewById<TextView>(R.id.tvKbmStatusBadge)
         val tvJamKe = view.findViewById<TextView>(R.id.tvKbmJamKe)
         val tvNamaMapel = view.findViewById<TextView>(R.id.tvKbmNamaMapel)
@@ -263,10 +257,37 @@ class AkademikGuruFragment : Fragment() {
         val tvRuang = view.findViewById<TextView>(R.id.tvKbmRuang)
         val btnIsiJurnal = view.findViewById<View>(R.id.btnKbmIsiJurnal)
         val tvBtnIsiText = view.findViewById<TextView>(R.id.tvBtnKbmIsiJurnalText)
-        val btnPresensiSiswa = view.findViewById<View>(R.id.btnKbmPresensiSiswa)
 
-        if (kbm != null) {
-            tvStatus?.text = "● ${kbm.status_badge ?: "Sedang Berlangsung"}"
+        val isLibur = fullData.is_libur == true || fullData.wali_kelas_info?.is_libur == true
+
+        if (isLibur) {
+            // Kondisi Hari Libur Sekolah / Akhir Pekan
+            tvHeaderTitle?.text = "● Status KBM (Hari Libur)"
+            tvHeaderTitle?.setTextColor(Color.parseColor("#64748B"))
+            tvLiveIndicator?.visibility = View.GONE
+
+            val ketLibur = fullData.keterangan_libur ?: fullData.wali_kelas_info?.keterangan_libur ?: "Libur Sekolah"
+            tvStatus?.text = "● $ketLibur"
+            tvStatus?.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#F1F5F9"))
+            tvStatus?.setTextColor(Color.parseColor("#64748B"))
+
+            tvJamKe?.text = fullData.tanggal_hari_ini_formatted ?: "-"
+            tvNamaMapel?.text = "Hari Libur Sekolah"
+            tvKelas?.text = fullData.keterangan_libur ?: "Tidak Ada Kegiatan KBM"
+            tvRuang?.text = "Sekolah Libur"
+
+            tvBtnIsiText?.text = "Hari Libur"
+            btnIsiJurnal?.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#94A3B8"))
+            btnIsiJurnal?.setOnClickListener {
+                Toast.makeText(requireContext(), "Hari ini libur sekolah, tidak ada kegiatan KBM.", Toast.LENGTH_SHORT).show()
+            }
+        } else if (kbm != null) {
+            // Sesi KBM sedang berlangsung atau terjadwal hari ini
+            tvHeaderTitle?.text = if (kbm.is_active) "● KBM Sedang Berlangsung" else "● Jadwal KBM Hari Ini"
+            tvHeaderTitle?.setTextColor(if (kbm.is_active) Color.parseColor("#0D9488") else Color.parseColor("#475569"))
+            tvLiveIndicator?.visibility = if (kbm.is_active) View.VISIBLE else View.GONE
+
+            tvStatus?.text = "● ${kbm.status_badge ?: if (kbm.is_active) "Sedang Berlangsung" else "Jadwal Hari Ini"}"
             if (kbm.is_active) {
                 tvStatus?.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#DCFCE7"))
                 tvStatus?.setTextColor(Color.parseColor("#166534"))
@@ -291,29 +312,24 @@ class AkademikGuruFragment : Fragment() {
             btnIsiJurnal?.setOnClickListener {
                 bukaJurnalMengajar(kbm)
             }
-
-            btnPresensiSiswa?.setOnClickListener {
-                bukaPresensiSiswa(kbm)
-            }
         } else {
-            // State ketika tidak ada jadwal aktif
+            // State ketika tidak ada jadwal aktif saat ini
+            tvHeaderTitle?.text = "● Status KBM Hari Ini"
+            tvHeaderTitle?.setTextColor(Color.parseColor("#64748B"))
+            tvLiveIndicator?.visibility = View.GONE
+
             tvStatus?.text = "● Tidak Ada KBM Aktif"
             tvStatus?.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#F1F5F9"))
             tvStatus?.setTextColor(Color.parseColor("#64748B"))
 
             tvJamKe?.text = fullData.tanggal_hari_ini_formatted ?: "-"
-            tvNamaMapel?.text = "Tidak Ada KBM Sedang Berlangsung"
+            tvNamaMapel?.text = "Tidak Ada KBM Berlangsung Saat Ini"
             tvKelas?.text = "Cek Jadwal Mingguan"
             tvRuang?.text = "Ruang Kelas"
 
-            tvBtnIsiText?.text = "Lihat Jadwal"
+            tvBtnIsiText?.text = "Lihat Jadwal Mengajar"
             btnIsiJurnal?.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#1E1B4B"))
             btnIsiJurnal?.setOnClickListener {
-                startActivity(Intent(requireContext(), JadwalMengajarActivity::class.java))
-                requireActivity().applyEnterTransition()
-            }
-
-            btnPresensiSiswa?.setOnClickListener {
                 startActivity(Intent(requireContext(), JadwalMengajarActivity::class.java))
                 requireActivity().applyEnterTransition()
             }
@@ -321,6 +337,12 @@ class AkademikGuruFragment : Fragment() {
     }
 
     private fun handleIsiJurnalAction(kbm: KbmAktifInfo?, fullData: DashboardGuruData) {
+        val isLibur = fullData.is_libur == true || fullData.wali_kelas_info?.is_libur == true
+        if (isLibur) {
+            Toast.makeText(requireContext(), "Hari ini libur sekolah, tidak ada pengisian jurnal KBM.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         if (kbm != null && !kbm.id_kelas.isNullOrEmpty()) {
             bukaJurnalMengajar(kbm)
         } else {
@@ -350,26 +372,5 @@ class AkademikGuruFragment : Fragment() {
         intent.putExtra("jam_ke", kbm.jam_ke ?: "")
         startActivity(intent)
         requireActivity().applyEnterTransition()
-    }
-
-    private fun bukaPresensiSiswa(kbm: KbmAktifInfo) {
-        val idJurnal = kbm.id_jurnal ?: 0
-        if (kbm.is_jurnal_filled && idJurnal > 0) {
-            val intent = Intent(requireContext(), PresensiKelasActivity::class.java)
-            intent.putExtra("id_jurnal", idJurnal)
-            intent.putExtra("nama_kelas", kbm.nama_kelas ?: "")
-            intent.putExtra("nama_mapel", kbm.nama_mapel ?: "")
-            intent.putExtra("jam_ke", kbm.jam_ke ?: "")
-            intent.putExtra("materi", kbm.materi ?: "")
-            startActivity(intent)
-            requireActivity().applyEnterTransition()
-        } else {
-            Toast.makeText(
-                requireContext(),
-                "Silakan isi Jurnal KBM terlebih dahulu sebelum melakukan presensi siswa.",
-                Toast.LENGTH_LONG
-            ).show()
-            bukaJurnalMengajar(kbm)
-        }
     }
 }
