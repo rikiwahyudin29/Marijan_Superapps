@@ -166,7 +166,18 @@ class IzinActivity : AppCompatActivity() {
         etTgl.setOnClickListener {
             val c = Calendar.getInstance()
             DatePickerDialog(this, { _, y, m, d ->
-                etTgl.setText("$y-${m+1}-$d")
+                val checkCal = Calendar.getInstance()
+                checkCal.set(y, m, d)
+                val dow = checkCal.get(Calendar.DAY_OF_WEEK)
+                if (dow == Calendar.SUNDAY || dow == Calendar.SATURDAY) {
+                    val hari = if (dow == Calendar.SUNDAY) "Hari Minggu" else "Hari Sabtu"
+                    Toast.makeText(this, "$hari adalah hari libur sekolah. Tidak dapat mengajukan izin.", Toast.LENGTH_LONG).show()
+                    etTgl.setText("")
+                    return@DatePickerDialog
+                }
+                val formattedMonth = String.format(Locale.US, "%02d", m + 1)
+                val formattedDay = String.format(Locale.US, "%02d", d)
+                etTgl.setText("$y-$formattedMonth-$formattedDay")
             }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show()
         }
 
@@ -202,6 +213,18 @@ class IzinActivity : AppCompatActivity() {
         // 5. Tombol Kirim Form
         findViewById<Button>(R.id.btnKirimIzin).setOnClickListener {
             if (!isSubmitting) kirimIzin()
+        }
+
+        // Auto-select status jika dilempar dari portal presensi (misal: "Dinas Luar" atau "Izin")
+        val defStatus = intent.getStringExtra("default_status")
+        if (!defStatus.isNullOrEmpty()) {
+            if (defStatus.equals("Dinas Luar", ignoreCase = true)) {
+                findViewById<RadioButton>(R.id.rbDinasLuar)?.isChecked = true
+            } else if (defStatus.equals("Sakit", ignoreCase = true)) {
+                findViewById<RadioButton>(R.id.rbSakit)?.isChecked = true
+            } else {
+                findViewById<RadioButton>(R.id.rbIzin)?.isChecked = true
+            }
         }
     }
 
@@ -299,6 +322,22 @@ class IzinActivity : AppCompatActivity() {
             Toast.makeText(this, "Lengkapi semua data dan ambil foto surat!", Toast.LENGTH_SHORT).show()
             return
         }
+
+        // Validasi jika tanggal pengajuan adalah hari libur akhir pekan (Sabtu/Minggu)
+        try {
+            val sdfCheck = java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val dateParsed = sdfCheck.parse(tgl)
+            if (dateParsed != null) {
+                val calCheck = Calendar.getInstance()
+                calCheck.time = dateParsed
+                val dow = calCheck.get(Calendar.DAY_OF_WEEK)
+                if (dow == Calendar.SUNDAY || dow == Calendar.SATURDAY) {
+                    val hari = if (dow == Calendar.SUNDAY) "Hari Minggu" else "Hari Sabtu"
+                    Toast.makeText(this, "Tidak dapat mengajukan izin pada hari libur sekolah ($hari).", Toast.LENGTH_LONG).show()
+                    return
+                }
+            }
+        } catch (_: Exception) {}
 
         isSubmitting = true
         val btnKirim = findViewById<Button>(R.id.btnKirimIzin)

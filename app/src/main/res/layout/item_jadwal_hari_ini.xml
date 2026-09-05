@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
     app:cardCornerRadius="16dp"
-    app:cardElevation="0dp"
+    app:cardElevation="2dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground">
@@ -102,7 +102,7 @@
                             android:id="@+id/tvRuang"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Lab Komputer 1"
+                            android:text="Ruang Kelas"
                             android:textColor="#6B7280"
                             android:textSize="12sp" />
                     </LinearLayout>

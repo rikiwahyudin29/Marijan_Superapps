@@ -55,9 +55,11 @@ class AkademikGuruFragment : Fragment() {
         val pbJadwal = view.findViewById<View>(R.id.pbJadwal)
         val tvEmptyJadwal = view.findViewById<TextView>(R.id.tvEmptyJadwal)
         val containerMapelDiampu = view.findViewById<LinearLayout>(R.id.containerMapelDiampu)
-        val btnWaliKelas = view.findViewById<View>(R.id.btnWaliKelas)
-        val tvWaliKelasTitle = view.findViewById<TextView>(R.id.tvWaliKelasTitle)
-        val tvWaliKelasSiswa = view.findViewById<TextView>(R.id.tvWaliKelasSiswa)
+        val sectionWaliKelas = view.findViewById<View>(R.id.sectionWaliKelas)
+        val tvWaliKelasBadge = view.findViewById<TextView>(R.id.tvWaliKelasBadge)
+        val btnWaliAbsenHarian = view.findViewById<View>(R.id.btnWaliAbsenHarian)
+        val btnWaliRekapKehadiran = view.findViewById<View>(R.id.btnWaliRekapKehadiran)
+        val btnWaliKeuanganKelas = view.findViewById<View>(R.id.btnWaliKeuanganKelas)
 
         view.findViewById<View>(R.id.btnLihatSemuaJadwal)?.setOnClickListener {
             val intent = Intent(requireContext(), JadwalMengajarActivity::class.java)
@@ -83,34 +85,71 @@ class AkademikGuruFragment : Fragment() {
                                 tvTotalJamMapelHeader?.text = "Total: ${data.total_jam_minggu_ini}\nJam/Minggu"
                                 
                                 val tvLabelSiswaBelumAbsen = view?.findViewById<TextView>(R.id.tvLabelSiswaBelumAbsen)
+                                val ivSiswaBelumAbsenIcon = view?.findViewById<android.widget.ImageView>(R.id.ivSiswaBelumAbsenIcon)
                                 if (data.is_libur == true) {
                                     tvSiswaBelumAbsen?.text = "0"
                                     tvLabelSiswaBelumAbsen?.text = "Libur"
+                                    tvSiswaBelumAbsen?.setTextColor(android.graphics.Color.parseColor("#059669"))
+                                    tvLabelSiswaBelumAbsen?.setTextColor(android.graphics.Color.parseColor("#10B981"))
+                                    ivSiswaBelumAbsenIcon?.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#ECFDF5"))
+                                    ivSiswaBelumAbsenIcon?.imageTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#10B981"))
                                 } else {
-                                    tvSiswaBelumAbsen?.text = data.siswa_belum_absen.toString()
+                                    val belumAbsen = data.siswa_belum_absen ?: 0
+                                    tvSiswaBelumAbsen?.text = belumAbsen.toString()
                                     tvLabelSiswaBelumAbsen?.text = "Siswa"
+                                    if (belumAbsen > 0) {
+                                        tvSiswaBelumAbsen?.setTextColor(android.graphics.Color.parseColor("#DC2626"))
+                                        tvLabelSiswaBelumAbsen?.setTextColor(android.graphics.Color.parseColor("#EF4444"))
+                                        ivSiswaBelumAbsenIcon?.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#FEF2F2"))
+                                        ivSiswaBelumAbsenIcon?.imageTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#EF4444"))
+                                    } else {
+                                        tvSiswaBelumAbsen?.setTextColor(android.graphics.Color.parseColor("#059669"))
+                                        tvLabelSiswaBelumAbsen?.setTextColor(android.graphics.Color.parseColor("#10B981"))
+                                        ivSiswaBelumAbsenIcon?.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#ECFDF5"))
+                                        ivSiswaBelumAbsenIcon?.imageTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#10B981"))
+                                    }
                                 }
 
                                 val inflater = LayoutInflater.from(requireContext())
 
-                                // Render Wali Kelas
-                                if (data.wali_kelas_info != null) {
-                                    btnWaliKelas?.visibility = View.VISIBLE
-                                    tvWaliKelasTitle?.text = "Wali Kelas (${data.wali_kelas_info.nama_kelas})"
-                                    tvWaliKelasSiswa?.text = "${data.wali_kelas_info.total_siswa} Siswa"
+                                // Render Section Wali Kelas (Hanya muncul jika guru adalah wali kelas)
+                                if (data.wali_kelas_info != null && !data.wali_kelas_info.nama_kelas.isNullOrEmpty()) {
+                                    sectionWaliKelas?.visibility = View.VISIBLE
+                                    val namaKelas = data.wali_kelas_info.nama_kelas ?: "-"
+                                    val totalSiswa = data.wali_kelas_info.total_siswa ?: 0
                                     
-                                    btnWaliKelas?.setOnClickListener {
-                                        val intent = android.content.Intent(requireContext(), WaliKelasKehadiranActivity::class.java)
+                                    tvWaliKelasBadge?.text = "Kelas: $namaKelas ($totalSiswa Siswa)"
+
+                                    btnWaliAbsenHarian?.setOnClickListener {
+                                        val intent = Intent(requireContext(), WaliKelasAbsenHarianActivity::class.java)
+                                        intent.putExtra("nama_kelas", namaKelas)
+                                        startActivity(intent)
+                                        requireActivity().applyEnterTransition()
+                                    }
+
+                                    btnWaliRekapKehadiran?.setOnClickListener {
+                                        val intent = Intent(requireContext(), WaliKelasKehadiranActivity::class.java)
+                                        intent.putExtra("nama_kelas", namaKelas)
+                                        intent.putExtra("mode", "rekap")
+                                        startActivity(intent)
+                                        requireActivity().applyEnterTransition()
+                                    }
+
+                                    btnWaliKeuanganKelas?.setOnClickListener {
+                                        val intent = Intent(requireContext(), WaliKelasKeuanganActivity::class.java)
+                                        intent.putExtra("nama_kelas", namaKelas)
                                         startActivity(intent)
                                         requireActivity().applyEnterTransition()
                                     }
                                 } else {
-                                    btnWaliKelas?.visibility = View.GONE
+                                    sectionWaliKelas?.visibility = View.GONE
                                 }
 
                                 // Render Mata Pelajaran Diampu
+                                val cvMapelDiampu = view?.findViewById<View>(R.id.cvMapelDiampu)
                                 containerMapelDiampu?.removeAllViews()
                                 if (data.mata_pelajaran_diampu != null && data.mata_pelajaran_diampu.isNotEmpty()) {
+                                    cvMapelDiampu?.visibility = View.VISIBLE
                                     for (mapel in data.mata_pelajaran_diampu) {
                                         val itemMapel = inflater.inflate(R.layout.item_mapel_diampu, containerMapelDiampu, false)
                                         itemMapel.findViewById<TextView>(R.id.tvNamaMapel).text = mapel.nama_mapel ?: ""
@@ -121,6 +160,8 @@ class AkademikGuruFragment : Fragment() {
                                         itemMapel.findViewById<TextView>(R.id.tvTotalJam).text = (mapel.jp_per_minggu ?: 0).toString()
                                         containerMapelDiampu?.addView(itemMapel)
                                     }
+                                } else {
+                                    cvMapelDiampu?.visibility = View.GONE
                                 }
 
                                 // Quick Action: Jurnal Mengajar
@@ -176,8 +217,9 @@ class AkademikGuruFragment : Fragment() {
                                         itemJadwal.findViewById<TextView>(R.id.tvJamSelesai).text = jadwal.jam_selesai?.substring(0, 5) ?: ""
 
                                         itemJadwal.findViewById<TextView>(R.id.tvMataPelajaran).text = jadwal.nama_mapel ?: ""
-                                        itemJadwal.findViewById<TextView>(R.id.tvRuang)?.text = "Ruang Kelas"
-                                        itemJadwal.findViewById<TextView>(R.id.tvKelas).text = jadwal.nama_kelas ?: ""
+                                        val klsNama = jadwal.nama_kelas?.trim().orEmpty()
+                                        itemJadwal.findViewById<TextView>(R.id.tvRuang)?.text = if (klsNama.isNotEmpty()) "Ruang $klsNama" else "Ruang Kelas"
+                                        itemJadwal.findViewById<TextView>(R.id.tvKelas).text = klsNama
                                         
                                         val ivAction = itemJadwal.findViewById<android.widget.ImageView>(R.id.ivAction)
                                         val llJurnalDetail = itemJadwal.findViewById<LinearLayout>(R.id.llJurnalDetail)

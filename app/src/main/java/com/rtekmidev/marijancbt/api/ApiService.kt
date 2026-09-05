@@ -129,6 +129,11 @@ interface ApiService {
     ): Response<SubmitAbsenResponse> // Menggunakan model yang sama dengan siswa
 
     // --- LAYANAN REKAP & IZIN GURU ---
+    @GET("api/presensi-guru/portal-dashboard")
+    suspend fun getPresensiGuruPortalDashboard(
+        @Query("id_user") idUser: String
+    ): Response<PortalPresensiGuruResponse>
+
     @GET("api/presensi-guru/rekap")
     suspend fun getRekapGuru(
         @Query("id_user") idUser: String,
@@ -175,16 +180,28 @@ interface ApiService {
         @Query("bulan") bulan: String
     ): Response<RekapJurnalResponse>
 
+    @GET("api/walikelas/absen-harian")
+    suspend fun getWaliKelasAbsenHarian(
+        @Query("id_user") idUser: String,
+        @Query("tanggal") tanggal: String? = null
+    ): Response<AbsenHarianResponse>
+
+    @POST("api/walikelas/absen-harian/simpan")
+    suspend fun simpanWaliKelasAbsenHarian(
+        @Body request: SimpanAbsenHarianRequest
+    ): Response<SimpleResponse>
+
     @GET("api/walikelas/kehadiran")
     suspend fun getWaliKelasRekapKehadiran(
         @Query("id_user") idUser: String,
         @Query("bulan") bulan: String
-    ): Response<JsonElement>
+    ): Response<WaliKelasRekapKehadiranResponse>
 
     @GET("api/walikelas/keuangan")
     suspend fun getWaliKelasRekapTagihan(
-        @Query("id_user") idUser: String
-    ): Response<JsonElement>
+        @Query("id_user") idUser: String,
+        @Query("pos") pos: Int? = null
+    ): Response<WaliKelasKeuanganResponse>
 
     @GET("api/akademik-guru/jadwal")
     suspend fun getJadwalMengajar(

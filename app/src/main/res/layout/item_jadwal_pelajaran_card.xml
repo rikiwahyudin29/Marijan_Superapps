@@ -80,7 +80,7 @@
             android:id="@+id/tvRuangKategori"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="🏢 Ruang Lab Komputer 2 • Kategori: Teori &amp; Praktik"
+            android:text="🏢 Ruang Kelas • Kategori: Teori &amp; Praktik"
             android:textSize="11sp"
             android:textColor="#6B7280"/>
 

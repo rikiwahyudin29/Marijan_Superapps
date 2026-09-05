@@ -104,9 +104,10 @@ class DashboardGuruActivity : AppCompatActivity() {
         val headerTitleColor = if (isNightMode) android.graphics.Color.parseColor("#FFFFFF") else android.graphics.Color.parseColor("#1A1B41")
         val headerSubtextColor = if (isNightMode) android.graphics.Color.parseColor("#D1D5DB") else android.graphics.Color.parseColor("#6B7280")
         
-        findViewById<TextView>(R.id.tvAppTitle).setTextColor(headerTitleColor)
-        findViewById<TextView>(R.id.tvNamaDashboard).setTextColor(headerTitleColor)
-        findViewById<TextView>(R.id.tvKelas).setTextColor(headerSubtextColor)
+        findViewById<TextView>(R.id.tvAppTitle)?.setTextColor(headerTitleColor)
+        findViewById<View>(R.id.btnNotifikasi)?.setOnClickListener {
+            Toast.makeText(this, "Tidak ada notifikasi baru.", Toast.LENGTH_SHORT).show()
+        }
 
         fun updateNavSelection(position: Int) {
             val unselectedColor = if (isNightMode) {
@@ -190,7 +191,15 @@ class DashboardGuruActivity : AppCompatActivity() {
         })
     }
 
-    private fun cekRadiusDanScan() {
+    fun cekRadiusDanScan() {
+        val cal = java.util.Calendar.getInstance()
+        val dow = cal.get(java.util.Calendar.DAY_OF_WEEK)
+        if (dow == java.util.Calendar.SUNDAY || dow == java.util.Calendar.SATURDAY) {
+            val namaHari = if (dow == java.util.Calendar.SUNDAY) "Hari Minggu" else "Hari Sabtu"
+            Toast.makeText(this, "Hari ini libur sekolah ($namaHari), presensi tidak aktif.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA), PERMISSION_REQUEST_CODE)
             return
@@ -215,7 +224,7 @@ class DashboardGuruActivity : AppCompatActivity() {
                         val d = resp.body()?.data
                         val schoolLat = d?.latitude?.toDouble() ?: 0.0
                         val schoolLng = d?.longitude?.toDouble() ?: 0.0
-                        val schoolRadius = d?.radius ?: 100
+                        val schoolRadius = d?.radius ?: 200
                         
                         val results = FloatArray(1)
                         android.location.Location.distanceBetween(lastLoc.latitude, lastLoc.longitude, schoolLat, schoolLng, results)
@@ -294,7 +303,7 @@ class DashboardGuruActivity : AppCompatActivity() {
         override fun createFragment(position: Int): Fragment {
             return when (position) {
                 0 -> BerandaGuruFragment()
-                1 -> PresensiFragment()
+                1 -> PresensiGuruFragment()
                 2 -> AkademikGuruFragment()
                 3 -> ProfilFragment()
                 else -> BerandaGuruFragment()

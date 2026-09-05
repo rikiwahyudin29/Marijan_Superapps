@@ -60,39 +60,6 @@
                 android:textColor="#1E293B" />
         </LinearLayout>
 
-        <!-- Tombol Cetak Jadwal -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/btnCetak"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:layout_marginEnd="10dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp"
-            app:cardBackgroundColor="#EEF2FF"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?attr/selectableItemBackground">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:paddingHorizontal="12dp">
-                <ImageView
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:src="@drawable/ic_modern_jadwal"
-                    app:tint="#4338CA"
-                    android:layout_marginEnd="4dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Cetak"
-                    android:textSize="11sp"
-                    android:textColor="#4338CA"
-                    android:textStyle="bold"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
 
         <!-- Profile Pic -->
         <androidx.cardview.widget.CardView
@@ -221,7 +188,7 @@
                                 android:id="@+id/tvNipGuru"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="NIP/ID: -"
+                                android:text="NIK: -"
                                 android:textSize="10sp"
                                 android:textColor="#818CF8"
                                 android:layout_marginTop="2dp" />
@@ -557,13 +524,16 @@
                         android:visibility="gone"/>
                 </LinearLayout>
 
-                <!-- Loading State -->
-                <ProgressBar
+                <!-- Loading State (Lottie) -->
+                <com.airbnb.lottie.LottieAnimationView
                     android:id="@+id/pbLoadingJadwal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
                     android:layout_gravity="center"
                     android:layout_marginVertical="24dp"
+                    app:lottie_url="https://lottie.host/ff71b2dd-787e-4f88-9f79-79f0eb2c8641/OqV9rU5oMu.json"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
                     android:visibility="gone"/>
 
                 <!-- Container List Kartu Jadwal Pelajaran & Istirahat -->
@@ -642,7 +612,10 @@
                         android:gravity="center_vertical"
                         android:background="@drawable/bg_rounded_border_outline"
                         android:paddingHorizontal="12dp"
-                        android:layout_marginEnd="8dp">
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
                         <TextView
                             android:id="@+id/tvFilterKelasText"
                             android:layout_width="0dp"
@@ -664,11 +637,15 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/btnIconFilterMatriks"
                         android:layout_width="36dp"
                         android:layout_height="36dp"
                         android:gravity="center"
                         android:background="@drawable/bg_rounded_border_outline"
-                        android:layout_marginEnd="8dp">
+                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

@@ -10,6 +10,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rtekmidev.marijancbt.api.ApiClient
@@ -46,6 +47,8 @@ class RekapMengajarActivity : AppCompatActivity() {
     private var currentCalendar = Calendar.getInstance()
     private var allItems = listOf<RekapJurnalItem>()
     private var currentFilter = "Semua"
+    private var isDataNeedsRefresh = false
+    private var loadJob: kotlinx.coroutines.Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +80,10 @@ class RekapMengajarActivity : AppCompatActivity() {
     
     override fun onResume() {
         super.onResume()
-        loadData()
+        if (isDataNeedsRefresh) {
+            isDataNeedsRefresh = false
+            loadData()
+        }
     }
 
     private fun initViews() {
@@ -164,6 +170,7 @@ class RekapMengajarActivity : AppCompatActivity() {
                 intent.putExtra("ID_MAPEL", item.id_mapel ?: "")
                 intent.putExtra("JAM_KE", jamKeVal)
                 intent.putExtra("TANGGAL", item.tanggal ?: "")
+                isDataNeedsRefresh = true
                 startActivity(intent)
                 applyEnterTransition()
             } else if (item.status == "Terisi") {
@@ -171,6 +178,7 @@ class RekapMengajarActivity : AppCompatActivity() {
             }
         }
         rvRekapJurnal.layoutManager = LinearLayoutManager(this)
+        rvRekapJurnal.setHasFixedSize(false)
         rvRekapJurnal.adapter = adapter
     }
 
@@ -239,7 +247,8 @@ class RekapMengajarActivity : AppCompatActivity() {
         rvRekapJurnal.visibility = View.GONE
         tvEmpty.visibility = View.GONE
 
-        CoroutineScope(Dispatchers.IO).launch {
+        loadJob?.cancel()
+        loadJob = lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val response = ApiClient.instance.getRekapJurnal(bulanStr)
                 withContext(Dispatchers.Main) {
@@ -261,12 +270,22 @@ class RekapMengajarActivity : AppCompatActivity() {
                                 pbPerluDiisi.max = sum.total_sesi
                                 pbPerluDiisi.progress = sum.perlu_diisi
                                 
-                                tvRataPresensi.text = "${sum.rata_presensi}% Hadir"
-                                if (sum.rata_presensi > 90) {
+                                val presensiFormatted = if (sum.rata_presensi % 1.0 == 0.0) {
+                                    sum.rata_presensi.toInt().toString()
+                                } else {
+                                    String.format(Locale.US, "%.1f", sum.rata_presensi)
+                                }
+                                tvRataPresensi.text = "$presensiFormatted% Hadir"
+                                
+                                if (sum.terisi == 0 && sum.rata_presensi == 0.0) {
+                                    tvRataPresensiStatus.text = "Belum Ada Data"
+                                    tvRataPresensiStatus.setTextColor(Color.parseColor("#64748B"))
+                                    tvRataPresensiStatus.backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#F1F5F9"))
+                                } else if (sum.rata_presensi >= 90.0) {
                                     tvRataPresensiStatus.text = "Sangat Baik"
                                     tvRataPresensiStatus.setTextColor(Color.parseColor("#0d9488"))
                                     tvRataPresensiStatus.backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#ccfbf1"))
-                                } else if (sum.rata_presensi > 75) {
+                                } else if (sum.rata_presensi >= 75.0) {
                                     tvRataPresensiStatus.text = "Baik"
                                     tvRataPresensiStatus.setTextColor(Color.parseColor("#b45309"))
                                     tvRataPresensiStatus.backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#fef3c7"))
@@ -305,6 +324,11 @@ class RekapMengajarActivity : AppCompatActivity() {
         }
     }
     
+    override fun onDestroy() {
+        loadJob?.cancel()
+        super.onDestroy()
+    }
+
     override fun finish() {
         super.finish()
         applyExitTransition()

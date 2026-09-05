@@ -45,7 +45,8 @@ class PresensiSiswaAdapter(
         // Data binding
         holder.tvUrut.text = (position + 1).toString()
         holder.tvNamaSiswa.text = siswa.nama_lengkap?.uppercase(Locale.ROOT) ?: "-"
-        holder.tvNisSiswa.text = "NIS: ${siswa.nis ?: "-"}"
+        val noInduk = siswa.nisn ?: siswa.nis ?: "-"
+        holder.tvNisSiswa.text = "NISN: $noInduk"
         holder.tvGender.text = siswa.jenis_kelamin ?: "Laki-laki"
 
         // Setup Buttons and Badge based on status
@@ -152,6 +153,7 @@ class PresensiSiswaAdapter(
             val lowerCaseQuery = query.lowercase(Locale.ROOT)
             listSiswaFull.filter {
                 (it.nama_lengkap?.lowercase(Locale.ROOT)?.contains(lowerCaseQuery) == true) ||
+                (it.nisn?.lowercase(Locale.ROOT)?.contains(lowerCaseQuery) == true) ||
                 (it.nis?.lowercase(Locale.ROOT)?.contains(lowerCaseQuery) == true)
             }
         }

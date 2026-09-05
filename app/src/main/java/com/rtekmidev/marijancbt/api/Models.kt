@@ -360,7 +360,70 @@ data class DashboardGuruData(
     val keterangan_libur: String? = null,
     val jadwal_hari_ini: List<JadwalGuruHariIni>?,
     val mata_pelajaran_diampu: List<MataPelajaranDiampu>?,
-    val wali_kelas_info: WaliKelasInfo?
+    val wali_kelas_info: WaliKelasInfo?,
+    val tahun_ajaran_aktif: String? = null,
+    val tanggal_hari_ini_formatted: String? = null,
+    val guru_info: GuruInfo? = null,
+    val presensi_guru_hari_ini: PresensiGuruHariIni? = null,
+    val presensi_binaan_summary: PresensiBinaanSummary? = null,
+    val progres_jurnal_bulan_ini: ProgresJurnal? = null,
+    val keuangan_kelas_summary: KeuanganKelasSummary? = null
+)
+
+data class PresensiGuruHariIni(
+    val shift_nama: String? = null,
+    val shift_jam: String? = null,
+    val jam_pulang_mulai_badge: String? = null,
+    val is_libur: Boolean = false,
+    val keterangan_libur: String? = null,
+    val is_sudah_masuk: Boolean = false,
+    val is_sudah_pulang: Boolean = false,
+    val jam_masuk: String? = null,
+    val jam_pulang: String? = null,
+    val status_masuk_badge: String? = null,
+    val status_masuk_sub: String? = null,
+    val status_pulang_badge: String? = null,
+    val status_pulang_sub: String? = null,
+    val school_lat: Double = 0.0,
+    val school_lng: Double = 0.0,
+    val school_radius: Int = 100,
+    val stat_hadir: String? = null,
+    val stat_terlambat: String? = null,
+    val stat_izin_sakit: String? = null,
+    val stat_kehadiran: String? = null
+)
+
+data class GuruInfo(
+    val nama: String? = null,
+    val nip: String? = null,
+    val mapel_utama: String? = null,
+    val is_wali_kelas: Boolean? = false,
+    val kelas_wali: String? = null
+)
+
+data class PresensiBinaanSummary(
+    val total_siswa: Int = 0,
+    val hadir: Int = 0,
+    val sakit: Int = 0,
+    val izin: Int = 0,
+    val alpha: Int = 0,
+    val catatan_izin: String? = null,
+    val is_libur: Boolean = false,
+    val keterangan_libur: String? = null
+)
+
+data class ProgresJurnal(
+    val persentase: Int = 0,
+    val sesi_terisi: Int = 0,
+    val total_sesi: Int = 24,
+    val sesi_menanti: Int = 0
+)
+
+data class KeuanganKelasSummary(
+    val total_tagihan: Long = 0,
+    val total_terbayar: Long = 0,
+    val sisa_tunggakan: Long = 0,
+    val siswa_belum_lunas: Int = 0
 )
 
 data class MataPelajaranDiampu(
@@ -411,6 +474,7 @@ data class GetSiswaJurnalResponse(
 data class SiswaJurnal(
     val id: Int,
     val nis: String?,
+    val nisn: String? = null,
     val nama_lengkap: String?,
     val jenis_kelamin: String?,
     var status_absen: String?
@@ -539,8 +603,10 @@ data class MatriksCellModel(
 data class GuruJadwalInfo(
     val id: Int?,
     val nama_lengkap: String?,
+    val nik: String?,
     val nip: String?,
     val foto: String?,
+    val role: String?,
     val jabatan: String?,
     val semester_info: String?,
     val nama_sekolah: String?
@@ -579,3 +645,80 @@ data class JadwalItemModel(
     val is_jurnal_filled: Boolean?,
     val id_jurnal: Int?
 )
+
+// --- PORTAL PRESENSI GURU (RESPONS REAL-TIME) ---
+data class PortalPresensiGuruResponse(
+    val status: Boolean = false,
+    val message: String? = null,
+    val guru_info: PortalGuruInfo? = null,
+    val shift_info: PortalShiftInfo? = null,
+    val lokasi_sekolah: PortalLokasiSekolah? = null,
+    val presensi_hari_ini: PortalPresensiHariIni? = null,
+    val statistik_kehadiran: PortalStatistikKehadiran? = null,
+    val riwayat_terakhir: List<PortalRiwayatItem>? = null,
+    val unduh_rekap_url: String? = null
+)
+
+data class PortalGuruInfo(
+    val id_guru: Any? = null,
+    val nama: String? = null,
+    val nip: String? = null,
+    val mapel: String? = null,
+    val is_wali_kelas: Boolean = false,
+    val nama_kelas_wali: String? = null,
+    val tahun_ajaran: String? = null,
+    val tanggal_hari_ini: String? = null
+)
+
+data class PortalShiftInfo(
+    val nama: String? = null,
+    val jam_kerja: String? = null,
+    val jam_masuk_mulai: String? = null,
+    val jam_masuk_selesai: String? = null,
+    val jam_pulang_mulai: String? = null,
+    val jam_pulang_selesai: String? = null
+)
+
+data class PortalLokasiSekolah(
+    val nama_sekolah: String? = null,
+    val alamat: String? = null,
+    val latitude: Double = -6.5714,
+    val longitude: Double = 107.7587,
+    val radius: Int = 200
+)
+
+data class PortalPresensiHariIni(
+    val is_libur: Boolean = false,
+    val keterangan_libur: String? = null,
+    val sudah_masuk: Boolean = false,
+    val jam_masuk: String? = null,
+    val status_masuk_badge: String? = null,
+    val status_masuk_sub: String? = null,
+    val sudah_pulang: Boolean = false,
+    val jam_pulang: String? = null,
+    val status_pulang_badge: String? = null,
+    val status_pulang_sub: String? = null,
+    val max_radius_text: String? = null
+)
+
+data class PortalStatistikKehadiran(
+    val periode_text: String? = null,
+    val label_performa: String? = null,
+    val persentase: Int = 0,
+    val total_hari_kerja: Int = 0,
+    val total_hadir_kerja: Int = 0,
+    val hari_kerja_text: String? = null,
+    val hadir: Int = 0,
+    val terlambat: Int = 0,
+    val izin_sakit: Int = 0,
+    val alfa: Int = 0
+)
+
+data class PortalRiwayatItem(
+    val tanggal: String? = null,
+    val hari_tanggal: String? = null,
+    val jam_text: String? = null,
+    val status_badge: String? = null,
+    val status_tipe: String? = null
+)
+

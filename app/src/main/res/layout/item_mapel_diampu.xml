@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
     app:cardCornerRadius="12dp"
-    app:cardElevation="0dp">
+    app:cardElevation="2dp">
 
     <!-- Wrapper LinearLayout that can have a stroke or subtle background -->
     <LinearLayout
@@ -14,7 +14,7 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:padding="16dp"
-        android:background="#F8FAFC">
+        android:background="#FFFFFF">
 
         <!-- Modern Icon Container -->
         <androidx.cardview.widget.CardView
@@ -30,7 +30,7 @@
                 android:layout_height="24dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_modern_materi"
-                app:tint="#3B82F6" />
+                app:tint="#2563EB" />
         </androidx.cardview.widget.CardView>
 
         <!-- Text Content -->

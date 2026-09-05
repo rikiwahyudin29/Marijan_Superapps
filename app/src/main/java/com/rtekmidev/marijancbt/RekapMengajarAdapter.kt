@@ -51,6 +51,11 @@ class RekapMengajarAdapter(
         val tvAlfaNames: TextView = view.findViewById(R.id.tvAlfaNames)
     }
 
+    companion object {
+        private val isoFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        private val displayDateFormat = SimpleDateFormat("EEEE, dd MMMM yyyy", Locale("id", "ID"))
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_rekap_mengajar, parent, false)
         return ViewHolder(view)
@@ -59,17 +64,21 @@ class RekapMengajarAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = listData[position]
 
-        // Parse date for circle
+        // Parse date for circle using cached formatter
         try {
-            val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(item.tanggal ?: "")
-            if (date != null) {
-                val cal = java.util.Calendar.getInstance()
-                cal.time = date
-                holder.tvDateCircle.text = cal.get(java.util.Calendar.DAY_OF_MONTH).toString()
-                
-                // Format full date: Kamis, 03 September 2026
-                val fullDate = SimpleDateFormat("EEEE, dd MMMM yyyy", Locale("id", "ID")).format(date)
-                holder.tvTanggal.text = fullDate
+            val dateStr = item.tanggal
+            if (!dateStr.isNullOrEmpty()) {
+                val date = synchronized(isoFormat) { isoFormat.parse(dateStr) }
+                if (date != null) {
+                    val cal = java.util.Calendar.getInstance()
+                    cal.time = date
+                    holder.tvDateCircle.text = cal.get(java.util.Calendar.DAY_OF_MONTH).toString()
+                    
+                    val fullDate = synchronized(displayDateFormat) { displayDateFormat.format(date) }
+                    holder.tvTanggal.text = fullDate
+                } else {
+                    holder.tvTanggal.text = dateStr
+                }
             }
         } catch (e: Exception) {
             holder.tvTanggal.text = item.tanggal

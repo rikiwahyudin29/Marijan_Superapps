@@ -69,423 +69,385 @@
         </androidx.cardview.widget.CardView>
     </LinearLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <!-- CONTENT DENGAN COORDINATORLAYOUT (VIEW RECYCLING 100% BEKERJA, ANTI-LAG) -->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:scrollbars="none">
-        <LinearLayout
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:background="@android:color/transparent"
+            app:elevation="0dp">
 
-            <!-- Banner Header -->
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="#1E1B4B">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-                    
-                    <LinearLayout
-                        android:layout_width="wrap_content"
+                android:orientation="vertical"
+                app:layout_scrollFlags="scroll"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="6dp">
+
+                    <!-- Banner Header -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/bg_rounded_border"
-                        android:backgroundTint="#312E81"
-                        android:paddingHorizontal="8dp"
-                        android:paddingVertical="4dp">
-                        <ImageView
-                            android:layout_width="12dp"
-                            android:layout_height="12dp"
-                            android:src="@drawable/ic_modern_tugas"
-                            app:tint="#A5B4FC"
-                            android:layout_marginEnd="6dp" />
-                        <TextView
-                            android:id="@+id/tvSemesterInfo"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#1E1B4B">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="20dp">
+                            
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:background="@drawable/bg_rounded_border"
+                                android:backgroundTint="#312E81"
+                                android:paddingHorizontal="8dp"
+                                android:paddingVertical="4dp">
+                                <ImageView
+                                    android:layout_width="12dp"
+                                    android:layout_height="12dp"
+                                    android:src="@drawable/ic_modern_tugas"
+                                    app:tint="#A5B4FC"
+                                    android:layout_marginEnd="6dp" />
+                                <TextView
+                                    android:id="@+id/tvSemesterInfo"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Memuat..."
+                                    android:textColor="#A5B4FC"
+                                    android:textSize="10sp" />
+                            </LinearLayout>
+                            
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Riwayat Jurnal KBM"
+                                android:textColor="#FFFFFF"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:layout_marginTop="12dp" />
+                                
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Daftar jurnal yang telah Anda isi bulan ini."
+                                android:textColor="#A5B4FC"
+                                android:textSize="12sp"
+                                android:layout_marginTop="4dp" />
+                                
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:background="@drawable/bg_rounded_border"
+                                android:backgroundTint="#2E2A72"
+                                android:padding="12dp"
+                                android:layout_marginTop="16dp">
+                                <ImageView
+                                    android:id="@+id/btnPrevMonth"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:src="@android:drawable/ic_media_previous"
+                                    app:tint="#FFFFFF"
+                                    android:background="?attr/selectableItemBackgroundBorderless"
+                                    android:clickable="true"
+                                    android:focusable="true"/>
+                                <TextView
+                                    android:id="@+id/tvSelectedMonth"
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:text="Memuat Bulan..."
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:gravity="center" />
+                                <ImageView
+                                    android:id="@+id/btnNextMonth"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:src="@android:drawable/ic_media_next"
+                                    app:tint="#FFFFFF"
+                                    android:background="?attr/selectableItemBackgroundBorderless"
+                                    android:clickable="true"
+                                    android:focusable="true"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Statistik Cepat Card -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#FFFFFF">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp"
+                            android:background="@drawable/bg_rounded_border_outline">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Statistik Kehadiran Mengajar"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textColor="#1e293b" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Ringkasan pemenuhan KBM dan presensi siswa."
+                                android:textSize="11sp"
+                                android:textColor="#64748b"
+                                android:layout_marginTop="2dp" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_marginTop="16dp">
+                                
+                                <!-- Terisi Progress -->
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical">
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_weight="1"
+                                        android:layout_height="wrap_content"
+                                        android:text="Jurnal Terisi"
+                                        android:textSize="12sp"
+                                        android:textColor="#334155" />
+                                    <TextView
+                                        android:id="@+id/tvJurnalTerisi"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="0"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
+                                        android:textColor="#10B981" />
+                                    <TextView
+                                        android:id="@+id/tvJurnalTotal1"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text=" / 0 Sesi"
+                                        android:textSize="12sp"
+                                        android:textColor="#64748B" />
+                                </LinearLayout>
+                                <ProgressBar
+                                    android:id="@+id/pbJurnalTerisi"
+                                    style="?android:attr/progressBarStyleHorizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="6dp"
+                                    android:layout_marginTop="6dp"
+                                    android:progressDrawable="@drawable/bg_progress_blue"
+                                    android:progress="0"
+                                    android:max="100" />
+
+                                <!-- Perlu Diisi Progress -->
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical"
+                                    android:layout_marginTop="12dp">
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_weight="1"
+                                        android:layout_height="wrap_content"
+                                        android:text="Perlu Diisi (Terlewat)"
+                                        android:textSize="12sp"
+                                        android:textColor="#334155" />
+                                    <TextView
+                                        android:id="@+id/tvPerluDiisi"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="0"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
+                                        android:textColor="#EF4444" />
+                                </LinearLayout>
+                                <ProgressBar
+                                    android:id="@+id/pbPerluDiisi"
+                                    style="?android:attr/progressBarStyleHorizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="6dp"
+                                    android:layout_marginTop="6dp"
+                                    android:progressDrawable="@drawable/bg_progress_red"
+                                    android:progress="0"
+                                    android:max="100" />
+
+                                <!-- Divider -->
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_height="1dp"
+                                    android:background="#e2e8f0"
+                                    android:layout_marginVertical="12dp" />
+
+                                <!-- Rata-rata Presensi -->
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical">
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_weight="1"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical">
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Rata-rata Presensi Siswa"
+                                            android:textSize="12sp"
+                                            android:textColor="#334155" />
+                                        <TextView
+                                            android:id="@+id/tvRataPresensi"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="0% Hadir"
+                                            android:textSize="14sp"
+                                            android:textStyle="bold"
+                                            android:textColor="#1e293b"
+                                            android:layout_marginTop="2dp" />
+                                    </LinearLayout>
+
+                                    <TextView
+                                        android:id="@+id/tvRataPresensiStatus"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Belum Ada Data"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:textColor="#64748B"
+                                        android:background="@drawable/bg_rounded_border"
+                                        android:backgroundTint="#F1F5F9"
+                                        android:paddingHorizontal="10dp"
+                                        android:paddingVertical="4dp" />
+                                </LinearLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Filter Chips -->
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="none"
+                        android:layout_marginTop="16dp">
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Memuat..."
-                            android:textColor="#A5B4FC"
-                            android:textSize="10sp" />
-                    </LinearLayout>
-                    
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Riwayat Jurnal KBM"
-                        android:textColor="#FFFFFF"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:layout_marginTop="12dp" />
-                        
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Daftar jurnal yang telah Anda isi bulan ini."
-                        android:textColor="#A5B4FC"
-                        android:textSize="12sp"
-                        android:layout_marginTop="4dp" />
-                        
+                            android:orientation="horizontal">
+                            <TextView
+                                android:id="@+id/chipSemua"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Semua (0)"
+                                android:textSize="12sp"
+                                android:textColor="#FFFFFF"
+                                android:background="@drawable/bg_rounded_border"
+                                android:backgroundTint="#1E1B4B"
+                                android:paddingHorizontal="16dp"
+                                android:paddingVertical="8dp"
+                                android:layout_marginEnd="8dp" />
+                            <TextView
+                                android:id="@+id/chipSudahDiisi"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Sudah Diisi (0)"
+                                android:textSize="12sp"
+                                android:textColor="#64748B"
+                                android:background="@drawable/bg_rounded_border_outline"
+                                android:paddingHorizontal="16dp"
+                                android:paddingVertical="8dp"
+                                android:layout_marginEnd="8dp" />
+                            <TextView
+                                android:id="@+id/chipBelumDiisi"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Belum Diisi (0)"
+                                android:textSize="12sp"
+                                android:textColor="#64748B"
+                                android:background="@drawable/bg_rounded_border_outline"
+                                android:paddingHorizontal="16dp"
+                                android:paddingVertical="8dp" />
+                        </LinearLayout>
+                    </HorizontalScrollView>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:background="@drawable/bg_rounded_border"
-                        android:backgroundTint="#312E81"
-                        android:padding="12dp"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="16dp"
                         android:gravity="center_vertical">
-                        <ImageView
-                            android:id="@+id/btnPrevMonth"
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:src="@drawable/ic_baseline_arrow_back_24"
-                            app:tint="#A5B4FC"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:padding="4dp"
-                            android:clickable="true" />
-                        
-                        <LinearLayout
+                        <TextView
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center">
-                            <ImageView
-                                android:layout_width="14dp"
-                                android:layout_height="14dp"
-                                android:src="@android:drawable/ic_menu_today"
-                                app:tint="#FFFFFF"
-                                android:layout_marginEnd="6dp" />
-                            <TextView
-                                android:id="@+id/tvSelectedMonth"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="September 2026"
-                                android:textColor="#FFFFFF"
-                                android:textStyle="bold"
-                                android:textSize="14sp" />
-                        </LinearLayout>
-                        
-                        <ImageView
-                            android:id="@+id/btnNextMonth"
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:src="@drawable/ic_baseline_arrow_back_24"
-                            android:rotation="180"
-                            app:tint="#A5B4FC"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:padding="4dp"
-                            android:clickable="true" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Summary Row 1 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp">
-                
-                <!-- Jurnal Terisi -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="0dp"
-                    android:layout_marginEnd="8dp">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp"
-                        android:background="#FFFFFF">
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="wrap_content"
-                                android:text="Jurnal Terisi"
-                                android:textSize="12sp"
-                                android:textColor="#64748B" />
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@android:drawable/checkbox_on_background"
-                                app:tint="#0ea5e9" />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="12dp"
-                            android:gravity="bottom">
-                            <TextView
-                                android:id="@+id/tvJurnalTerisi"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0"
-                                android:textSize="24sp"
-                                android:textStyle="bold"
-                                android:textColor="#0f172a" />
-                            <TextView
-                                android:id="@+id/tvJurnalTotal1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text=" / 0 Sesi"
-                                android:textSize="12sp"
-                                android:textColor="#94a3b8"
-                                android:layout_marginStart="4dp"
-                                android:layout_marginBottom="4dp" />
-                        </LinearLayout>
-                        <ProgressBar
-                            android:id="@+id/pbJurnalTerisi"
-                            style="?android:attr/progressBarStyleHorizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="6dp"
-                            android:layout_marginTop="12dp"
-                            android:progressDrawable="@drawable/bg_progress_blue"
-                            android:progress="0" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-                
-                <!-- Perlu Diisi -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="0dp"
-                    android:layout_marginStart="8dp">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp"
-                        android:background="#FFFFFF">
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="wrap_content"
-                                android:text="Perlu Diisi"
-                                android:textSize="12sp"
-                                android:textColor="#64748B" />
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@android:drawable/stat_notify_error"
-                                app:tint="#ef4444" />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="12dp"
-                            android:gravity="bottom">
-                            <TextView
-                                android:id="@+id/tvPerluDiisi"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0"
-                                android:textSize="24sp"
-                                android:textStyle="bold"
-                                android:textColor="#ef4444" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text=" Sesi Menanti"
-                                android:textSize="12sp"
-                                android:textColor="#94a3b8"
-                                android:layout_marginStart="4dp"
-                                android:layout_marginBottom="4dp" />
-                        </LinearLayout>
-                        <ProgressBar
-                            android:id="@+id/pbPerluDiisi"
-                            style="?android:attr/progressBarStyleHorizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="6dp"
-                            android:layout_marginTop="12dp"
-                            android:progressDrawable="@drawable/bg_progress_red"
-                            android:progress="0" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-
-            <!-- Summary Row 2 -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:background="#FFFFFF"
-                    android:gravity="center_vertical">
-                    
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_modern_profile"
-                        android:background="@drawable/bg_icon_circle"
-                        android:backgroundTint="#EEF2FF"
-                        app:tint="#6366f1"
-                        android:padding="6dp" />
-                        
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginStart="12dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Rata-rata Presensi Siswa"
-                            android:textSize="12sp"
-                            android:textColor="#64748B" />
-                        <TextView
-                            android:id="@+id/tvRataPresensi"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0.0% Hadir"
-                            android:textSize="18sp"
+                            android:text="Daftar Pertemuan KBM"
+                            android:textSize="14sp"
                             android:textStyle="bold"
-                            android:textColor="#0f172a" />
+                            android:textColor="#1e293b" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Urut: Terbaru"
+                            android:textSize="12sp"
+                            android:textColor="#3b82f6" />
                     </LinearLayout>
-                    
-                    <TextView
-                        android:id="@+id/tvRataPresensiStatus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Menunggu"
-                        android:textSize="10sp"
-                        android:textColor="#0d9488"
-                        android:background="@drawable/bg_rounded_border"
-                        android:backgroundTint="#ccfbf1"
-                        android:paddingHorizontal="8dp"
-                        android:paddingVertical="4dp" />
+
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+        </com.google.android.material.appbar.AppBarLayout>
 
-            <!-- Filters -->
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="none"
-                android:layout_marginTop="20dp">
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:id="@+id/chipSemua"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Semua (0)"
-                        android:textSize="12sp"
-                        android:textColor="#FFFFFF"
-                        android:background="@drawable/bg_rounded_border"
-                        android:backgroundTint="#1E1B4B"
-                        android:paddingHorizontal="16dp"
-                        android:paddingVertical="8dp"
-                        android:layout_marginEnd="8dp" />
-                    <TextView
-                        android:id="@+id/chipSudahDiisi"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Sudah Diisi (0)"
-                        android:textSize="12sp"
-                        android:textColor="#64748B"
-                        android:background="@drawable/bg_rounded_border_outline"
-                        android:paddingHorizontal="16dp"
-                        android:paddingVertical="8dp"
-                        android:layout_marginEnd="8dp" />
-                    <TextView
-                        android:id="@+id/chipBelumDiisi"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Belum Diisi (0)"
-                        android:textSize="12sp"
-                        android:textColor="#64748B"
-                        android:background="@drawable/bg_rounded_border_outline"
-                        android:paddingHorizontal="16dp"
-                        android:paddingVertical="8dp" />
-                </LinearLayout>
-            </HorizontalScrollView>
+        <!-- RECYCLERVIEW DAFTAR PERTEMUAN KBM (NATIVE 60-120FPS RECYCLING) -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvRekapJurnal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="16dp"
+            android:clipToPadding="false"
+            android:paddingTop="8dp"
+            android:paddingBottom="24dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:listitem="@layout/item_rekap_mengajar" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="20dp"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="Daftar Pertemuan KBM"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="#1e293b" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Urut: Terbaru"
-                    android:textSize="12sp"
-                    android:textColor="#3b82f6" />
-            </LinearLayout>
+        <!-- Loading Indicator -->
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/pbLoading"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            app:lottie_url="https://lottie.host/ff71b2dd-787e-4f88-9f79-79f0eb2c8641/OqV9rU5oMu.json"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true" />
 
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/pbLoading"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="32dp"
-                app:lottie_url="https://lottie.host/ff71b2dd-787e-4f88-9f79-79f0eb2c8641/OqV9rU5oMu.json"
-                app:lottie_autoPlay="true"
-                app:lottie_loop="true" />
+        <!-- Empty State -->
+        <TextView
+            android:id="@+id/tvEmpty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Tidak ada data."
+            android:textColor="#64748B"
+            android:textSize="14sp"
+            android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/tvEmpty"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Tidak ada data."
-                android:textAlignment="center"
-                android:layout_marginTop="32dp"
-                android:visibility="gone" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvRekapJurnal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:nestedScrollingEnabled="false"
-                android:overScrollMode="never"
-                tools:listitem="@layout/item_rekap_mengajar" />
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </LinearLayout>

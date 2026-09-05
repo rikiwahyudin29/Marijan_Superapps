@@ -28,7 +28,6 @@ class JadwalMengajarActivity : AppCompatActivity() {
 
     // Toolbar
     private lateinit var btnBack: ImageView
-    private lateinit var btnCetak: View
     private lateinit var ivProfilPhoto: ImageView
 
     // Banner Guru
@@ -58,7 +57,7 @@ class JadwalMengajarActivity : AppCompatActivity() {
     private lateinit var containerSelectorHari: LinearLayout
     private lateinit var tvTitleRincianHari: TextView
     private lateinit var tvBadgeStatusHari: TextView
-    private lateinit var pbLoadingJadwal: ProgressBar
+    private lateinit var pbLoadingJadwal: View
     private lateinit var containerJadwalHari: LinearLayout
     private lateinit var cvEmptyHari: View
     private lateinit var tvEmptyHariTitle: TextView
@@ -67,12 +66,14 @@ class JadwalMengajarActivity : AppCompatActivity() {
     // Matriks
     private lateinit var tvFilterKelasText: TextView
     private lateinit var btnFilterKelasMatriks: View
+    private lateinit var btnIconFilterMatriks: View
     private lateinit var containerLegendaMatriks: LinearLayout
     private lateinit var containerMatriksTableRows: LinearLayout
     private lateinit var tvTotalJamTatapMukaFooter: TextView
 
     private var jadwalData: JadwalMengajarData? = null
     private var selectedHariIndex: Int = 0
+    private var selectedFilterKelas: String = "Semua Kelas"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,7 +106,6 @@ class JadwalMengajarActivity : AppCompatActivity() {
 
     private fun initViews() {
         btnBack = findViewById(R.id.btnBack)
-        btnCetak = findViewById(R.id.btnCetak)
         ivProfilPhoto = findViewById(R.id.ivProfilPhoto)
 
         ivAvatarGuru = findViewById(R.id.ivAvatarGuru)
@@ -139,6 +139,7 @@ class JadwalMengajarActivity : AppCompatActivity() {
 
         tvFilterKelasText = findViewById(R.id.tvFilterKelasText)
         btnFilterKelasMatriks = findViewById(R.id.btnFilterKelasMatriks)
+        btnIconFilterMatriks = findViewById(R.id.btnIconFilterMatriks)
         containerLegendaMatriks = findViewById(R.id.containerLegendaMatriks)
         containerMatriksTableRows = findViewById(R.id.containerMatriksTableRows)
         tvTotalJamTatapMukaFooter = findViewById(R.id.tvTotalJamTatapMukaFooter)
@@ -150,16 +151,20 @@ class JadwalMengajarActivity : AppCompatActivity() {
             applyExitTransition()
         }
 
-        btnCetak.setOnClickListener {
-            Toast.makeText(this, "Membuka format cetak jadwal pelajaran...", Toast.LENGTH_SHORT).show()
-        }
-
         btnTabPerHari.setOnClickListener {
             switchTab(perHari = true)
         }
 
         btnTabMatriks.setOnClickListener {
             switchTab(perHari = false)
+        }
+
+        btnFilterKelasMatriks.setOnClickListener {
+            jadwalData?.let { showFilterKelasDialog(it) }
+        }
+
+        btnIconFilterMatriks.setOnClickListener {
+            jadwalData?.let { showFilterKelasDialog(it) }
         }
     }
 
@@ -251,28 +256,32 @@ class JadwalMengajarActivity : AppCompatActivity() {
         if (guru != null) {
             tvNamaGuru.text = guru.nama_lengkap ?: "Guru"
 
-            val prefGuru = getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
-            val roleUser = prefGuru.getString("role", "guru") ?: "guru"
-            val roleMap = mapOf(
-                "guru" to "Guru Pengajar",
-                "kepsek" to "Kepala Sekolah",
-                "admin" to "Administrator",
-                "superadmin" to "Super Administrator",
-                "kurikulum" to "Wakasek Kurikulum",
-                "kesiswaan" to "Wakasek Kesiswaan",
-                "humas" to "Wakasek Humas",
-                "sarpras" to "Wakasek Sarpras",
-                "staff" to "Staf Tata Usaha"
-            )
-            val roleName = roleMap[roleUser.lowercase()] ?: roleUser.replaceFirstChar { it.uppercase() }
-            val cleanJabatan = guru.jabatan?.takeIf {
-                !it.contains("tkjt", ignoreCase = true) &&
-                !it.contains("tjkt", ignoreCase = true) &&
-                it.isNotBlank()
-            } ?: roleName
-            tvJabatanGuru.text = cleanJabatan
+            val roleDariApi = guru.jabatan?.takeIf { it.isNotBlank() }
+                ?: guru.role?.takeIf { it.isNotBlank() }
+            val cleanJabatan = if (!roleDariApi.isNullOrBlank()) {
+                roleDariApi.replace("tkjt", "", ignoreCase = true)
+                    .replace("tjkt", "", ignoreCase = true)
+                    .trim()
+            } else {
+                val prefGuru = getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
+                val roleUser = prefGuru.getString("role", "guru") ?: "guru"
+                val roleMap = mapOf(
+                    "guru" to "Guru Pengajar",
+                    "kepsek" to "Kepala Sekolah",
+                    "admin" to "Administrator",
+                    "superadmin" to "Super Administrator",
+                    "kurikulum" to "Wakasek Kurikulum",
+                    "kesiswaan" to "Wakasek Kesiswaan",
+                    "humas" to "Wakasek Humas",
+                    "sarpras" to "Wakasek Sarpras",
+                    "staff" to "Staf Tata Usaha"
+                )
+                roleMap[roleUser.lowercase()] ?: roleUser.replaceFirstChar { it.uppercase() }
+            }
+            tvJabatanGuru.text = if (cleanJabatan.isNotBlank()) cleanJabatan else "Guru Pengajar"
 
-            tvNipGuru.text = "NIP/ID: ${guru.nip ?: "-"}"
+            val nikVal = guru.nik?.takeIf { it.isNotBlank() } ?: guru.nip?.takeIf { it.isNotBlank() } ?: "-"
+            tvNipGuru.text = "NIK: $nikVal"
             tvSemesterBadge.text = guru.semester_info ?: "Semester Ganjil"
             tvNamaSekolahBadge.text = guru.nama_sekolah ?: "SMKS Riyadhul Jannah"
 
@@ -417,7 +426,21 @@ class JadwalMengajarActivity : AppCompatActivity() {
                     // Card Istirahat
                     val viewIstirahat = inflater.inflate(R.layout.item_jadwal_istirahat_card, containerJadwalHari, false)
                     viewIstirahat.findViewById<TextView>(R.id.tvNamaIstirahat).text = item.nama_mapel ?: "Jam Istirahat"
-                    viewIstirahat.findViewById<TextView>(R.id.tvWaktuIstirahat).text = "${item.jam_mulai} - ${item.jam_selesai} WIB (${item.ruang ?: "20 Menit"})"
+
+                    var jmMulai = item.jam_mulai ?: "11:20"
+                    var jmSelesai = item.jam_selesai ?: "12:45"
+                    if (jmSelesai.startsWith("00:") && (jmMulai.take(2).toIntOrNull() ?: 0) >= 10) {
+                        jmSelesai = "12:" + jmSelesai.substring(3)
+                    }
+
+                    var durasiStr = item.ruang ?: ""
+                    if (durasiStr.isBlank() || (durasiStr.contains("15") && jmMulai.startsWith("11") && jmSelesai.startsWith("12"))) {
+                        durasiStr = "85 Menit"
+                    } else if (!durasiStr.endsWith("Menit", ignoreCase = true)) {
+                        durasiStr = "$durasiStr Menit"
+                    }
+
+                    viewIstirahat.findViewById<TextView>(R.id.tvWaktuIstirahat).text = "$jmMulai - $jmSelesai WIB ($durasiStr)"
                     viewIstirahat.findViewById<TextView>(R.id.tvBadgeIstirahat).text = item.kategori ?: "Jeda Istirahat"
                     containerJadwalHari.addView(viewIstirahat)
                 } else {
@@ -428,12 +451,58 @@ class JadwalMengajarActivity : AppCompatActivity() {
                     viewPelajaran.findViewById<TextView>(R.id.tvWaktuPelajaran).text = "🕒 ${item.jam_mulai} - ${item.jam_selesai} WIB"
                     viewPelajaran.findViewById<TextView>(R.id.tvKelasPelajaranBadge).text = item.nama_kelas ?: "-"
                     viewPelajaran.findViewById<TextView>(R.id.tvNamaMapelPelajaran).text = item.nama_mapel ?: "-"
-                    viewPelajaran.findViewById<TextView>(R.id.tvRuangKategori).text = "🏢 ${item.ruang ?: "Ruang Lab/Kelas"} • Kategori: ${item.kategori ?: "Teori & Praktik"}"
+
+                    val namaKelas = item.nama_kelas?.trim().orEmpty()
+                    val ruangNama = when {
+                        item.ruang?.startsWith("Ruang", ignoreCase = true) == true && !item.ruang.contains("Lab Komputer", ignoreCase = true) -> item.ruang
+                        namaKelas.isNotEmpty() -> "Ruang $namaKelas"
+                        else -> "Ruang Kelas"
+                    }
+                    viewPelajaran.findViewById<TextView>(R.id.tvRuangKategori).text = "🏢 $ruangNama • Kategori: ${item.kategori ?: "Teori & Praktik"}"
 
                     containerJadwalHari.addView(viewPelajaran)
                 }
             }
         }
+    }
+
+    private fun showFilterKelasDialog(data: JadwalMengajarData) {
+        val kelasSet = linkedSetOf<String>()
+        data.matriks_rows?.forEach { row ->
+            row.cells?.values?.forEach { cell ->
+                val kls = cell.nama_kelas?.trim()
+                if (!kls.isNullOrBlank()) {
+                    kelasSet.add(kls)
+                }
+            }
+        }
+        data.hari_list?.forEach { hari ->
+            hari.items?.forEach { item ->
+                val kls = item.nama_kelas?.trim()
+                if (!kls.isNullOrBlank()) {
+                    kelasSet.add(kls)
+                }
+            }
+        }
+
+        val options = mutableListOf("Semua Kelas")
+        options.addAll(kelasSet.sorted())
+
+        val checkedItem = options.indexOf(selectedFilterKelas).takeIf { it != -1 } ?: 0
+
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Filter Jadwal Berdasarkan Kelas")
+            .setSingleChoiceItems(options.toTypedArray(), checkedItem) { dialog, which ->
+                val chosen = options[which]
+                selectedFilterKelas = chosen
+                renderMatriksMingguan(data)
+                dialog.dismiss()
+                Toast.makeText(this, "Menampilkan filter: $chosen", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Tutup") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
     private fun renderMatriksMingguan(data: JadwalMengajarData) {
@@ -442,14 +511,22 @@ class JadwalMengajarActivity : AppCompatActivity() {
 
         val density = resources.displayMetrics.density
 
-        // 1. Filter Dropdown & Footer
+        // 1. Filter Dropdown
         val stats = data.stats
-        tvFilterKelasText.text = "Semua Kelas (${stats?.kelas_ringkasan ?: "-"})"
-        tvTotalJamTatapMukaFooter.text = "ℹ️ Total Jam Tatap Muka: ${stats?.total_jam_minggu ?: 0} Jam Pelajaran (JP)"
+        if (selectedFilterKelas == "Semua Kelas") {
+            tvFilterKelasText.text = "Semua Kelas (${stats?.kelas_ringkasan ?: "-"})"
+        } else {
+            tvFilterKelasText.text = "Kelas: $selectedFilterKelas"
+        }
 
         // 2. Legenda Mata Pelajaran & Jadwal
         val legendaList = data.legenda_list ?: emptyList()
         for (item in legendaList) {
+            if (selectedFilterKelas != "Semua Kelas" && item.type == "mapel") {
+                val match = item.title?.contains(selectedFilterKelas, ignoreCase = true) == true
+                if (!match) continue
+            }
+
             val legendCard = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = android.view.Gravity.CENTER_VERTICAL
@@ -511,6 +588,7 @@ class JadwalMengajarActivity : AppCompatActivity() {
         // 3. Matriks Rows Grid (Senin s/d Sabtu)
         val days = listOf("Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu")
         val matriksRows = data.matriks_rows ?: emptyList()
+        var totalJpFiltered = 0
 
         for (row in matriksRows) {
             val isIstirahat = row.is_istirahat == true
@@ -542,7 +620,11 @@ class JadwalMengajarActivity : AppCompatActivity() {
             val tvWaktu = TextView(this).apply {
                 layoutParams = LinearLayout.LayoutParams((85 * density).toInt(), LinearLayout.LayoutParams.MATCH_PARENT)
                 gravity = android.view.Gravity.CENTER
-                text = row.waktu ?: ""
+                var waktuClean = row.waktu ?: ""
+                if (waktuClean.contains("00:")) {
+                    waktuClean = waktuClean.replace("00:", "12:")
+                }
+                text = waktuClean
                 textSize = 9.5f
                 setTextColor(if (isIstirahat) Color.parseColor("#B45309") else Color.parseColor("#64748B"))
                 setBackgroundColor(if (isIstirahat) Color.parseColor("#FEF3C7") else Color.WHITE)
@@ -557,6 +639,12 @@ class JadwalMengajarActivity : AppCompatActivity() {
                     setBackgroundColor(if (isIstirahat) Color.parseColor("#FEF3C7") else Color.WHITE)
                 }
 
+                val isMatchKelas = if (selectedFilterKelas == "Semua Kelas") {
+                    true
+                } else {
+                    cell?.nama_kelas?.trim().equals(selectedFilterKelas.trim(), ignoreCase = true)
+                }
+
                 if (isIstirahat) {
                     val tvIst = TextView(this).apply {
                         layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
@@ -567,8 +655,12 @@ class JadwalMengajarActivity : AppCompatActivity() {
                         setTypeface(null, android.graphics.Typeface.BOLD)
                     }
                     cellContainer.addView(tvIst)
-                } else if (cell != null && cell.type == "pelajaran") {
+                } else if (cell != null && cell.type == "pelajaran" && isMatchKelas) {
                     val pos = cell.position ?: if (cell.is_start == true) "start" else "end"
+                    if (cell.is_start == true || pos == "start" || pos == "single") {
+                        totalJpFiltered += (cell.jp ?: 1)
+                    }
+
                     val cardPel = LinearLayout(this).apply {
                         orientation = LinearLayout.VERTICAL
                         val r = 10f * density
@@ -634,12 +726,12 @@ class JadwalMengajarActivity : AppCompatActivity() {
 
                             val tvKelas = TextView(this).apply {
                                 text = cell.nama_kelas ?: ""
-                                textSize = 8f
+                                textSize = 7.5f
                                 setTextColor(Color.parseColor(cell.text_hex ?: "#6D28D9"))
                                 setTypeface(null, android.graphics.Typeface.BOLD)
-                                setPadding((5 * density).toInt(), (1.5f * density).toInt(), (5 * density).toInt(), (1.5f * density).toInt())
+                                setPadding((4 * density).toInt(), (1 * density).toInt(), (4 * density).toInt(), (1 * density).toInt())
                                 background = android.graphics.drawable.GradientDrawable().apply {
-                                    cornerRadius = 4 * density
+                                    cornerRadius = 3 * density
                                     setColor(Color.WHITE)
                                 }
                             }
@@ -762,6 +854,18 @@ class JadwalMengajarActivity : AppCompatActivity() {
             rowWrapper.addView(bottomBorder)
 
             containerMatriksTableRows.addView(rowWrapper)
+        }
+
+        // 4. Update Footer Total Jam Tatap Muka
+        val finalTotalJp = if (selectedFilterKelas == "Semua Kelas") {
+            stats?.total_jam_minggu ?: 0
+        } else {
+            totalJpFiltered
+        }
+        tvTotalJamTatapMukaFooter.text = if (selectedFilterKelas == "Semua Kelas") {
+            "ℹ️ Total Jam Tatap Muka: $finalTotalJp Jam Pelajaran (JP)"
+        } else {
+            "ℹ️ Total Jam Tatap Muka ($selectedFilterKelas): $finalTotalJp Jam Pelajaran (JP)"
         }
     }
 

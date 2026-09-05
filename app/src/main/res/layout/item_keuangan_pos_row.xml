@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_rounded_border"
+    android:backgroundTint="#F8FAFC"
+    android:padding="10dp"
+    android:layout_marginBottom="6dp"
+    tools:ignore="HardcodedText,ContentDescription">
+
+    <!-- Row 1: Nama Pos + Tahun Ajaran + Status Badge -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginEnd="6dp">
+
+            <TextView
+                android:id="@+id/tvRowNamaPos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nama Pos Bayar"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#1E293B" />
+
+            <TextView
+                android:id="@+id/tvRowTahunAjaran"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TA 2026/2027 • Ganjil"
+                android:textSize="9.5sp"
+                android:textStyle="bold"
+                android:textColor="#4338CA"
+                android:background="@drawable/bg_rounded_border"
+                android:backgroundTint="#EEF2FF"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="1.5dp"
+                android:layout_marginTop="3dp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvRowStatusPos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Belum Lunas"
+            android:textSize="9.5sp"
+            android:textStyle="bold"
+            android:textColor="#DC2626"
+            android:background="@drawable/bg_rounded_border"
+            android:backgroundTint="#FEE2E2"
+            android:paddingHorizontal="7dp"
+            android:paddingVertical="2.5dp" />
+    </LinearLayout>
+
+    <!-- Row 2: Tagihan, Terbayar, Sisa -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="6dp">
+
+        <TextView
+            android:id="@+id/tvRowTagihan"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Tagihan: Rp 0"
+            android:textSize="10.5sp"
+            android:textColor="#64748B" />
+
+        <TextView
+            android:id="@+id/tvRowTerbayar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Bayar: Rp 0"
+            android:textSize="10.5sp"
+            android:textColor="#059669" />
+
+        <TextView
+            android:id="@+id/tvRowSisa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sisa: Rp 0"
+            android:textSize="10.5sp"
+            android:textStyle="bold"
+            android:textColor="#DC2626" />
+    </LinearLayout>
+
+</LinearLayout>

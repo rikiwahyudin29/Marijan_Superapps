@@ -66,7 +66,7 @@
                         android:id="@+id/tvNisSiswa"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="NIS: 12345"
+                        android:text="NISN: 0052324101"
                         android:textColor="#475569"
                         android:textSize="11sp"/>
                         

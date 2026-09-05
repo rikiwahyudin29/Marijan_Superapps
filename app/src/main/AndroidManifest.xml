@@ -85,6 +85,7 @@
         <activity android:name=".JurnalMengajarActivity" android:screenOrientation="portrait" tools:ignore="all" />
         <activity android:name=".RekapMengajarActivity" android:screenOrientation="portrait" tools:ignore="all" />
         <activity android:name=".WaliKelasKehadiranActivity" android:screenOrientation="portrait" tools:ignore="all" />
+        <activity android:name=".WaliKelasAbsenHarianActivity" android:screenOrientation="portrait" tools:ignore="all" />
         <activity android:name=".WaliKelasKeuanganActivity" android:screenOrientation="portrait" tools:ignore="all" />
         <activity android:name=".PresensiKelasActivity" android:screenOrientation="portrait" tools:ignore="all" />
         <activity android:name=".JadwalMengajarActivity" android:screenOrientation="portrait" tools:ignore="all" />

@@ -362,7 +362,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@drawable/bg_input_rounded"
-                android:hint="Cari nama siswa atau NIS..."
+                android:hint="Cari nama siswa atau NISN..."
                 android:paddingHorizontal="16dp"
                 android:drawableStart="@android:drawable/ic_menu_search"
                 android:drawablePadding="8dp"

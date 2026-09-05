@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardSiswa"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="1dp"
+    app:cardBackgroundColor="#FFFFFF"
+    tools:ignore="HardcodedText,ContentDescription,UseCompoundDrawables">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="14dp">
+
+        <!-- 1. Header Card (Student Info + Actions) -->
+        <LinearLayout
+            android:id="@+id/layoutCardHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Circular Number Badge -->
+            <FrameLayout
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_circle_primary"
+                android:backgroundTint="#EEF2FF">
+
+                <TextView
+                    android:id="@+id/tvNomorAbsen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="1"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="#3730A3" />
+            </FrameLayout>
+
+            <!-- Name & NIS -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="10dp">
+
+                <TextView
+                    android:id="@+id/tvNamaSiswa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NAMA SISWA"
+                    android:textSize="13.5sp"
+                    android:textStyle="bold"
+                    android:textColor="#0F172A"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+                <TextView
+                    android:id="@+id/tvNisDanGender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NIS: 23241001 • Laki-laki"
+                    android:textSize="11sp"
+                    android:textColor="#64748B"
+                    android:layout_marginTop="1dp" />
+            </LinearLayout>
+
+            <!-- Status Badge (Shown when expanded) -->
+            <TextView
+                android:id="@+id/tvStatusBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Belum Lunas"
+                android:textSize="10.5sp"
+                android:textStyle="bold"
+                android:textColor="#DC2626"
+                android:background="@drawable/bg_rounded_border"
+                android:backgroundTint="#FEE2E2"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <!-- Quick Print Button (Shown when collapsed) -->
+            <LinearLayout
+                android:id="@+id/btnQuickCetak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="@drawable/bg_rounded_border_outline"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_printer"
+                    app:tint="#2563EB" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cetak"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold"
+                    android:textColor="#2563EB"
+                    android:layout_marginStart="4dp" />
+            </LinearLayout>
+
+            <!-- Expand / Collapse Chevron -->
+            <ImageView
+                android:id="@+id/ivChevron"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_chevron_down"
+                app:tint="#64748B"
+                android:layout_marginStart="6dp" />
+        </LinearLayout>
+
+        <!-- 2. Three Stat Pills (Tagihan, Terbayar, Tunggakan) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            android:layout_marginTop="10dp">
+
+            <!-- Tagihan -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_rounded_border"
+                android:backgroundTint="#F8FAFC"
+                android:paddingVertical="6dp"
+                android:layout_marginEnd="4dp">
+
+                <TextView
+                    android:id="@+id/tvLabelTagihan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tagihan"
+                    android:textSize="9.5sp"
+                    android:textColor="#64748B" />
+
+                <TextView
+                    android:id="@+id/tvStatTagihan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rp 0"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="#0F172A"
+                    android:layout_marginTop="1dp" />
+            </LinearLayout>
+
+            <!-- Terbayar -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_rounded_border"
+                android:backgroundTint="#ECFDF5"
+                android:paddingVertical="6dp"
+                android:layout_marginHorizontal="4dp">
+
+                <TextView
+                    android:id="@+id/tvLabelTerbayar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Terbayar"
+                    android:textSize="9.5sp"
+                    android:textColor="#059669" />
+
+                <TextView
+                    android:id="@+id/tvStatTerbayar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rp 0"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="#059669"
+                    android:layout_marginTop="1dp" />
+            </LinearLayout>
+
+            <!-- Tunggakan -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_rounded_border"
+                android:backgroundTint="#FFFBEB"
+                android:paddingVertical="6dp"
+                android:layout_marginStart="4dp">
+
+                <TextView
+                    android:id="@+id/tvLabelTunggakan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tunggakan"
+                    android:textSize="9.5sp"
+                    android:textColor="#D97706" />
+
+                <TextView
+                    android:id="@+id/tvStatTunggakan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rp 0"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="#D97706"
+                    android:layout_marginTop="1dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 3. Expandable Section (Detailed Breakdown by Pos Bayar + Actions) -->
+        <LinearLayout
+            android:id="@+id/layoutExpandedSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#E2E8F0"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Rincian Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="📋 Rincian Tagihan Pos Pembayaran"
+                    android:textSize="11.5sp"
+                    android:textStyle="bold"
+                    android:textColor="#0F172A" />
+
+                <TextView
+                    android:id="@+id/tvPosCountBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 Pos Bayar"
+                    android:textSize="10.5sp"
+                    android:textColor="#64748B" />
+            </LinearLayout>
+
+            <!-- Container for Dynamic Pos Items -->
+            <LinearLayout
+                android:id="@+id/containerPosBreakdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <!-- Expanded Action Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <!-- WA Ortu Button -->
+                <LinearLayout
+                    android:id="@+id/btnWaOrtu"
+                    android:layout_width="0dp"
+                    android:layout_height="38dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@drawable/bg_rounded_border"
+                    android:backgroundTint="#059669"
+                    android:layout_marginEnd="5dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/ic_whatsapp"
+                        app:tint="#FFFFFF" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ingatkan WA Ortu"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:layout_marginStart="6dp" />
+                </LinearLayout>
+
+                <!-- Cetak Tagihan Button -->
+                <LinearLayout
+                    android:id="@+id/btnCetakTagihanExpanded"
+                    android:layout_width="0dp"
+                    android:layout_height="38dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@drawable/bg_rounded_border_outline"
+                    android:layout_marginStart="5dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/ic_printer"
+                        app:tint="#334155" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cetak Tagihan"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="#334155"
+                        android:layout_marginStart="6dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
