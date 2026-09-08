@@ -423,23 +423,23 @@ data class InfoAkademik(
 )
 
 data class RingkasanRaport(
-    val rata_rata_nilai: String?,
+    val rata_rata_nilai: Any?,
     val trend_nilai: String?,
-    val kehadiran_persen: Int?,
+    val kehadiran_persen: Any?,
     val kehadiran_status: String?,
-    val peringkat_kelas: Int?,
-    val total_siswa: Int?,
-    val peringkat_paralel: Int?,
+    val peringkat_kelas: Any?,
+    val total_siswa: Any?,
+    val peringkat_paralel: Any?,
     val url_download_pdf: String?
 )
 
 data class NilaiMapel(
     val mapel: String?,
     val guru: String?,
-    val kkm: String?,
-    val formatif: String?,
-    val sumatif: String?,
-    val nilai_akhir: String?,
+    val kkm: Any?,
+    val formatif: Any?,
+    val sumatif: Any?,
+    val nilai_akhir: Any?,
     val deskripsi: String?
 )
 // --- DATA CLASS PRESENSI STATISTIK ---

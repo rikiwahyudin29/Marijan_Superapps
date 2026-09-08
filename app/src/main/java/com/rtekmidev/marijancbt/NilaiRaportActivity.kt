@@ -147,20 +147,25 @@ class NilaiRaportActivity : AppCompatActivity() {
 
                             // Ringkasan
                             val r = data.ringkasan
-                            tvRataRataNilai.text = r?.rata_rata_nilai ?: "0"
+                            val rataRataStr = r?.rata_rata_nilai?.toString() ?: "0"
+                            tvRataRataNilai.text = rataRataStr
                             tvTrendNilai.text = r?.trend_nilai ?: ""
                             
-                            val avgVal = r?.rata_rata_nilai?.toDoubleOrNull() ?: 0.0
+                            val avgVal = rataRataStr.toDoubleOrNull() ?: 0.0
                             progressRataRata.progress = avgVal.toInt()
 
-                            val hadir = r?.kehadiran_persen ?: 0
+                            val hadirStr = r?.kehadiran_persen?.toString() ?: "0"
+                            val hadir = hadirStr.toIntOrNull() ?: 0
                             tvPersentaseKehadiran.text = "${hadir}%"
                             tvStatusKehadiran.text = r?.kehadiran_status ?: "-"
                             progressKehadiran.progress = hadir
 
-                            tvPeringkat.text = "#${r?.peringkat_kelas ?: "-"}"
-                            tvTotalSiswa.text = "dari ${r?.total_siswa ?: "-"} Siswa"
-                            tvPeringkatParalel.text = "Peringkat Paralel: #${r?.peringkat_paralel ?: "-"}"
+                            val rankStr = r?.peringkat_kelas?.toString() ?: "-"
+                            tvPeringkat.text = if (rankStr == "0" || rankStr == "-" || rankStr.isEmpty()) "-" else "#$rankStr"
+                            val totalStr = r?.total_siswa?.toString() ?: "-"
+                            tvTotalSiswa.text = "dari $totalStr Siswa"
+                            val rankParalelStr = r?.peringkat_paralel?.toString() ?: "-"
+                            tvPeringkatParalel.text = "Peringkat Paralel: ${if (rankParalelStr == "0" || rankParalelStr == "-" || rankParalelStr.isEmpty()) "-" else "#$rankParalelStr"}"
                             
                             downloadUrl = r?.url_download_pdf
 
@@ -168,7 +173,7 @@ class NilaiRaportActivity : AppCompatActivity() {
                             renderDaftarNilai(data.daftar_nilai ?: emptyList())
                         }
                     } else {
-                        Toast.makeText(this@NilaiRaportActivity, "Gagal memuat raport", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@NilaiRaportActivity, response.body()?.pesan ?: "Gagal memuat raport", Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
@@ -184,6 +189,18 @@ class NilaiRaportActivity : AppCompatActivity() {
         // Hapus child lain kecuali ProgressBar yang sudah disembunyikan
         wadahDaftarNilai.removeAllViews()
 
+        if (list.isEmpty()) {
+            val emptyTv = TextView(this).apply {
+                text = "Belum ada data nilai raport untuk semester ini."
+                textSize = 13f
+                setTextColor(Color.parseColor("#94A3B8"))
+                gravity = android.view.Gravity.CENTER
+                setPadding(0, 40, 0, 40)
+            }
+            wadahDaftarNilai.addView(emptyTv)
+            return
+        }
+
         for (item in list) {
             val itemView = layoutInflater.inflate(R.layout.item_nilai_mapel_merdeka, wadahDaftarNilai, false)
             
@@ -197,10 +214,10 @@ class NilaiRaportActivity : AppCompatActivity() {
 
             tvMapel.text = item.mapel ?: "-"
             tvGuru.text = item.guru ?: "-"
-            tvNilaiAkhir.text = item.nilai_akhir ?: "-"
-            tvKKM.text = item.kkm ?: "-"
-            tvFormatif.text = item.formatif ?: "-"
-            tvSumatif.text = item.sumatif ?: "-"
+            tvNilaiAkhir.text = item.nilai_akhir?.toString() ?: "-"
+            tvKKM.text = item.kkm?.toString() ?: "-"
+            tvFormatif.text = item.formatif?.toString() ?: "-"
+            tvSumatif.text = item.sumatif?.toString() ?: "-"
             
             if (item.deskripsi.isNullOrEmpty()) {
                 tvDeskripsi.visibility = View.GONE
