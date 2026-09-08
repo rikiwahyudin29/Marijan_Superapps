@@ -22,8 +22,7 @@
         android:paddingHorizontal="14dp"
         android:paddingVertical="9dp"
         android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackgroundBorderless">
+        android:clipToOutline="true">
 
         <ImageView
             android:id="@+id/ivNavBeranda"
@@ -50,13 +49,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:background="@drawable/bg_nav_capsule_inactive"
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingHorizontal="6dp"
         android:paddingVertical="9dp"
         android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackgroundBorderless">
+        android:clipToOutline="true">
 
         <ImageView
             android:id="@+id/ivNavAkademik"
@@ -83,13 +82,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:background="@drawable/bg_nav_capsule_inactive"
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingHorizontal="6dp"
         android:paddingVertical="9dp"
         android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackgroundBorderless">
+        android:clipToOutline="true">
 
         <ImageView
             android:id="@+id/ivNavCbt"
@@ -116,13 +115,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:background="@drawable/bg_nav_capsule_inactive"
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingHorizontal="6dp"
         android:paddingVertical="9dp"
         android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackgroundBorderless">
+        android:clipToOutline="true">
 
         <ImageView
             android:id="@+id/ivNavPresensi"
@@ -149,13 +148,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:background="@drawable/bg_nav_capsule_inactive"
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingHorizontal="6dp"
         android:paddingVertical="9dp"
         android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackgroundBorderless">
+        android:clipToOutline="true">
 
         <ImageView
             android:id="@+id/ivNavKeuangan"
@@ -182,13 +181,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:background="@drawable/bg_nav_capsule_inactive"
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingHorizontal="6dp"
         android:paddingVertical="9dp"
         android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackgroundBorderless">
+        android:clipToOutline="true">
 
         <ImageView
             android:id="@+id/ivNavProfil"

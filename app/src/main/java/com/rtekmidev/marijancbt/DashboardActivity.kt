@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -31,6 +32,7 @@ import kotlinx.coroutines.withContext
 class DashboardActivity : AppCompatActivity() {
 
     private lateinit var viewPager: ViewPager2
+    private var isBottomNavHidden = false
     private val PERMISSION_REQUEST_CODE = 1001
 
     private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
@@ -160,7 +162,7 @@ class DashboardActivity : AppCompatActivity() {
                     params?.width = 0
                     params?.weight = 1f
                     layout?.layoutParams = params
-                    layout?.background = null
+                    layout?.setBackgroundResource(R.drawable.bg_nav_capsule_inactive)
                     layout?.setPadding(dp(6), dp(8), dp(6), dp(8))
                     iv?.setColorFilter(android.graphics.Color.parseColor("#94A3B8"))
                     tv?.visibility = View.GONE
@@ -175,15 +177,19 @@ class DashboardActivity : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 updateNavSelection(position)
+                showBottomNav()
+                viewPager.post {
+                    attachAutoScrollToCurrentPage()
+                }
             }
         })
         
-        navBeranda.setOnClickListener { viewPager.currentItem = 0 }
-        navAkademik.setOnClickListener { viewPager.currentItem = 1 }
-        navCbt.setOnClickListener { viewPager.currentItem = 2 }
-        navPresensi.setOnClickListener { viewPager.currentItem = 3 }
-        navKeuangan.setOnClickListener { viewPager.currentItem = 4 }
-        navProfil.setOnClickListener { viewPager.currentItem = 5 }
+        navBeranda.setOnClickListener { viewPager.currentItem = 0; showBottomNav() }
+        navAkademik.setOnClickListener { viewPager.currentItem = 1; showBottomNav() }
+        navCbt.setOnClickListener { viewPager.currentItem = 2; showBottomNav() }
+        navPresensi.setOnClickListener { viewPager.currentItem = 3; showBottomNav() }
+        navKeuangan.setOnClickListener { viewPager.currentItem = 4; showBottomNav() }
+        navProfil.setOnClickListener { viewPager.currentItem = 5; showBottomNav() }
 
         findViewById<View>(R.id.fabScanner)?.setOnClickListener {
             cekRadiusDanScan()
@@ -320,6 +326,67 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
     
+
+    fun hideBottomNav() {
+        val cardBottomNav = findViewById<View>(R.id.cardBottomNav) ?: return
+        if (!isBottomNavHidden) {
+            isBottomNavHidden = true
+            val height = if (cardBottomNav.height > 0) cardBottomNav.height.toFloat() else (72 * resources.displayMetrics.density)
+            val distance = height + (32 * resources.displayMetrics.density)
+            cardBottomNav.animate()
+                .translationY(distance)
+                .setDuration(280)
+                .setInterpolator(android.view.animation.AccelerateInterpolator())
+                .start()
+        }
+    }
+
+    fun showBottomNav() {
+        val cardBottomNav = findViewById<View>(R.id.cardBottomNav) ?: return
+        if (isBottomNavHidden) {
+            isBottomNavHidden = false
+            cardBottomNav.animate()
+                .translationY(0f)
+                .setDuration(280)
+                .setInterpolator(android.view.animation.DecelerateInterpolator())
+                .start()
+        }
+    }
+
+    fun attachAutoScrollToCurrentPage() {
+        try {
+            val recyclerView = viewPager.getChildAt(0) as? androidx.recyclerview.widget.RecyclerView ?: return
+            val viewHolder = recyclerView.findViewHolderForAdapterPosition(viewPager.currentItem)
+            val itemView = viewHolder?.itemView ?: return
+            val scrollableView = findScrollableView(itemView)
+            scrollableView?.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+                val dy = scrollY - oldScrollY
+                if (dy > 12) {
+                    hideBottomNav()
+                } else if (dy < -12 || scrollY <= 10) {
+                    showBottomNav()
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun findScrollableView(view: View): View? {
+        if (view is androidx.core.widget.NestedScrollView ||
+            view is android.widget.ScrollView ||
+            view is androidx.recyclerview.widget.RecyclerView) {
+            return view
+        }
+        if (view is ViewGroup) {
+            for (i in 0 until view.childCount) {
+                val child = view.getChildAt(i)
+                val found = findScrollableView(child)
+                if (found != null) return found
+            }
+        }
+        return null
+    }
 
     private inner class DashboardPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
         override fun getItemCount(): Int = 6 // 6 Nav Items

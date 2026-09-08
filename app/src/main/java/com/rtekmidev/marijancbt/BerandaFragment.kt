@@ -123,6 +123,17 @@ class BerandaFragment : Fragment() {
         tvNamaDashboard?.text = "Selamat Datang, $userName!"
         tvHeroNisKelas?.text = "NISN: - • Kelas $initialKelas"
 
+        // Auto-Hide Bottom Nav on Scroll
+        val scrollView = view.findViewById<androidx.core.widget.NestedScrollView>(R.id.scrollView)
+        scrollView?.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+            val dy = scrollY - oldScrollY
+            if (dy > 12) {
+                (activity as? DashboardActivity)?.hideBottomNav()
+            } else if (dy < -12 || scrollY <= 10) {
+                (activity as? DashboardActivity)?.showBottomNav()
+            }
+        }
+
         // Wire Click Listeners
         cardStatPresensi?.setOnClickListener {
             requireActivity().findViewById<ViewPager2>(R.id.viewPager)?.currentItem = 3
