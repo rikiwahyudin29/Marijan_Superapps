@@ -36,32 +36,6 @@ class MateriBelajarActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_materi_belajar)
 
-        // Terapkan bottom inset secara global agar konten tidak tertutup navigasi bawaan HP
-        findViewById<android.view.ViewGroup>(android.R.id.content).getChildAt(0)?.let { rootView ->
-            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
-                val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
-                // Jika view sudah punya padding top (dari header dsb), pertahankan. Hanya tambah bottom.
-                view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, systemBars.bottom)
-                insets
-            }
-        }
-
-        androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
-        window.statusBarColor = android.graphics.Color.TRANSPARENT
-        val insetsController = androidx.core.view.WindowCompat.getInsetsController(window, window.decorView)
-        insetsController.isAppearanceLightStatusBars = true
-        
-        val headerLayout = findViewById<View>(R.id.headerLayout)
-        if (headerLayout != null) {
-            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(headerLayout) { v, insets ->
-                val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
-                val density = resources.displayMetrics.density
-                val extraPadding = (20 * density).toInt()
-                v.setPadding(v.paddingLeft, systemBars.top + extraPadding, v.paddingRight, v.paddingBottom)
-                insets
-            }
-        }
-
         val sharedPref = getSharedPreferences("SesiUjian", Context.MODE_PRIVATE)
         nisnSiswa = sharedPref.getString("nisn", "") ?: ""
         val namaSiswa = sharedPref.getString("nama_siswa", "Siswa")

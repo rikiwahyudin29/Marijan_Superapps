@@ -38,36 +38,6 @@ class DaftarTugasActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_daftar_tugas)
 
-        // Terapkan bottom inset secara global agar konten tidak tertutup navigasi bawaan HP
-        findViewById<android.view.ViewGroup>(android.R.id.content).getChildAt(0)?.let { rootView ->
-            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
-                val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
-                // Jika view sudah punya padding top (dari header dsb), pertahankan. Hanya tambah bottom.
-                view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, systemBars.bottom)
-                insets
-            }
-        }
-
-        
-        // Setup Edge-to-Edge Transparent Status Bar
-        @Suppress("DEPRECATION")
-        window.statusBarColor = Color.TRANSPARENT
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        
-        val currentNightMode = resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
-        val isNightMode = currentNightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES
-        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
-        insetsController.isAppearanceLightStatusBars = !isNightMode
-        
-        val headerLayout = findViewById<View>(R.id.headerLayout)
-        if (headerLayout != null) {
-            ViewCompat.setOnApplyWindowInsetsListener(headerLayout) { v, insets ->
-                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-                v.setPadding(v.paddingLeft, systemBars.top, v.paddingRight, v.paddingBottom)
-                insets
-            }
-        }
-
         // Setup Header with User Profile Data
         setupHeader()
 
