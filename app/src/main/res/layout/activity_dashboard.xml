@@ -28,9 +28,22 @@
         android:id="@+id/bottomNavigation"
         layout="@layout/layout_bottom_nav_siswa"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="72dp"
         app:layout_constraintBottom_toBottomOf="parent" />
-        
+
+    <!-- Scanner Halo Cradle (Notched Ring) -->
+    <View
+        android:id="@+id/fabCradle"
+        android:layout_width="66dp"
+        android:layout_height="66dp"
+        android:background="@drawable/bg_fab_cradle"
+        android:elevation="9dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="26dp" />
+
+    <!-- Center Floating Action Button (Scanner QR) -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabScanner"
         android:layout_width="wrap_content"
@@ -38,11 +51,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="35dp"
+        android:layout_marginBottom="31dp"
         android:src="@drawable/ic_qr_code"
-        app:backgroundTint="#1E3A8A"
+        app:backgroundTint="#2563EB"
         app:tint="#FFFFFF"
-        app:elevation="20dp"
-        app:fabSize="normal" />
+        app:elevation="14dp"
+        app:fabSize="normal"
+        app:borderWidth="0dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

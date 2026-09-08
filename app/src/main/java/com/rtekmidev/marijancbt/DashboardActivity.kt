@@ -116,74 +116,63 @@ class DashboardActivity : AppCompatActivity() {
             viewPager.currentItem = 5 // Tab Profil
         }
 
+        val pillBeranda = findViewById<View>(R.id.pillNavBeranda)
+        val pillAkademik = findViewById<View>(R.id.pillNavAkademik)
+        val pillCbt = findViewById<View>(R.id.pillNavCbt)
+        val pillPresensi = findViewById<View>(R.id.pillNavPresensi)
+        val pillKeuangan = findViewById<View>(R.id.pillNavKeuangan)
+        val pillProfil = findViewById<View>(R.id.pillNavProfil)
+
+        val ivBeranda = findViewById<ImageView>(R.id.ivNavBeranda)
+        val ivAkademik = findViewById<ImageView>(R.id.ivNavAkademik)
+        val ivCbt = findViewById<ImageView>(R.id.ivNavCbt)
+        val ivPresensi = findViewById<ImageView>(R.id.ivNavPresensi)
+        val ivKeuangan = findViewById<ImageView>(R.id.ivNavKeuangan)
+        val ivProfil = findViewById<ImageView>(R.id.ivNavProfil)
+
+        val tvBeranda = findViewById<TextView>(R.id.tvNavBeranda)
+        val tvAkademik = findViewById<TextView>(R.id.tvNavAkademik)
+        val tvCbt = findViewById<TextView>(R.id.tvNavCbt)
+        val tvPresensi = findViewById<TextView>(R.id.tvNavPresensi)
+        val tvKeuangan = findViewById<TextView>(R.id.tvNavKeuangan)
+        val tvProfil = findViewById<TextView>(R.id.tvNavProfil)
+
         fun updateNavSelection(position: Int) {
             val unselectedColor = if (isNightMode) {
-                android.graphics.Color.parseColor("#B3FFFFFF") // 70% White for Dark Mode
+                android.graphics.Color.parseColor("#94A3B8")
             } else {
-                android.graphics.Color.parseColor("#9CA3AF") // Gray for Light Mode
+                android.graphics.Color.parseColor("#94A3B8")
             }
             
             val selectedColor = if (isNightMode) {
-                android.graphics.Color.parseColor("#FFFFFF") // Solid White for Dark Mode
+                android.graphics.Color.parseColor("#60A5FA")
             } else {
-                android.graphics.Color.parseColor("#1E3A8A") // Dark Blue for Light Mode
+                android.graphics.Color.parseColor("#1D4ED8")
             }
 
-            // Reset all
-            findViewById<ImageView>(R.id.ivNavBeranda).setColorFilter(unselectedColor)
-            findViewById<TextView>(R.id.tvNavBeranda).setTextColor(unselectedColor)
-            findViewById<TextView>(R.id.tvNavBeranda).typeface = android.graphics.Typeface.DEFAULT
+            val navItems = listOf(
+                Triple(pillBeranda, ivBeranda, tvBeranda),
+                Triple(pillAkademik, ivAkademik, tvAkademik),
+                Triple(pillCbt, ivCbt, tvCbt),
+                Triple(pillPresensi, ivPresensi, tvPresensi),
+                Triple(pillKeuangan, ivKeuangan, tvKeuangan),
+                Triple(pillProfil, ivProfil, tvProfil)
+            )
 
-            findViewById<ImageView>(R.id.ivNavAkademik).setColorFilter(unselectedColor)
-            findViewById<TextView>(R.id.tvNavAkademik).setTextColor(unselectedColor)
-            findViewById<TextView>(R.id.tvNavAkademik).typeface = android.graphics.Typeface.DEFAULT
-
-            findViewById<ImageView>(R.id.ivNavCbt).setColorFilter(unselectedColor)
-            findViewById<TextView>(R.id.tvNavCbt).setTextColor(unselectedColor)
-            findViewById<TextView>(R.id.tvNavCbt).typeface = android.graphics.Typeface.DEFAULT
-            
-            findViewById<ImageView>(R.id.ivNavPresensi).setColorFilter(unselectedColor)
-            findViewById<TextView>(R.id.tvNavPresensi).setTextColor(unselectedColor)
-            findViewById<TextView>(R.id.tvNavPresensi).typeface = android.graphics.Typeface.DEFAULT
-
-            findViewById<ImageView>(R.id.ivNavKeuangan).setColorFilter(unselectedColor)
-            findViewById<TextView>(R.id.tvNavKeuangan).setTextColor(unselectedColor)
-            findViewById<TextView>(R.id.tvNavKeuangan).typeface = android.graphics.Typeface.DEFAULT
-
-            findViewById<ImageView>(R.id.ivNavProfil).setColorFilter(unselectedColor)
-            findViewById<TextView>(R.id.tvNavProfil).setTextColor(unselectedColor)
-            findViewById<TextView>(R.id.tvNavProfil).typeface = android.graphics.Typeface.DEFAULT
-
-            when (position) {
-                0 -> { // Beranda
-                    findViewById<ImageView>(R.id.ivNavBeranda).setColorFilter(selectedColor)
-                    findViewById<TextView>(R.id.tvNavBeranda).setTextColor(selectedColor)
-                    findViewById<TextView>(R.id.tvNavBeranda).typeface = android.graphics.Typeface.DEFAULT_BOLD
-                }
-                1 -> { // Akademik
-                    findViewById<ImageView>(R.id.ivNavAkademik).setColorFilter(selectedColor)
-                    findViewById<TextView>(R.id.tvNavAkademik).setTextColor(selectedColor)
-                    findViewById<TextView>(R.id.tvNavAkademik).typeface = android.graphics.Typeface.DEFAULT_BOLD
-                }
-                2 -> { // CBT
-                    findViewById<ImageView>(R.id.ivNavCbt).setColorFilter(selectedColor)
-                    findViewById<TextView>(R.id.tvNavCbt).setTextColor(selectedColor)
-                    findViewById<TextView>(R.id.tvNavCbt).typeface = android.graphics.Typeface.DEFAULT_BOLD
-                }
-                3 -> { // Presensi
-                    findViewById<ImageView>(R.id.ivNavPresensi).setColorFilter(selectedColor)
-                    findViewById<TextView>(R.id.tvNavPresensi).setTextColor(selectedColor)
-                    findViewById<TextView>(R.id.tvNavPresensi).typeface = android.graphics.Typeface.DEFAULT_BOLD
-                }
-                4 -> { // Keuangan
-                    findViewById<ImageView>(R.id.ivNavKeuangan).setColorFilter(selectedColor)
-                    findViewById<TextView>(R.id.tvNavKeuangan).setTextColor(selectedColor)
-                    findViewById<TextView>(R.id.tvNavKeuangan).typeface = android.graphics.Typeface.DEFAULT_BOLD
-                }
-                5 -> { // Profil
-                    findViewById<ImageView>(R.id.ivNavProfil).setColorFilter(selectedColor)
-                    findViewById<TextView>(R.id.tvNavProfil).setTextColor(selectedColor)
-                    findViewById<TextView>(R.id.tvNavProfil).typeface = android.graphics.Typeface.DEFAULT_BOLD
+            navItems.forEachIndexed { index, (pill, iv, tv) ->
+                val isSelected = (index == position)
+                if (isSelected) {
+                    pill?.setBackgroundResource(R.drawable.bg_nav_pill_active)
+                    iv?.setColorFilter(selectedColor)
+                    tv?.setTextColor(selectedColor)
+                    tv?.typeface = android.graphics.Typeface.DEFAULT_BOLD
+                    iv?.animate()?.scaleX(1.15f)?.scaleY(1.15f)?.setDuration(180)?.start()
+                } else {
+                    pill?.background = null
+                    iv?.setColorFilter(unselectedColor)
+                    tv?.setTextColor(unselectedColor)
+                    tv?.typeface = android.graphics.Typeface.DEFAULT
+                    iv?.animate()?.scaleX(1.0f)?.scaleY(1.0f)?.setDuration(180)?.start()
                 }
             }
         }
