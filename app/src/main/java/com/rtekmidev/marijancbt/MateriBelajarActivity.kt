@@ -65,11 +65,10 @@ class MateriBelajarActivity : AppCompatActivity() {
         val sharedPref = getSharedPreferences("SesiUjian", Context.MODE_PRIVATE)
         nisnSiswa = sharedPref.getString("nisn", "") ?: ""
         val namaSiswa = sharedPref.getString("nama_siswa", "Siswa")
-        val kelasLengkap = sharedPref.getString("kelas_lengkap", "Kelas -")
         val fotoProfil = sharedPref.getString("foto_profil", "")
         
-        findViewById<TextView>(R.id.tvNamaDashboard)?.text = "Halo, $namaSiswa"
-        findViewById<TextView>(R.id.tvKelas)?.text = kelasLengkap
+        findViewById<TextView>(R.id.tvHeaderTitle)?.text = "Materi Belajar"
+        findViewById<ImageView>(R.id.btnBack)?.setOnClickListener { finish() }
 
         val ivProfilPhoto = findViewById<ImageView>(R.id.ivProfilPhoto)
         val tvProfilInisial = findViewById<TextView>(R.id.tvProfilInisial)

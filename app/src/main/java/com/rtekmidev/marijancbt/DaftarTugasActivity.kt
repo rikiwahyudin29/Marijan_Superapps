@@ -121,16 +121,12 @@ class DaftarTugasActivity : AppCompatActivity() {
     private fun setupHeader() {
         val sharedPref = getSharedPreferences("SesiUjian", Context.MODE_PRIVATE)
         val namaSiswa = sharedPref.getString("nama_siswa", "Siswa")
-        val kelasLengkap = sharedPref.getString("kelas_lengkap", "Memuat Kelas...")
         val fotoProfil = sharedPref.getString("foto_profil", "")
 
-        val tvNama = findViewById<TextView>(R.id.tvNamaDashboard)
-        val tvKelas = findViewById<TextView>(R.id.tvKelas)
+        findViewById<TextView>(R.id.tvHeaderTitle)?.text = "Daftar Tugas"
+        findViewById<ImageView>(R.id.btnBack)?.setOnClickListener { finish() }
+
         val ivProfil = findViewById<ImageView>(R.id.ivProfilPhoto)
-
-        tvNama?.text = "Selamat Datang, $namaSiswa!"
-        tvKelas?.text = kelasLengkap
-
         val tvProfilInisial = findViewById<TextView>(R.id.tvProfilInisial)
         val cvProfilPic = findViewById<androidx.cardview.widget.CardView>(R.id.cvProfilPic)
         com.rtekmidev.marijancbt.util.AvatarHelper.setAvatar(this, namaSiswa, fotoProfil, ivProfil, tvProfilInisial, cvProfilPic)

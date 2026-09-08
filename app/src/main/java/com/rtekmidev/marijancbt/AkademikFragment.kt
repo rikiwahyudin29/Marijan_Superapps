@@ -81,7 +81,6 @@ class AkademikFragment : Fragment() {
         val tvKbmMapel = view.findViewById<TextView>(R.id.tvKbmMapel)
         val tvKbmGuruRuang = view.findViewById<TextView>(R.id.tvKbmGuruRuang)
         val btnBukaModulKbm = view.findViewById<TextView>(R.id.btnBukaModulKbm)
-        val btnPresensiKbm = view.findViewById<TextView>(R.id.btnPresensiKbm)
 
         // 5. Tugas Mendatang Container
         val tvCountTugasBadge = view.findViewById<TextView>(R.id.tvCountTugasBadge)
@@ -166,13 +165,30 @@ class AkademikFragment : Fragment() {
                                 tvKbmWaktu?.text = "Jam Ke ${data.next_kbm.jam_ke ?: 1} • ${data.next_kbm.waktu ?: "-"}"
                                 tvKbmMapel?.text = data.next_kbm.nama_mapel ?: "Mata Pelajaran"
                                 tvKbmGuruRuang?.text = "${data.next_kbm.guru ?: "Guru Mapel"} • ${data.next_kbm.ruang ?: "Ruang Kelas"}"
+                            } else if (!data.jadwal_hari_ini.isNullOrEmpty()) {
+                                // Hari ini ada jadwal pelajaran, jam KBM telah usai
+                                val lastKbm = data.jadwal_hari_ini.last()
+                                tvKbmStatusBadge?.text = "• KBM HARI INI SELESAI"
+                                tvKbmStatusBadge?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_badge_green_soft)
+                                tvKbmStatusBadge?.setTextColor(android.graphics.Color.parseColor("#059669"))
+                                tvKbmWaktu?.text = "Selesai Pukul ${lastKbm.jam_selesai ?: "-"} WIB (${data.jadwal_hari_ini.size} Mapel)"
+                                tvKbmMapel?.text = lastKbm.nama_mapel ?: "KBM Hari Ini Selesai"
+                                tvKbmGuruRuang?.text = "${lastKbm.guru ?: "Guru Mapel"} • ${lastKbm.ruang ?: "Ruang Kelas"}"
+                            } else if (data.next_day_kbm != null) {
+                                val hariLanjut = data.next_day_kbm.hari?.uppercase() ?: "SENIN"
+                                tvKbmStatusBadge?.text = "• JADWAL $hariLanjut"
+                                tvKbmStatusBadge?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_badge_blue_soft)
+                                tvKbmStatusBadge?.setTextColor(android.graphics.Color.parseColor("#2563EB"))
+                                tvKbmWaktu?.text = "Jam Ke 1 • ${data.next_day_kbm.waktu ?: "-"}"
+                                tvKbmMapel?.text = data.next_day_kbm.nama_mapel ?: "Mata Pelajaran"
+                                tvKbmGuruRuang?.text = "${data.next_day_kbm.guru ?: "Guru Pengampu"} • ${data.next_day_kbm.ruang ?: "Ruang Kelas"}"
                             } else {
-                                tvKbmStatusBadge?.text = "• JADWAL HARI INI"
+                                tvKbmStatusBadge?.text = "• JADWAL KBM"
                                 tvKbmStatusBadge?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_badge_green_soft)
                                 tvKbmStatusBadge?.setTextColor(android.graphics.Color.parseColor("#059669"))
                                 tvKbmWaktu?.text = data.tanggal_hari_ini ?: "-"
-                                tvKbmMapel?.text = "Tidak Ada KBM Aktif Saat Ini"
-                                tvKbmGuruRuang?.text = "KBM hari ini telah selesai atau belum dimulai."
+                                tvKbmMapel?.text = "Jadwal Pelajaran Kelas ${data.kelas ?: "-"}"
+                                tvKbmGuruRuang?.text = "Silakan klik Buka Modul KBM untuk materi pelajaran."
                             }
 
                             // 5. Populate Tugas Mendatang
@@ -206,11 +222,6 @@ class AkademikFragment : Fragment() {
         view.findViewById<CardView>(R.id.btnMenuMateri)?.setOnClickListener { openMateriBelajar() }
         view.findViewById<View>(R.id.btnLihatSemuaMateri)?.setOnClickListener { openMateriBelajar() }
         btnBukaModulKbm?.setOnClickListener { openMateriBelajar() }
-
-        btnPresensiKbm?.setOnClickListener {
-            val intent = Intent(requireContext(), PresensiActivity::class.java)
-            startActivity(intent)
-        }
     }
 
     private fun populateTugasMendatang(

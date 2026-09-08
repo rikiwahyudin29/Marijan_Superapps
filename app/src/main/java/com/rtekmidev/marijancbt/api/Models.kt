@@ -149,6 +149,7 @@ data class DashboardData(
     val has_active_kbm: Boolean?,
     val active_kbm: ActiveKbmDetail?,
     val next_kbm: ActiveKbmDetail?,
+    val next_day_kbm: ActiveKbmDetail? = null,
     val jadwal_hari_ini: List<JadwalPelajaranDetail>?,
     val presensi_sekolah: PresensiHariIniDetail?,
     val tugas_preview: List<TugasPreviewItem>?,
@@ -177,6 +178,7 @@ data class ActiveKbmDetail(
     val waktu: String?,
     val guru: String?,
     val ruang: String?,
+    val hari: String? = null,
     val is_active: Boolean?
 )
 

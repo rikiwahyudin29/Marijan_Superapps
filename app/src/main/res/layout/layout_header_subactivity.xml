@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/headerSubActivity"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingHorizontal="16dp"
+    android:background="@android:color/transparent"
+    android:elevation="2dp"
+    tools:ignore="HardcodedText,ContentDescription,Autofill,UseCompoundDrawables">
+
+    <ImageView
+        android:id="@+id/btnBack"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_baseline_arrow_back_24"
+        app:tint="#1E293B"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"/>
+
+    <ImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="14dp"
+        android:src="@drawable/logo_marj" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="8dp">
+
+        <TextView
+            android:id="@+id/tvHeaderCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SMK RJ SUPERAPPS"
+            android:textSize="9sp"
+            android:letterSpacing="0.05"
+            android:textColor="#64748B"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvHeaderTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Judul Halaman"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#1E293B" />
+    </LinearLayout>
+
+    <!-- Profile Pic with initial and avatar support -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvProfilPic"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        app:cardCornerRadius="18dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="#EEF2FF"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground">
+        <TextView
+            android:id="@+id/tvProfilInisial"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="SA"
+            android:textColor="#1E1B4B"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:visibility="visible" />
+        <ImageView
+            android:id="@+id/ivProfilPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

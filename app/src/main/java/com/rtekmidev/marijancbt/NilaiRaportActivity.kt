@@ -70,26 +70,22 @@ class NilaiRaportActivity : AppCompatActivity() {
                 insets
             }
             
-            // Set header text
-            val tvAppTitle = headerLayout.findViewById<TextView>(R.id.tvAppTitle)
-            if (tvAppTitle != null) tvAppTitle.text = "Nilai Raport"
+            // Set header text & back button
+            val tvHeaderTitle = headerLayout.findViewById<TextView>(R.id.tvHeaderTitle)
+            if (tvHeaderTitle != null) tvHeaderTitle.text = "Nilai Raport"
+
+            headerLayout.findViewById<ImageView>(R.id.btnBack)?.setOnClickListener {
+                finish()
+            }
 
             val sharedPref = getSharedPreferences("SesiUjian", Context.MODE_PRIVATE)
             val namaSiswa = sharedPref.getString("nama_siswa", "Siswa")
-            val kelasLengkap = sharedPref.getString("kelas_lengkap", "Kelas -")
             val fotoProfil = sharedPref.getString("foto_profil", "")
-            
-            headerLayout.findViewById<TextView>(R.id.tvNamaDashboard)?.text = "Halo, $namaSiswa"
-            headerLayout.findViewById<TextView>(R.id.tvKelas)?.text = kelasLengkap
 
             val ivProfilPhoto = headerLayout.findViewById<ImageView>(R.id.ivProfilPhoto)
             val tvProfilInisial = headerLayout.findViewById<TextView>(R.id.tvProfilInisial)
             val cvProfilPic = headerLayout.findViewById<androidx.cardview.widget.CardView>(R.id.cvProfilPic)
             com.rtekmidev.marijancbt.util.AvatarHelper.setAvatar(this, namaSiswa, fotoProfil, ivProfilPhoto, tvProfilInisial, cvProfilPic)
-            
-            headerLayout.setOnClickListener {
-                finish()
-            }
         }
 
         initViews()

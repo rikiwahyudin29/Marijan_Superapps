@@ -59,6 +59,15 @@ class JadwalPelajaranActivity : AppCompatActivity() {
         layoutEmptyState = findViewById(R.id.layoutEmptyState)
         containerJadwalHari = findViewById(R.id.containerJadwalHari)
 
+        findViewById<TextView>(R.id.tvHeaderTitle)?.text = "Jadwal Pelajaran"
+        val sharedPref = getSharedPreferences("SesiUjian", Context.MODE_PRIVATE)
+        val namaSiswa = sharedPref.getString("nama_siswa", "Siswa")
+        val fotoProfil = sharedPref.getString("foto_profil", "")
+        val ivProfilPhoto = findViewById<ImageView>(R.id.ivProfilPhoto)
+        val tvProfilInisial = findViewById<TextView>(R.id.tvProfilInisial)
+        val cvProfilPic = findViewById<androidx.cardview.widget.CardView>(R.id.cvProfilPic)
+        com.rtekmidev.marijancbt.util.AvatarHelper.setAvatar(this, namaSiswa, fotoProfil, ivProfilPhoto, tvProfilInisial, cvProfilPic)
+
         btnBack.setOnClickListener { finish() }
 
         dayChips["Senin"] = findViewById(R.id.chipSenin)
