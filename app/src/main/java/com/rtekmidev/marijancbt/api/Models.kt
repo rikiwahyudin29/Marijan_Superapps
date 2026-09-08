@@ -108,20 +108,105 @@ data class DashboardResponse(
 
 data class DashboardData(
     val nisn: String?,
+    val nis: String?,
     val nama: String?,
     val kelas: String?,
+    val nama_jurusan: String?,
+    val wali_kelas: String?,
+    val status_siswa: String?,
     val tahun_ajaran: String?,
     val semester: String?,
     val foto_profil: String?,
+    val tanggal_hari_ini: String?,
+    val hari_ini_nama: String?,
     val keuangan: Any?,
-    val tugas_aktif: Int,
-    val poin_disiplin: Int,
+    val tugas_aktif: Int?,
+    val poin_disiplin: Int?,
+    val poin_disiplin_max: Int?,
+    val predikat_disiplin: String?,
+    val kehadiran_persen: Double?,
+    val kehadiran_sub: String?,
+    val hadir_count: Int?,
+    val izin_count: Int?,
+    val tugas_tertunda_count: Int?,
+    val tugas_tertunda_sub: String?,
+    val ujian_cbt_count: Int?,
+    val ujian_cbt_sub: String?,
+    val total_tagihan: Any?,
+    val total_tagihan_formatted: String?,
+    val tagihan_sub: String?,
+    val has_active_exam: Boolean?,
+    val active_exam: ActiveExamDetail?,
     val ujian_hari_ini: com.google.gson.JsonElement?,
-    val jadwal_hari_ini: List<JadwalPelajaran>?,
+    val has_active_kbm: Boolean?,
+    val active_kbm: ActiveKbmDetail?,
+    val jadwal_hari_ini: List<JadwalPelajaranDetail>?,
+    val presensi_sekolah: PresensiHariIniDetail?,
+    val tugas_preview: List<TugasPreviewItem>?,
+    val tagihan_preview: List<TagihanItemPreview>?,
     val rata_rata_nilai: Double?,
     val pesan_baru: Int?,
     val total_materi: Int?,
     val aktivitas_terkini: List<AktivitasTerkini>?
+)
+
+data class ActiveExamDetail(
+    val id_ujian: Any?,
+    val nama_mapel: String?,
+    val waktu: String?,
+    val ruang: String?
+)
+
+data class ActiveKbmDetail(
+    val nama_mapel: String?,
+    val jam_ke: Int?,
+    val jam_mulai: String?,
+    val jam_selesai: String?,
+    val waktu: String?,
+    val guru: String?,
+    val ruang: String?,
+    val is_active: Boolean?
+)
+
+data class JadwalPelajaranDetail(
+    val nama_mapel: String?,
+    val jam_ke: Int?,
+    val jam_mulai: String?,
+    val jam_selesai: String?,
+    val waktu: String?,
+    val guru: String?,
+    val ruang: String?,
+    val is_active: Boolean?
+)
+
+data class PresensiHariIniDetail(
+    val lokasi_sekolah: String?,
+    val radius_info: String?,
+    val jam_masuk: String?,
+    val jam_masuk_status: String?,
+    val jam_pulang: String?,
+    val jam_pulang_status: String?,
+    val is_hadir: Boolean?,
+    val is_pulang: Boolean?
+)
+
+data class TugasPreviewItem(
+    val id: Any?,
+    val judul: String?,
+    val mapel: String?,
+    val guru: String?,
+    val deadline: String?,
+    val is_selesai: Boolean?,
+    val status: String?
+)
+
+data class TagihanItemPreview(
+    val id: Any?,
+    val nama_pos: String?,
+    val sisa_nominal: Double?,
+    val nominal_formatted: String?,
+    val status: String?,
+    val jatuh_tempo: String?
 )
 
 data class AktivitasTerkini(

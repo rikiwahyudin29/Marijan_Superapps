@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="10dp"
+    android:paddingHorizontal="4dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@id/layoutTagihanRight"
+        android:layout_marginEnd="10dp">
+
+        <TextView
+            android:id="@+id/tvNamaTagihanItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#1E293B"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:text="SPP Bulan September 2026" />
+
+        <TextView
+            android:id="@+id/tvTempoTagihanItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#94A3B8"
+            android:textSize="11sp"
+            android:text="Jatuh tempo: Akhir Bulan"
+            android:layout_marginTop="2dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutTagihanRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="end"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true">
+
+        <TextView
+            android:id="@+id/tvNominalTagihanItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#DC2626"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:text="Rp 250.000" />
+
+        <TextView
+            android:id="@+id/tvStatusTagihanItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_rounded_border"
+            android:backgroundTint="#FEF2F2"
+            android:textColor="#DC2626"
+            android:textSize="10sp"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="2dp"
+            android:text="Belum Bayar"
+            android:layout_marginTop="2dp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F1F5F9"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="10dp" />
+</RelativeLayout>

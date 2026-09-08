@@ -100,12 +100,21 @@ class DashboardActivity : AppCompatActivity() {
         val navProfil = findViewById<LinearLayout>(R.id.navProfil)
         
         // Update Header Text Colors based on theme
-        val headerTitleColor = if (isNightMode) android.graphics.Color.parseColor("#FFFFFF") else android.graphics.Color.parseColor("#1A1B41")
-        val headerSubtextColor = if (isNightMode) android.graphics.Color.parseColor("#D1D5DB") else android.graphics.Color.parseColor("#6B7280")
+        val headerTitleColor = if (isNightMode) android.graphics.Color.parseColor("#FFFFFF") else android.graphics.Color.parseColor("#1E1B4B")
+        val headerSubtextColor = if (isNightMode) android.graphics.Color.parseColor("#D1D5DB") else android.graphics.Color.parseColor("#64748B")
         
-        findViewById<TextView>(R.id.tvAppTitle).setTextColor(headerTitleColor)
-        findViewById<TextView>(R.id.tvNamaDashboard).setTextColor(headerTitleColor)
-        findViewById<TextView>(R.id.tvKelas).setTextColor(headerSubtextColor)
+        findViewById<TextView>(R.id.tvAppTitle)?.setTextColor(headerTitleColor)
+        findViewById<TextView>(R.id.tvAppSubtitle)?.setTextColor(headerSubtextColor)
+        findViewById<TextView>(R.id.tvNamaDashboard)?.setTextColor(headerTitleColor)
+        findViewById<TextView>(R.id.tvKelas)?.setTextColor(headerSubtextColor)
+
+        findViewById<View>(R.id.btnNotifikasi)?.setOnClickListener {
+            Toast.makeText(this, "Belum ada notifikasi baru", Toast.LENGTH_SHORT).show()
+        }
+
+        findViewById<View>(R.id.cvProfilPic)?.setOnClickListener {
+            viewPager.currentItem = 5 // Tab Profil
+        }
 
         fun updateNavSelection(position: Int) {
             val unselectedColor = if (isNightMode) {
@@ -212,7 +221,7 @@ class DashboardActivity : AppCompatActivity() {
         })
     }
 
-    private fun cekRadiusDanScan() {
+    fun cekRadiusDanScan() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA), PERMISSION_REQUEST_CODE)
             return

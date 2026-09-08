@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingVertical="8dp"
+    android:paddingHorizontal="4dp">
+
+    <TextView
+        android:id="@+id/tvWaktuItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_badge_waktu"
+        android:backgroundTint="#F1F5F9"
+        android:textColor="#475569"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="4dp"
+        android:text="10:15 - 11:45 WIB" />
+
+    <TextView
+        android:id="@+id/tvMapelGuruItem"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:textColor="#1E293B"
+        android:textSize="12sp"
+        android:layout_marginStart="10dp"
+        android:text="Bahasa Inggris (Bu Siti Aminah, M.Pd.)"
+        android:ellipsize="end"
+        android:maxLines="1" />
+</LinearLayout>
