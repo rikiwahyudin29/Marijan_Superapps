@@ -230,6 +230,30 @@ data class JadwalPelajaran(
     val ruang: String?
 )
 
+data class JadwalPelajaranResponse(
+    val status: Boolean,
+    val message: String?,
+    val data: JadwalPelajaranData?
+)
+
+data class JadwalPelajaranData(
+    val kelas: String?,
+    val jurusan: String?,
+    val wali_kelas: String?,
+    val hari_ini: String?,
+    val jadwal: Map<String, List<JadwalPelajaranItem>>?
+)
+
+data class JadwalPelajaranItem(
+    val nama_mapel: String?,
+    val nama_guru: String?,
+    val jam_mulai: String?,
+    val jam_selesai: String?,
+    val waktu: String?,
+    val ruang: String?,
+    val is_active: Boolean? = false
+)
+
 // --- DATA CLASS PRESENSI ---
 data class PresensiRiwayatResponse(
     val status: Boolean,

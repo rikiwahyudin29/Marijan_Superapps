@@ -89,7 +89,7 @@
                         android:id="@+id/tvHeroNisKelas"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="NIS: - • Kelas -"
+                        android:text="NISN: - • Kelas -"
                         android:textColor="#E0E7FF"
                         android:textSize="13sp"
                         android:layout_marginBottom="2dp" />
@@ -598,7 +598,7 @@
                                 android:id="@+id/tvUjianBadge"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/bg_badge_light_blue"
+                                android:background="@drawable/bg_badge_cbt_blue"
                                 android:textColor="#1D4ED8"
                                 android:textSize="10sp"
                                 android:textStyle="bold"
@@ -768,26 +768,11 @@
 
                             <androidx.appcompat.widget.AppCompatButton
                                 android:id="@+id/btnKbmMateri"
-                                android:layout_width="0dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="40dp"
-                                android:layout_weight="1"
-                                android:layout_marginEnd="6dp"
                                 android:background="@drawable/bg_btn_light_blue"
                                 android:text="📖 Materi KBM"
                                 android:textColor="#1E40AF"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
-                                android:stateListAnimator="@null" />
-
-                            <androidx.appcompat.widget.AppCompatButton
-                                android:id="@+id/btnKbmPresensi"
-                                android:layout_width="0dp"
-                                android:layout_height="40dp"
-                                android:layout_weight="1"
-                                android:layout_marginStart="6dp"
-                                android:background="@drawable/bg_btn_primary"
-                                android:text="📝 Presensi KBM"
-                                android:textColor="#FFFFFF"
                                 android:textSize="12sp"
                                 android:textStyle="bold"
                                 android:stateListAnimator="@null" />
@@ -880,7 +865,7 @@
                                 android:id="@+id/tvPresensiLokasiSub"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Lokasi: SMK Raden Ja'far • Radius Presensi Aktif"
+                                android:text="Lokasi: SMKS Riyadhul Jannah Jalancagak • Radius Presensi Aktif"
                                 android:textColor="#64748B"
                                 android:textSize="11sp"
                                 android:layout_marginStart="6dp" />

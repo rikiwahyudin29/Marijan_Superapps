@@ -21,15 +21,6 @@
             android:textSize="13sp"
             android:textStyle="bold"
             android:text="SPP Bulan September 2026" />
-
-        <TextView
-            android:id="@+id/tvTempoTagihanItem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#94A3B8"
-            android:textSize="11sp"
-            android:text="Jatuh tempo: Akhir Bulan"
-            android:layout_marginTop="2dp" />
     </LinearLayout>
 
     <LinearLayout

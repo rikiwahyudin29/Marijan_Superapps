@@ -49,6 +49,9 @@ interface ApiService {
     @GET("api/akademik/dashboard")
     suspend fun getDashboard(@Query("nisn") nisn: String): Response<DashboardResponse>
 
+    @GET("api/akademik/jadwal")
+    suspend fun getJadwalPelajaran(@Query("nisn") nisn: String): Response<JadwalPelajaranResponse>
+
     @GET("api/presensi/riwayat")
     suspend fun getRiwayatAbsen(@Query("nisn") nisn: String): Response<JsonElement>
 

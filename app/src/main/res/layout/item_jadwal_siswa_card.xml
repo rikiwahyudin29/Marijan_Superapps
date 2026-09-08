@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Top Row: Time Badge & Status Badge -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:id="@+id/tvJadwalWaktu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_badge_cbt_blue"
+                android:textColor="#1D4ED8"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
+                android:text="07:00 - 09:00 WIB"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:id="@+id/tvJadwalStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_rounded_border"
+                android:backgroundTint="#DCFCE7"
+                android:textColor="#15803D"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:text="● Sedang Berlangsung"
+                android:layout_alignParentEnd="true"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <!-- Nama Mata Pelajaran -->
+        <TextView
+            android:id="@+id/tvJadwalMapel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#1E1B4B"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:text="Nama Mata Pelajaran"
+            android:layout_marginBottom="6dp" />
+
+        <!-- Guru Pengampu -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_modern_akademik"
+                app:tint="#64748B" />
+
+            <TextView
+                android:id="@+id/tvJadwalGuru"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#64748B"
+                android:textSize="12sp"
+                android:text="Guru: Nama Guru Pengampu"
+                android:layout_marginStart="6dp" />
+        </LinearLayout>
+
+        <!-- Ruang Kelas -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_location_pin_16"
+                app:tint="#94A3B8" />
+
+            <TextView
+                android:id="@+id/tvJadwalRuang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#94A3B8"
+                android:textSize="11sp"
+                android:text="Ruang: Kelas 12 TKJT 1"
+                android:layout_marginStart="6dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

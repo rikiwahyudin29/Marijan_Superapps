@@ -87,7 +87,6 @@ class BerandaFragment : Fragment() {
         val tvKbmMapel = view.findViewById<TextView>(R.id.tvKbmMapel)
         val tvKbmGuru = view.findViewById<TextView>(R.id.tvKbmGuru)
         val btnKbmMateri = view.findViewById<Button>(R.id.btnKbmMateri)
-        val btnKbmPresensi = view.findViewById<Button>(R.id.btnKbmPresensi)
         val containerOtherSubjects = view.findViewById<LinearLayout>(R.id.containerOtherSubjects)
 
         // Bind Section 5: Presensi Kehadiran Sekolah
@@ -122,7 +121,7 @@ class BerandaFragment : Fragment() {
 
         // Initial default texts
         tvNamaDashboard?.text = "Selamat Datang, $userName!"
-        tvHeroNisKelas?.text = "NIS: - • Kelas $initialKelas"
+        tvHeroNisKelas?.text = "NISN: - • Kelas $initialKelas"
 
         // Wire Click Listeners
         cardStatPresensi?.setOnClickListener {
@@ -149,10 +148,6 @@ class BerandaFragment : Fragment() {
             startActivity(Intent(requireContext(), MateriBelajarActivity::class.java))
         }
 
-        btnKbmPresensi?.setOnClickListener {
-            (activity as? DashboardActivity)?.cekRadiusDanScan()
-        }
-
         btnPresensiScan?.setOnClickListener {
             (activity as? DashboardActivity)?.cekRadiusDanScan()
         }
@@ -163,7 +158,7 @@ class BerandaFragment : Fragment() {
 
         // Shortcut clicks
         menuShortcutJadwal?.setOnClickListener {
-            startActivity(Intent(requireContext(), JadwalActivity::class.java))
+            startActivity(Intent(requireContext(), JadwalPelajaranActivity::class.java))
         }
 
         menuShortcutTugas?.setOnClickListener {
@@ -192,7 +187,9 @@ class BerandaFragment : Fragment() {
 
         menuShortcutBantuan?.setOnClickListener {
             try {
-                val url = "https://api.whatsapp.com/send?phone=6282210101010&text=Halo%20Admin%20SMK%20RJ,%20saya%20butuh%20bantuan."
+                val phone = "6285155232366"
+                val text = Uri.encode("Halo Admin SMKS Riyadhul Jannah Jalancagak, saya butuh bantuan terkait aplikasi.")
+                val url = "https://api.whatsapp.com/send?phone=$phone&text=$text"
                 val i = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 startActivity(i)
             } catch (e: Exception) {
@@ -323,9 +320,9 @@ class BerandaFragment : Fragment() {
 
                         tvHeroDate?.text = data.tanggal_hari_ini ?: "Senin, 08 Sep 2026"
 
-                        val nisText = data.nis ?: data.nisn ?: "-"
+                        val nisText = data.nisn ?: data.nis ?: nisn ?: "-"
                         val kelasText = data.kelas ?: "-"
-                        tvHeroNisKelas?.text = "NIS: $nisText • Kelas $kelasText"
+                        tvHeroNisKelas?.text = "NISN: $nisText • Kelas $kelasText"
 
                         tvHeroJurusan?.text = data.nama_jurusan ?: "Semua Jurusan"
                         tvHeroStatus?.text = "● ${data.status_siswa ?: "Siswa Aktif"}"
@@ -383,15 +380,12 @@ class BerandaFragment : Fragment() {
 
                         // 4. Section Mata Pelajaran Hari Ini
                         tvMapelHariPill?.text = data.hari_ini_nama ?: "Hari Ini"
-                        if (data.has_active_kbm == true && data.active_kbm != null) {
+                        val isKbmAktif = (data.has_active_kbm == true && data.active_kbm != null && data.active_kbm.is_active == true)
+                        if (isKbmAktif) {
                             cardActiveKbm?.visibility = View.VISIBLE
-                            val kbm = data.active_kbm
+                            val kbm = data.active_kbm!!
                             val jamKe = kbm.jam_ke ?: 1
-                            if (kbm.is_active == true) {
-                                tvKbmStatusBadge?.text = "● Sedang Berlangsung (Jam Ke $jamKe)"
-                            } else {
-                                tvKbmStatusBadge?.text = "● Jadwal Hari Ini (Jam Ke $jamKe)"
-                            }
+                            tvKbmStatusBadge?.text = "● Sedang Berlangsung (Jam Ke $jamKe)"
                             tvKbmWaktuRuang?.text = "${kbm.waktu ?: "-"} • ${kbm.ruang ?: "Ruang Kelas"}"
                             tvKbmMapel?.text = kbm.nama_mapel ?: "Mata Pelajaran"
                             tvKbmGuru?.text = "Guru: ${kbm.guru ?: "-"}"
@@ -404,8 +398,8 @@ class BerandaFragment : Fragment() {
                         if (data.jadwal_hari_ini != null && data.jadwal_hari_ini.isNotEmpty()) {
                             containerOtherSubjects?.visibility = View.VISIBLE
                             for (jadwal in data.jadwal_hari_ini) {
-                                // Exclude the active subject from the other subjects preview
-                                if (data.has_active_kbm == true && data.active_kbm?.nama_mapel == jadwal.nama_mapel) {
+                                // Exclude the active subject from the other subjects preview only when active card is showing
+                                if (isKbmAktif && data.active_kbm?.nama_mapel == jadwal.nama_mapel) {
                                     continue
                                 }
                                 val itemView = layoutInflater.inflate(R.layout.item_jadwal_preview_line, containerOtherSubjects, false)
@@ -421,7 +415,7 @@ class BerandaFragment : Fragment() {
                         if (data.presensi_sekolah != null) {
                             val ps = data.presensi_sekolah
                             tvPresensiRadiusPill?.text = "● ${ps.radius_info ?: "Radius 100m Aktif"}"
-                            tvPresensiLokasiSub?.text = "Lokasi: ${ps.lokasi_sekolah ?: "SMK Raden Ja'far"} • ${ps.radius_info ?: "Radius Aktif"}"
+                            tvPresensiLokasiSub?.text = "Lokasi: ${ps.lokasi_sekolah ?: "SMKS Riyadhul Jannah Jalancagak"} • ${ps.radius_info ?: "Radius Aktif"}"
                             tvPresensiJamMasuk?.text = ps.jam_masuk ?: "--:-- WIB"
                             tvPresensiStatusMasuk?.text = "● ${ps.jam_masuk_status ?: "Belum Presensi"}"
                             tvPresensiJamPulang?.text = ps.jam_pulang ?: "15:30 WIB"
@@ -464,7 +458,6 @@ class BerandaFragment : Fragment() {
                             for (tagihan in data.tagihan_preview) {
                                 val itemTagihan = layoutInflater.inflate(R.layout.item_tagihan_preview, containerTagihanPreview, false)
                                 itemTagihan.findViewById<TextView>(R.id.tvNamaTagihanItem).text = tagihan.nama_pos ?: "Tagihan Sekolah"
-                                itemTagihan.findViewById<TextView>(R.id.tvTempoTagihanItem).text = "Jatuh tempo: ${tagihan.jatuh_tempo ?: "Akhir Bulan"}"
                                 itemTagihan.findViewById<TextView>(R.id.tvNominalTagihanItem).text = tagihan.nominal_formatted ?: "Rp 0"
                                 itemTagihan.findViewById<TextView>(R.id.tvStatusTagihanItem).text = tagihan.status ?: "Belum Bayar"
 
