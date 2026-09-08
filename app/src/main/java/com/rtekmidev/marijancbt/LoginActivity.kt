@@ -156,7 +156,22 @@ class LoginActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = ApiClient.instance.login(username, pass, deviceId, deviceName, lat, lon, otp)
+                // Ambil token FCM perangkat (jika belum tersimpan)
+                var fcmToken: String? = getSharedPreferences("APP_SETTINGS", Context.MODE_PRIVATE).getString("FCM_TOKEN", null)
+                if (fcmToken.isNullOrEmpty()) {
+                    try {
+                        val tokenTask = com.google.firebase.messaging.FirebaseMessaging.getInstance().token
+                        fcmToken = com.google.android.gms.tasks.Tasks.await(tokenTask, 4, java.util.concurrent.TimeUnit.SECONDS)
+                        if (!fcmToken.isNullOrEmpty()) {
+                            getSharedPreferences("APP_SETTINGS", Context.MODE_PRIVATE)
+                                .edit().putString("FCM_TOKEN", fcmToken).apply()
+                        }
+                    } catch (e: Exception) {
+                        android.util.Log.e("LoginActivity", "FCM token fetch: ${e.message}")
+                    }
+                }
+
+                val response = ApiClient.instance.login(username, pass, deviceId, deviceName, lat, lon, otp, fcmToken)
 
                 withContext(Dispatchers.Main) {
                     progressBar.visibility = View.GONE
@@ -200,6 +215,12 @@ class LoginActivity : AppCompatActivity() {
                                 putBoolean("isLoggedIn", true)
                                 apply()
                             }
+
+                            // Simpan juga ke USER_PREF untuk akses global background FCM service
+                            getSharedPreferences("USER_PREF", Context.MODE_PRIVATE).edit()
+                                .putString("TOKEN", token)
+                                .putString("ROLE", role)
+                                .apply()
                             
                             ApiClient.authToken = token
 

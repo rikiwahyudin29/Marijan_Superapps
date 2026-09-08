@@ -25,8 +25,18 @@ interface ApiService {
         @Field("device_name") deviceName: String,
         @Field("latitude") latitude: String = "0.0",
         @Field("longitude") longitude: String = "0.0",
-        @Field("otp_code") otpCode: String? = null
+        @Field("otp_code") otpCode: String? = null,
+        @Field("fcm_token") fcmToken: String? = null
     ): Response<LoginResponse>
+
+    // 1b. Endpoint Register/Update Token FCM Mobile
+    @FormUrlEncoded
+    @POST("api/device/register-fcm")
+    suspend fun registerFcmToken(
+        @Field("fcm_token") fcmToken: String,
+        @Field("device_id") deviceId: String? = null,
+        @Field("device_name") deviceName: String? = null
+    ): Response<JsonElement>
 
     // 2. Endpoint Ambil Jadwal
     @GET("api/ujian/jadwal")
