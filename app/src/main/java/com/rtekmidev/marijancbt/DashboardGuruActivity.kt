@@ -96,6 +96,13 @@ class DashboardGuruActivity : AppCompatActivity() {
             ApiClient.authToken = token
         }
 
+        // 🔔 Minta izin notifikasi runtime di Android 13+ (API 33+)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            if (androidx.core.content.ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                androidx.core.app.ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1013)
+            }
+        }
+
         viewPager = findViewById(R.id.viewPager)
         viewPager.isUserInputEnabled = true
         val pagerAdapter = DashboardGuruPagerAdapter(this)

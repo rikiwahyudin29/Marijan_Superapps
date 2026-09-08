@@ -89,6 +89,13 @@ class DashboardActivity : AppCompatActivity() {
         // Set token ke ApiClient
         ApiClient.authToken = sharedPref.getString("token", "") ?: ""
 
+        // 🔔 Minta izin notifikasi runtime di Android 13+ (API 33+) agar notifikasi muncul di layar
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1012)
+            }
+        }
+
         viewPager = findViewById(R.id.viewPager)
         viewPager.isUserInputEnabled = true // Enable swipe navigation
         viewPager.offscreenPageLimit = 5
