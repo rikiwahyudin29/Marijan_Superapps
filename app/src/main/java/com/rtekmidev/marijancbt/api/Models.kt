@@ -187,7 +187,9 @@ data class PresensiHariIniDetail(
     val jam_pulang: String?,
     val jam_pulang_status: String?,
     val is_hadir: Boolean?,
-    val is_pulang: Boolean?
+    val is_pulang: Boolean?,
+    val jadwal_masuk: String? = null,
+    val jadwal_pulang: String? = null
 )
 
 data class TugasPreviewItem(

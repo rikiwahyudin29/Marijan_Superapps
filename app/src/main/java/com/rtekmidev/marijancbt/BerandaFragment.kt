@@ -429,7 +429,7 @@ class BerandaFragment : Fragment() {
                             tvPresensiLokasiSub?.text = "Lokasi: ${ps.lokasi_sekolah ?: "SMKS Riyadhul Jannah Jalancagak"} • ${ps.radius_info ?: "Radius Aktif"}"
                             tvPresensiJamMasuk?.text = ps.jam_masuk ?: "--:-- WIB"
                             tvPresensiStatusMasuk?.text = "● ${ps.jam_masuk_status ?: "Belum Presensi"}"
-                            tvPresensiJamPulang?.text = ps.jam_pulang ?: "15:30 WIB"
+                            tvPresensiJamPulang?.text = ps.jam_pulang ?: "--:-- WIB"
                             tvPresensiStatusPulang?.text = "● ${ps.jam_pulang_status ?: "Menunggu Waktu"}"
                         }
 
