@@ -38,6 +38,15 @@ class AkademikFragment : Fragment() {
         val tvPesanBaru = view.findViewById<TextView>(R.id.tvPesanBaru)
         val llAktivitasTerkini = view.findViewById<LinearLayout>(R.id.llAktivitasTerkini)
 
+        view.findViewById<View>(R.id.scrollViewAkademik)?.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+            val dy = scrollY - oldScrollY
+            if (dy > 12) {
+                (activity as? DashboardActivity)?.hideBottomNav()
+            } else if (dy < -12 || scrollY <= 10) {
+                (activity as? DashboardActivity)?.showBottomNav()
+            }
+        }
+
         if (!nisn.isNullOrEmpty()) {
             lifecycleScope.launch(Dispatchers.IO) {
                 try {

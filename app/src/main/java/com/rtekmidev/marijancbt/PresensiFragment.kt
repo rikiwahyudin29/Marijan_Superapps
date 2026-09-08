@@ -80,6 +80,15 @@ class PresensiFragment : Fragment() {
         val sdf = SimpleDateFormat("EEEE, dd MMMM yyyy", java.util.Locale.Builder().setLanguage("id").setRegion("ID").build())
         view.findViewById<TextView>(R.id.tvDate).text = sdf.format(Date())
 
+        view.findViewById<View>(R.id.scrollViewPresensi)?.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+            val dy = scrollY - oldScrollY
+            if (dy > 12) {
+                (activity as? DashboardActivity)?.hideBottomNav()
+            } else if (dy < -12 || scrollY <= 10) {
+                (activity as? DashboardActivity)?.showBottomNav()
+            }
+        }
+
         // Setup WebView Leaflet
         mapWebView = view.findViewById(R.id.mapWebView)
         mapWebView.settings.javaScriptEnabled = true

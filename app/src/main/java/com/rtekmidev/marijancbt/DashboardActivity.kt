@@ -91,6 +91,7 @@ class DashboardActivity : AppCompatActivity() {
 
         viewPager = findViewById(R.id.viewPager)
         viewPager.isUserInputEnabled = true // Enable swipe navigation
+        viewPager.offscreenPageLimit = 5
         val pagerAdapter = DashboardPagerAdapter(this)
         viewPager.adapter = pagerAdapter
 
@@ -115,7 +116,8 @@ class DashboardActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.cvProfilPic)?.setOnClickListener {
-            viewPager.currentItem = 5 // Tab Profil
+            viewPager.setCurrentItem(5, false) // Tab Profil
+            showBottomNav()
         }
 
 
@@ -136,7 +138,17 @@ class DashboardActivity : AppCompatActivity() {
         val density = resources.displayMetrics.density
         fun dp(v: Int): Int = (v * density).toInt()
 
-        fun updateNavSelection(position: Int) {
+        val bottomNavContainer = findViewById<ViewGroup>(R.id.bottomNavigation)
+
+        fun updateNavSelection(position: Int, animate: Boolean = true) {
+            if (animate && bottomNavContainer != null) {
+                val transition = androidx.transition.AutoTransition().apply {
+                    duration = 180
+                    interpolator = android.view.animation.DecelerateInterpolator(1.5f)
+                }
+                androidx.transition.TransitionManager.beginDelayedTransition(bottomNavContainer, transition)
+            }
+
             val navItems = listOf(
                 Triple(navBeranda, ivBeranda, tvBeranda),
                 Triple(navAkademik, ivAkademik, tvAkademik),
@@ -170,26 +182,23 @@ class DashboardActivity : AppCompatActivity() {
             }
         }
         
-        // Apply initial colors
-        updateNavSelection(0)
+        // Apply initial colors without animation
+        updateNavSelection(0, animate = false)
 
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                updateNavSelection(position)
+                updateNavSelection(position, animate = true)
                 showBottomNav()
-                viewPager.post {
-                    attachAutoScrollToCurrentPage()
-                }
             }
         })
         
-        navBeranda.setOnClickListener { viewPager.currentItem = 0; showBottomNav() }
-        navAkademik.setOnClickListener { viewPager.currentItem = 1; showBottomNav() }
-        navCbt.setOnClickListener { viewPager.currentItem = 2; showBottomNav() }
-        navPresensi.setOnClickListener { viewPager.currentItem = 3; showBottomNav() }
-        navKeuangan.setOnClickListener { viewPager.currentItem = 4; showBottomNav() }
-        navProfil.setOnClickListener { viewPager.currentItem = 5; showBottomNav() }
+        navBeranda.setOnClickListener { viewPager.setCurrentItem(0, false); showBottomNav() }
+        navAkademik.setOnClickListener { viewPager.setCurrentItem(1, false); showBottomNav() }
+        navCbt.setOnClickListener { viewPager.setCurrentItem(2, false); showBottomNav() }
+        navPresensi.setOnClickListener { viewPager.setCurrentItem(3, false); showBottomNav() }
+        navKeuangan.setOnClickListener { viewPager.setCurrentItem(4, false); showBottomNav() }
+        navProfil.setOnClickListener { viewPager.setCurrentItem(5, false); showBottomNav() }
 
         findViewById<View>(R.id.fabScanner)?.setOnClickListener {
             cekRadiusDanScan()
@@ -351,41 +360,6 @@ class DashboardActivity : AppCompatActivity() {
                 .setInterpolator(android.view.animation.DecelerateInterpolator())
                 .start()
         }
-    }
-
-    fun attachAutoScrollToCurrentPage() {
-        try {
-            val recyclerView = viewPager.getChildAt(0) as? androidx.recyclerview.widget.RecyclerView ?: return
-            val viewHolder = recyclerView.findViewHolderForAdapterPosition(viewPager.currentItem)
-            val itemView = viewHolder?.itemView ?: return
-            val scrollableView = findScrollableView(itemView)
-            scrollableView?.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
-                val dy = scrollY - oldScrollY
-                if (dy > 12) {
-                    hideBottomNav()
-                } else if (dy < -12 || scrollY <= 10) {
-                    showBottomNav()
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    private fun findScrollableView(view: View): View? {
-        if (view is androidx.core.widget.NestedScrollView ||
-            view is android.widget.ScrollView ||
-            view is androidx.recyclerview.widget.RecyclerView) {
-            return view
-        }
-        if (view is ViewGroup) {
-            for (i in 0 until view.childCount) {
-                val child = view.getChildAt(i)
-                val found = findScrollableView(child)
-                if (found != null) return found
-            }
-        }
-        return null
     }
 
     private inner class DashboardPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {

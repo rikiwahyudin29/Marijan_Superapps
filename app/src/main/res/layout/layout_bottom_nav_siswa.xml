@@ -8,8 +8,7 @@
     android:orientation="horizontal"
     android:gravity="center_vertical"
     android:paddingHorizontal="6dp"
-    android:paddingVertical="6dp"
-    android:animateLayoutChanges="true">
+    android:paddingVertical="6dp">
 
     <!-- 1. Beranda -->
     <LinearLayout

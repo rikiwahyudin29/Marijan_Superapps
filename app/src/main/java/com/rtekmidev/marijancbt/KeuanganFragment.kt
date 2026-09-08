@@ -44,6 +44,15 @@ class KeuanganFragment : Fragment() {
             // For now, do nothing or switch to Beranda
         }
 
+        view.findViewById<View>(R.id.scrollViewKeuangan)?.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+            val dy = scrollY - oldScrollY
+            if (dy > 12) {
+                (activity as? DashboardActivity)?.hideBottomNav()
+            } else if (dy < -12 || scrollY <= 10) {
+                (activity as? DashboardActivity)?.showBottomNav()
+            }
+        }
+
         muatTagihan(view)
     }
 
