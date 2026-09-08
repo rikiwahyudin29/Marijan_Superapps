@@ -116,12 +116,6 @@ class DashboardActivity : AppCompatActivity() {
             viewPager.currentItem = 5 // Tab Profil
         }
 
-        val pillBeranda = findViewById<View>(R.id.pillNavBeranda)
-        val pillAkademik = findViewById<View>(R.id.pillNavAkademik)
-        val pillCbt = findViewById<View>(R.id.pillNavCbt)
-        val pillPresensi = findViewById<View>(R.id.pillNavPresensi)
-        val pillKeuangan = findViewById<View>(R.id.pillNavKeuangan)
-        val pillProfil = findViewById<View>(R.id.pillNavProfil)
 
         val ivBeranda = findViewById<ImageView>(R.id.ivNavBeranda)
         val ivAkademik = findViewById<ImageView>(R.id.ivNavAkademik)
@@ -137,42 +131,39 @@ class DashboardActivity : AppCompatActivity() {
         val tvKeuangan = findViewById<TextView>(R.id.tvNavKeuangan)
         val tvProfil = findViewById<TextView>(R.id.tvNavProfil)
 
-        fun updateNavSelection(position: Int) {
-            val unselectedColor = if (isNightMode) {
-                android.graphics.Color.parseColor("#94A3B8")
-            } else {
-                android.graphics.Color.parseColor("#94A3B8")
-            }
-            
-            val selectedColor = if (isNightMode) {
-                android.graphics.Color.parseColor("#60A5FA")
-            } else {
-                android.graphics.Color.parseColor("#1D4ED8")
-            }
+        val density = resources.displayMetrics.density
+        fun dp(v: Int): Int = (v * density).toInt()
 
+        fun updateNavSelection(position: Int) {
             val navItems = listOf(
-                Triple(pillBeranda, ivBeranda, tvBeranda),
-                Triple(pillAkademik, ivAkademik, tvAkademik),
-                Triple(pillCbt, ivCbt, tvCbt),
-                Triple(pillPresensi, ivPresensi, tvPresensi),
-                Triple(pillKeuangan, ivKeuangan, tvKeuangan),
-                Triple(pillProfil, ivProfil, tvProfil)
+                Triple(navBeranda, ivBeranda, tvBeranda),
+                Triple(navAkademik, ivAkademik, tvAkademik),
+                Triple(navCbt, ivCbt, tvCbt),
+                Triple(navPresensi, ivPresensi, tvPresensi),
+                Triple(navKeuangan, ivKeuangan, tvKeuangan),
+                Triple(navProfil, ivProfil, tvProfil)
             )
 
-            navItems.forEachIndexed { index, (pill, iv, tv) ->
+            navItems.forEachIndexed { index, (layout, iv, tv) ->
                 val isSelected = (index == position)
+                val params = layout?.layoutParams as? LinearLayout.LayoutParams
                 if (isSelected) {
-                    pill?.setBackgroundResource(R.drawable.bg_nav_pill_active)
-                    iv?.setColorFilter(selectedColor)
-                    tv?.setTextColor(selectedColor)
-                    tv?.typeface = android.graphics.Typeface.DEFAULT_BOLD
-                    iv?.animate()?.scaleX(1.15f)?.scaleY(1.15f)?.setDuration(180)?.start()
+                    params?.width = LinearLayout.LayoutParams.WRAP_CONTENT
+                    params?.weight = 0f
+                    layout?.layoutParams = params
+                    layout?.setBackgroundResource(R.drawable.bg_nav_capsule_active)
+                    layout?.setPadding(dp(14), dp(8), dp(14), dp(8))
+                    iv?.setColorFilter(android.graphics.Color.parseColor("#FFFFFF"))
+                    tv?.visibility = View.VISIBLE
+                    tv?.setTextColor(android.graphics.Color.parseColor("#FFFFFF"))
                 } else {
-                    pill?.background = null
-                    iv?.setColorFilter(unselectedColor)
-                    tv?.setTextColor(unselectedColor)
-                    tv?.typeface = android.graphics.Typeface.DEFAULT
-                    iv?.animate()?.scaleX(1.0f)?.scaleY(1.0f)?.setDuration(180)?.start()
+                    params?.width = 0
+                    params?.weight = 1f
+                    layout?.layoutParams = params
+                    layout?.background = null
+                    layout?.setPadding(dp(6), dp(8), dp(6), dp(8))
+                    iv?.setColorFilter(android.graphics.Color.parseColor("#94A3B8"))
+                    tv?.visibility = View.GONE
                 }
             }
         }
@@ -194,7 +185,7 @@ class DashboardActivity : AppCompatActivity() {
         navKeuangan.setOnClickListener { viewPager.currentItem = 4 }
         navProfil.setOnClickListener { viewPager.currentItem = 5 }
 
-        findViewById<FloatingActionButton>(R.id.fabScanner).setOnClickListener {
+        findViewById<View>(R.id.fabScanner)?.setOnClickListener {
             cekRadiusDanScan()
         }
 
