@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -24,6 +25,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import com.rtekmidev.marijancbt.api.ApiClient
+import com.rtekmidev.marijancbt.util.AvatarHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -122,7 +124,15 @@ class DashboardActivity : AppCompatActivity() {
             Toast.makeText(this, "Belum ada notifikasi baru", Toast.LENGTH_SHORT).show()
         }
 
-        findViewById<View>(R.id.cvProfilPic)?.setOnClickListener {
+        // Initialize Avatar / Initials in Top Bar
+        val ivProfilPhoto = findViewById<ImageView>(R.id.ivProfilPhoto)
+        val tvProfilInisial = findViewById<TextView>(R.id.tvProfilInisial)
+        val cvProfilPic = findViewById<CardView>(R.id.cvProfilPic)
+        val namaSiswa = sharedPref.getString("nama_siswa", null) ?: sharedPref.getString("nama", null)
+        val fotoSiswa = sharedPref.getString("foto_profil", null)
+        AvatarHelper.setAvatar(this, namaSiswa, fotoSiswa, ivProfilPhoto, tvProfilInisial, cvProfilPic)
+
+        cvProfilPic?.setOnClickListener {
             viewPager.setCurrentItem(5, false) // Tab Profil
             showBottomNav()
         }

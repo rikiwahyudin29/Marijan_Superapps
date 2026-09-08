@@ -13,12 +13,14 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.rtekmidev.marijancbt.api.ApiClient
 import com.rtekmidev.marijancbt.api.DashboardData
+import com.rtekmidev.marijancbt.util.AvatarHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -350,16 +352,15 @@ class BerandaFragment : Fragment() {
                             .putString("nama_siswa", namaFinal)
                             .apply()
 
-                        // Load Profile Photo in Activity
-                        if (!data.foto_profil.isNullOrEmpty() && ivProfilPhoto != null) {
-                            val baseUrl = "https://app.marijancbt.com/"
-                            val imgUrl = if (data.foto_profil.startsWith("http")) data.foto_profil else baseUrl + data.foto_profil
-                            Glide.with(this@BerandaFragment)
-                                .load(imgUrl)
-                                .placeholder(android.R.drawable.ic_menu_myplaces)
-                                .error(android.R.drawable.ic_menu_myplaces)
-                                .circleCrop()
-                                .into(ivProfilPhoto)
+                        // Load Profile Photo / Initials in Activity Header
+                        activity?.let { act ->
+                            val tvProfilInisial = act.findViewById<TextView>(R.id.tvProfilInisial)
+                            val cvProfilPic = act.findViewById<CardView>(R.id.cvProfilPic)
+                            val rawFoto = data.foto_profil
+                            val fullFotoUrl = if (!rawFoto.isNullOrBlank()) {
+                                if (rawFoto.startsWith("http")) rawFoto else ApiClient.BASE_URL.trimEnd('/') + "/" + rawFoto.trimStart('/')
+                            } else null
+                            AvatarHelper.setAvatar(act, namaFinal, fullFotoUrl, ivProfilPhoto, tvProfilInisial, cvProfilPic)
                         }
 
                         // 2. 4 Stat Cards

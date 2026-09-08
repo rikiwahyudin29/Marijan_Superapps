@@ -111,7 +111,9 @@ data class DashboardData(
     val nis: String?,
     val nama: String?,
     val kelas: String?,
+    val tingkat: String?,
     val nama_jurusan: String?,
+    val jurusan_singkat: String?,
     val wali_kelas: String?,
     val status_siswa: String?,
     val tahun_ajaran: String?,
@@ -119,8 +121,14 @@ data class DashboardData(
     val foto_profil: String?,
     val tanggal_hari_ini: String?,
     val hari_ini_nama: String?,
+    val pekan_kbm_current: Int?,
+    val pekan_kbm_total: Int?,
+    val pekan_kbm_text: String?,
+    val pekan_kbm_persen: Int?,
+    val pekan_kbm_persen_text: String?,
     val keuangan: Any?,
     val tugas_aktif: Int?,
+    val tugas_urgent_count: Int?,
     val poin_disiplin: Int?,
     val poin_disiplin_max: Int?,
     val predikat_disiplin: String?,
@@ -140,13 +148,17 @@ data class DashboardData(
     val ujian_hari_ini: com.google.gson.JsonElement?,
     val has_active_kbm: Boolean?,
     val active_kbm: ActiveKbmDetail?,
+    val next_kbm: ActiveKbmDetail?,
     val jadwal_hari_ini: List<JadwalPelajaranDetail>?,
     val presensi_sekolah: PresensiHariIniDetail?,
     val tugas_preview: List<TugasPreviewItem>?,
+    val materi_preview: List<MateriPreviewItem>?,
     val tagihan_preview: List<TagihanItemPreview>?,
     val rata_rata_nilai: Double?,
+    val rata_rata_badge: String?,
     val pesan_baru: Int?,
     val total_materi: Int?,
+    val materi_baru_count: Int?,
     val aktivitas_terkini: List<AktivitasTerkini>?
 )
 
@@ -198,8 +210,24 @@ data class TugasPreviewItem(
     val mapel: String?,
     val guru: String?,
     val deadline: String?,
+    val deadline_label: String? = null,
+    val is_urgent: Boolean? = null,
+    val jurusan_badge: String? = null,
     val is_selesai: Boolean?,
     val status: String?
+)
+
+data class MateriPreviewItem(
+    val id: Any?,
+    val judul: String?,
+    val mapel: String?,
+    val guru: String?,
+    val guru_singkat: String?,
+    val file_type: String?,
+    val file_size: String?,
+    val waktu: String?,
+    val info_sub: String?,
+    val download_url: String?
 )
 
 data class TagihanItemPreview(

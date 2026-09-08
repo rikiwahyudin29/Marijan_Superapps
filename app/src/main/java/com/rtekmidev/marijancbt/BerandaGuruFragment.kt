@@ -25,6 +25,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.rtekmidev.marijancbt.api.ApiClient
 import com.rtekmidev.marijancbt.api.DashboardGuruData
+import com.rtekmidev.marijancbt.util.AvatarHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -254,20 +255,18 @@ class BerandaGuruFragment : Fragment() {
         val sdf = SimpleDateFormat("EEEE, dd MMM yyyy", Locale("id", "ID"))
         tvHeroTanggal.text = sdf.format(Calendar.getInstance().time)
 
-        // Load Avatar in Top Bar
+        // Load Avatar / Initials in Top Bar
         val ivProfilPhoto = requireActivity().findViewById<ImageView>(R.id.ivProfilPhoto)
+        val tvProfilInisial = requireActivity().findViewById<TextView>(R.id.tvProfilInisial)
+        val cvProfilPic = requireActivity().findViewById<CardView>(R.id.cvProfilPic)
         val fotoProfilUrl = sharedPref.getString("foto_profil", null)
-        if (!fotoProfilUrl.isNullOrEmpty() && ivProfilPhoto != null) {
-            val fullUrl = if (fotoProfilUrl.startsWith("http")) fotoProfilUrl else "https://smkriyadhuljannahjalancagak.sch.id/uploads/guru/$fotoProfilUrl"
-            try {
-                Glide.with(this)
-                    .load(fullUrl)
-                    .placeholder(android.R.drawable.ic_menu_myplaces)
-                    .error(android.R.drawable.ic_menu_myplaces)
-                    .circleCrop()
-                    .into(ivProfilPhoto)
-            } catch (_: Exception) {}
-        }
+        val fullUrl = if (!fotoProfilUrl.isNullOrEmpty()) {
+            if (fotoProfilUrl.startsWith("http")) fotoProfilUrl else "https://smkriyadhuljannahjalancagak.sch.id/uploads/guru/$fotoProfilUrl"
+        } else null
+        
+        try {
+            AvatarHelper.setAvatar(requireActivity(), namaGuru, fullUrl, ivProfilPhoto, tvProfilInisial, cvProfilPic)
+        } catch (_: Exception) {}
     }
 
     private fun setupListeners() {

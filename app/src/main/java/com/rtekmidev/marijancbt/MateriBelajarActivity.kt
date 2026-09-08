@@ -72,14 +72,9 @@ class MateriBelajarActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvKelas)?.text = kelasLengkap
 
         val ivProfilPhoto = findViewById<ImageView>(R.id.ivProfilPhoto)
-        if (ivProfilPhoto != null && !fotoProfil.isNullOrEmpty()) {
-            Glide.with(this)
-                .load(fotoProfil)
-                .placeholder(android.R.drawable.ic_menu_myplaces)
-                .error(android.R.drawable.ic_menu_myplaces)
-                .circleCrop()
-                .into(ivProfilPhoto)
-        }
+        val tvProfilInisial = findViewById<TextView>(R.id.tvProfilInisial)
+        val cvProfilPic = findViewById<androidx.cardview.widget.CardView>(R.id.cvProfilPic)
+        com.rtekmidev.marijancbt.util.AvatarHelper.setAvatar(this, namaSiswa, fotoProfil, ivProfilPhoto, tvProfilInisial, cvProfilPic)
 
         val etSearch = findViewById<EditText>(R.id.etSearch)
         etSearch.addTextChangedListener(object : android.text.TextWatcher {

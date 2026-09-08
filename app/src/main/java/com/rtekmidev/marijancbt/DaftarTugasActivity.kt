@@ -131,14 +131,9 @@ class DaftarTugasActivity : AppCompatActivity() {
         tvNama?.text = "Selamat Datang, $namaSiswa!"
         tvKelas?.text = kelasLengkap
 
-        if (!fotoProfil.isNullOrEmpty() && ivProfil != null) {
-            Glide.with(this)
-                .load(fotoProfil)
-                .placeholder(android.R.drawable.ic_menu_myplaces)
-                .error(android.R.drawable.ic_menu_myplaces)
-                .circleCrop()
-                .into(ivProfil)
-        }
+        val tvProfilInisial = findViewById<TextView>(R.id.tvProfilInisial)
+        val cvProfilPic = findViewById<androidx.cardview.widget.CardView>(R.id.cvProfilPic)
+        com.rtekmidev.marijancbt.util.AvatarHelper.setAvatar(this, namaSiswa, fotoProfil, ivProfil, tvProfilInisial, cvProfilPic)
     }
 
     private fun fetchTugas() {

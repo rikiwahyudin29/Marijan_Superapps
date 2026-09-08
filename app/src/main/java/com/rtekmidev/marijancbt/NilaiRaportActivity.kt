@@ -83,14 +83,9 @@ class NilaiRaportActivity : AppCompatActivity() {
             headerLayout.findViewById<TextView>(R.id.tvKelas)?.text = kelasLengkap
 
             val ivProfilPhoto = headerLayout.findViewById<ImageView>(R.id.ivProfilPhoto)
-            if (ivProfilPhoto != null && !fotoProfil.isNullOrEmpty()) {
-                Glide.with(this)
-                    .load(fotoProfil)
-                    .placeholder(android.R.drawable.ic_menu_myplaces)
-                    .error(android.R.drawable.ic_menu_myplaces)
-                    .circleCrop()
-                    .into(ivProfilPhoto)
-            }
+            val tvProfilInisial = headerLayout.findViewById<TextView>(R.id.tvProfilInisial)
+            val cvProfilPic = headerLayout.findViewById<androidx.cardview.widget.CardView>(R.id.cvProfilPic)
+            com.rtekmidev.marijancbt.util.AvatarHelper.setAvatar(this, namaSiswa, fotoProfil, ivProfilPhoto, tvProfilInisial, cvProfilPic)
             
             headerLayout.setOnClickListener {
                 finish()
