@@ -21,8 +21,7 @@
         android:orientation="horizontal"
         android:paddingHorizontal="14dp"
         android:paddingVertical="9dp"
-        android:clickable="true"
-        android:clipToOutline="true">
+        android:clickable="true">
 
         <ImageView
             android:id="@+id/ivNavBeranda"
@@ -54,8 +53,7 @@
         android:orientation="horizontal"
         android:paddingHorizontal="6dp"
         android:paddingVertical="9dp"
-        android:clickable="true"
-        android:clipToOutline="true">
+        android:clickable="true">
 
         <ImageView
             android:id="@+id/ivNavAkademik"
@@ -87,8 +85,7 @@
         android:orientation="horizontal"
         android:paddingHorizontal="6dp"
         android:paddingVertical="9dp"
-        android:clickable="true"
-        android:clipToOutline="true">
+        android:clickable="true">
 
         <ImageView
             android:id="@+id/ivNavCbt"
@@ -120,8 +117,7 @@
         android:orientation="horizontal"
         android:paddingHorizontal="6dp"
         android:paddingVertical="9dp"
-        android:clickable="true"
-        android:clipToOutline="true">
+        android:clickable="true">
 
         <ImageView
             android:id="@+id/ivNavPresensi"
@@ -153,8 +149,7 @@
         android:orientation="horizontal"
         android:paddingHorizontal="6dp"
         android:paddingVertical="9dp"
-        android:clickable="true"
-        android:clipToOutline="true">
+        android:clickable="true">
 
         <ImageView
             android:id="@+id/ivNavKeuangan"
@@ -186,8 +181,7 @@
         android:orientation="horizontal"
         android:paddingHorizontal="6dp"
         android:paddingVertical="9dp"
-        android:clickable="true"
-        android:clipToOutline="true">
+        android:clickable="true">
 
         <ImageView
             android:id="@+id/ivNavProfil"
