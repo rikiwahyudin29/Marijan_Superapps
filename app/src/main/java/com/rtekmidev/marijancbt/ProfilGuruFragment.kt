@@ -103,6 +103,16 @@ class ProfilGuruFragment : Fragment() {
         view.findViewById<View>(R.id.btnKeluarAkun)?.setOnClickListener {
             konfirmasiKeluarAkun()
         }
+
+        // Auto-Hide Bottom Nav on Scroll
+        (view as? androidx.core.widget.NestedScrollView)?.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+            val dy = scrollY - oldScrollY
+            if (dy > 12) {
+                (activity as? DashboardGuruActivity)?.hideBottomNav()
+            } else if (dy < -12 || scrollY <= 10) {
+                (activity as? DashboardGuruActivity)?.showBottomNav()
+            }
+        }
     }
 
     private fun loadProfilGuru(view: View) {

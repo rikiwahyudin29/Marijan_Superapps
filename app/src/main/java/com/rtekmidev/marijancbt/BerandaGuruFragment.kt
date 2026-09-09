@@ -357,6 +357,17 @@ class BerandaGuruFragment : Fragment() {
             startActivity(intent)
             requireActivity().applyEnterTransition()
         }
+
+        // Auto-Hide Bottom Nav on Scroll
+        val scrollView = view?.findViewById<androidx.core.widget.NestedScrollView>(R.id.scrollView)
+        scrollView?.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+            val dy = scrollY - oldScrollY
+            if (dy > 12) {
+                (activity as? DashboardGuruActivity)?.hideBottomNav()
+            } else if (dy < -12 || scrollY <= 10) {
+                (activity as? DashboardGuruActivity)?.showBottomNav()
+            }
+        }
     }
 
     private fun fetchDashboardData() {

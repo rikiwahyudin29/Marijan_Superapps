@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -34,6 +35,7 @@ class DashboardGuruActivity : AppCompatActivity() {
     private val PERMISSION_REQUEST_CODE = 1001
     private val NOTIF_PERMISSION_REQUEST_CODE = 1011
     private var dialogWajibNotif: android.app.Dialog? = null
+    private var isBottomNavHidden = false
 
     private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
         if (result.contents != null) {
@@ -105,6 +107,7 @@ class DashboardGuruActivity : AppCompatActivity() {
 
         viewPager = findViewById(R.id.viewPager)
         viewPager.isUserInputEnabled = true
+        viewPager.offscreenPageLimit = 3
         val pagerAdapter = DashboardGuruPagerAdapter(this)
         viewPager.adapter = pagerAdapter
 
@@ -112,6 +115,16 @@ class DashboardGuruActivity : AppCompatActivity() {
         val navPresensi = findViewById<LinearLayout>(R.id.navPresensi)
         val navAkademik = findViewById<LinearLayout>(R.id.navAkademik)
         val navProfil = findViewById<LinearLayout>(R.id.navProfil)
+
+        val ivBeranda = findViewById<ImageView>(R.id.ivNavBeranda)
+        val ivPresensi = findViewById<ImageView>(R.id.ivNavPresensi)
+        val ivAkademik = findViewById<ImageView>(R.id.ivNavAkademik)
+        val ivProfil = findViewById<ImageView>(R.id.ivNavProfil)
+
+        val tvBeranda = findViewById<TextView>(R.id.tvNavBeranda)
+        val tvPresensi = findViewById<TextView>(R.id.tvNavPresensi)
+        val tvAkademik = findViewById<TextView>(R.id.tvNavAkademik)
+        val tvProfil = findViewById<TextView>(R.id.tvNavProfil)
 
         val headerTitleColor = if (isNightMode) android.graphics.Color.parseColor("#FFFFFF") else android.graphics.Color.parseColor("#1A1B41")
         val headerSubtextColor = if (isNightMode) android.graphics.Color.parseColor("#D1D5DB") else android.graphics.Color.parseColor("#6B7280")
@@ -121,54 +134,60 @@ class DashboardGuruActivity : AppCompatActivity() {
             Toast.makeText(this, "Tidak ada notifikasi baru.", Toast.LENGTH_SHORT).show()
         }
 
-        fun updateNavSelection(position: Int) {
-            val unselectedColor = if (isNightMode) {
-                android.graphics.Color.parseColor("#B3FFFFFF")
-            } else {
-                android.graphics.Color.parseColor("#9CA3AF")
+        findViewById<View>(R.id.cvProfilPic)?.setOnClickListener {
+            viewPager.setCurrentItem(3, false) // Profil tab
+            showBottomNav()
+        }
+
+        val density = resources.displayMetrics.density
+        fun dp(v: Int): Int = (v * density).toInt()
+
+        val bottomNavContainer = findViewById<ViewGroup>(R.id.bottomNavigation)
+        val cardBottomNav = findViewById<androidx.cardview.widget.CardView>(R.id.cardBottomNav)
+        if (isNightMode) {
+            cardBottomNav?.setCardBackgroundColor(android.graphics.Color.parseColor("#1E293B"))
+        } else {
+            cardBottomNav?.setCardBackgroundColor(android.graphics.Color.parseColor("#FFFFFF"))
+        }
+
+        fun updateNavSelection(position: Int, animate: Boolean = true) {
+            if (animate && bottomNavContainer != null) {
+                val transition = androidx.transition.AutoTransition().apply {
+                    duration = 180
+                    interpolator = android.view.animation.DecelerateInterpolator(1.5f)
+                }
+                androidx.transition.TransitionManager.beginDelayedTransition(bottomNavContainer, transition)
             }
-            val selectedColor = if (isNightMode) {
-                android.graphics.Color.parseColor("#FFFFFF")
-            } else {
-                android.graphics.Color.parseColor("#1E3A8A")
-            }
 
-            findViewById<ImageView>(R.id.ivNavBeranda).setColorFilter(unselectedColor)
-            findViewById<TextView>(R.id.tvNavBeranda).setTextColor(unselectedColor)
-            findViewById<TextView>(R.id.tvNavBeranda).typeface = android.graphics.Typeface.DEFAULT
+            val navItems = listOf(
+                Triple(navBeranda, ivBeranda, tvBeranda),
+                Triple(navPresensi, ivPresensi, tvPresensi),
+                Triple(navAkademik, ivAkademik, tvAkademik),
+                Triple(navProfil, ivProfil, tvProfil)
+            )
 
-            findViewById<ImageView>(R.id.ivNavPresensi).setColorFilter(unselectedColor)
-            findViewById<TextView>(R.id.tvNavPresensi).setTextColor(unselectedColor)
-            findViewById<TextView>(R.id.tvNavPresensi).typeface = android.graphics.Typeface.DEFAULT
+            val inactiveColor = if (isNightMode) android.graphics.Color.parseColor("#64748B") else android.graphics.Color.parseColor("#94A3B8")
 
-            findViewById<ImageView>(R.id.ivNavAkademik).setColorFilter(unselectedColor)
-            findViewById<TextView>(R.id.tvNavAkademik).setTextColor(unselectedColor)
-            findViewById<TextView>(R.id.tvNavAkademik).typeface = android.graphics.Typeface.DEFAULT
-
-            findViewById<ImageView>(R.id.ivNavProfil).setColorFilter(unselectedColor)
-            findViewById<TextView>(R.id.tvNavProfil).setTextColor(unselectedColor)
-            findViewById<TextView>(R.id.tvNavProfil).typeface = android.graphics.Typeface.DEFAULT
-
-            when (position) {
-                0 -> {
-                    findViewById<ImageView>(R.id.ivNavBeranda).setColorFilter(selectedColor)
-                    findViewById<TextView>(R.id.tvNavBeranda).setTextColor(selectedColor)
-                    findViewById<TextView>(R.id.tvNavBeranda).typeface = android.graphics.Typeface.DEFAULT_BOLD
-                }
-                1 -> {
-                    findViewById<ImageView>(R.id.ivNavPresensi).setColorFilter(selectedColor)
-                    findViewById<TextView>(R.id.tvNavPresensi).setTextColor(selectedColor)
-                    findViewById<TextView>(R.id.tvNavPresensi).typeface = android.graphics.Typeface.DEFAULT_BOLD
-                }
-                2 -> {
-                    findViewById<ImageView>(R.id.ivNavAkademik).setColorFilter(selectedColor)
-                    findViewById<TextView>(R.id.tvNavAkademik).setTextColor(selectedColor)
-                    findViewById<TextView>(R.id.tvNavAkademik).typeface = android.graphics.Typeface.DEFAULT_BOLD
-                }
-                3 -> {
-                    findViewById<ImageView>(R.id.ivNavProfil).setColorFilter(selectedColor)
-                    findViewById<TextView>(R.id.tvNavProfil).setTextColor(selectedColor)
-                    findViewById<TextView>(R.id.tvNavProfil).typeface = android.graphics.Typeface.DEFAULT_BOLD
+            navItems.forEachIndexed { index, (layout, iv, tv) ->
+                val isSelected = (index == position)
+                val params = layout?.layoutParams as? LinearLayout.LayoutParams
+                if (isSelected) {
+                    params?.width = LinearLayout.LayoutParams.WRAP_CONTENT
+                    params?.weight = 0f
+                    layout?.layoutParams = params
+                    layout?.setBackgroundResource(R.drawable.bg_nav_capsule_active)
+                    layout?.setPadding(dp(14), dp(8), dp(14), dp(8))
+                    iv?.setColorFilter(android.graphics.Color.parseColor("#FFFFFF"))
+                    tv?.visibility = View.VISIBLE
+                    tv?.setTextColor(android.graphics.Color.parseColor("#FFFFFF"))
+                } else {
+                    params?.width = 0
+                    params?.weight = 1f
+                    layout?.layoutParams = params
+                    layout?.setBackgroundResource(R.drawable.bg_nav_capsule_inactive)
+                    layout?.setPadding(dp(6), dp(8), dp(6), dp(8))
+                    iv?.setColorFilter(inactiveColor)
+                    tv?.visibility = View.GONE
                 }
             }
         }
@@ -176,24 +195,25 @@ class DashboardGuruActivity : AppCompatActivity() {
         val initialPos = intent.getIntExtra("NAV_POSITION", 0)
         if (initialPos in 0..3) {
             viewPager.currentItem = initialPos
-            updateNavSelection(initialPos)
+            updateNavSelection(initialPos, animate = false)
         } else {
-            updateNavSelection(0)
+            updateNavSelection(0, animate = false)
         }
 
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                updateNavSelection(position)
+                updateNavSelection(position, animate = true)
+                showBottomNav()
             }
         })
         
-        navBeranda.setOnClickListener { viewPager.currentItem = 0 }
-        navPresensi.setOnClickListener { viewPager.currentItem = 1 }
-        navAkademik.setOnClickListener { viewPager.currentItem = 2 }
-        navProfil.setOnClickListener { viewPager.currentItem = 3 }
+        navBeranda.setOnClickListener { viewPager.setCurrentItem(0, false); showBottomNav() }
+        navPresensi.setOnClickListener { viewPager.setCurrentItem(1, false); showBottomNav() }
+        navAkademik.setOnClickListener { viewPager.setCurrentItem(2, false); showBottomNav() }
+        navProfil.setOnClickListener { viewPager.setCurrentItem(3, false); showBottomNav() }
 
-        findViewById<FloatingActionButton>(R.id.fabScanner).setOnClickListener {
+        findViewById<View>(R.id.fabScanner)?.setOnClickListener {
             cekRadiusDanScan()
         }
 
@@ -201,6 +221,7 @@ class DashboardGuruActivity : AppCompatActivity() {
             override fun handleOnBackPressed() {
                 if (viewPager.currentItem != 0) {
                     viewPager.currentItem = 0
+                    showBottomNav()
                 } else {
                     isEnabled = false
                     onBackPressedDispatcher.onBackPressed()
@@ -403,6 +424,31 @@ class DashboardGuruActivity : AppCompatActivity() {
                     Toast.makeText(this@DashboardGuruActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+    }
+
+    fun hideBottomNav() {
+        val cardBottomNav = findViewById<View>(R.id.cardBottomNav) ?: return
+        if (!isBottomNavHidden) {
+            isBottomNavHidden = true
+            val height = if (cardBottomNav.height > 0) cardBottomNav.height.toFloat() else (72 * resources.displayMetrics.density)
+            cardBottomNav.animate()
+                .translationY(height + (32 * resources.displayMetrics.density))
+                .setDuration(250)
+                .setInterpolator(android.view.animation.AccelerateDecelerateInterpolator())
+                .start()
+        }
+    }
+
+    fun showBottomNav() {
+        val cardBottomNav = findViewById<View>(R.id.cardBottomNav) ?: return
+        if (isBottomNavHidden) {
+            isBottomNavHidden = false
+            cardBottomNav.animate()
+                .translationY(0f)
+                .setDuration(250)
+                .setInterpolator(android.view.animation.AccelerateDecelerateInterpolator())
+                .start()
         }
     }
 
