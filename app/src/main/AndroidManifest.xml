@@ -39,6 +39,7 @@
         <activity android:name=".OtpActivity" android:exported="false" />
         <activity android:name=".DaftarTugasActivity" android:exported="false" />
         <activity android:name=".KumpulTugasActivity" android:exported="false" />
+        <activity android:name=".LihatJawabanActivity" android:exported="false" />
         <activity android:name=".FileViewerActivity" android:exported="false" />
         <activity android:name=".MateriBelajarActivity" android:exported="false" />
         <activity android:name=".NilaiRaportActivity" android:exported="false" />

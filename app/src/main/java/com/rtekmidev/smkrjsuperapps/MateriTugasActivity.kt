@@ -353,14 +353,15 @@ class MateriTugasActivity : AppCompatActivity() {
                 startActivity(viewerIntent)
             } else {
                 if (item.isSelesai) {
-                    if (item.fileJawaban != null && item.fileJawaban.isNotEmpty()) {
-                        val viewerIntent = Intent(this, FileViewerActivity::class.java)
-                        viewerIntent.putExtra("FILE_URL", item.fileJawaban)
-                        viewerIntent.putExtra("TITLE", "File Jawaban")
-                        startActivity(viewerIntent)
-                    } else {
-                        Toast.makeText(this, "URL File jawaban tidak tersedia dari server", Toast.LENGTH_SHORT).show()
-                    }
+                    val intent = Intent(this, LihatJawabanActivity::class.java)
+                    intent.putExtra("ID_TUGAS", item.id)
+                    intent.putExtra("MAPEL", item.mapel)
+                    intent.putExtra("JUDUL", item.judul)
+                    intent.putExtra("DEADLINE", item.waktu)
+                    intent.putExtra("NILAI", item.nilai ?: "")
+                    intent.putExtra("KOMENTAR_GURU", item.komentarGuru ?: "")
+                    intent.putExtra("FILE_JAWABAN", item.fileJawaban ?: "")
+                    startActivity(intent)
                 } else {
                     val kumpulIntent = Intent(this, KumpulTugasActivity::class.java)
                     kumpulIntent.putExtra("ID_TUGAS", item.id)

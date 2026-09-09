@@ -423,7 +423,10 @@ data class DataTugas(
     val is_selesai: Boolean? = false,
     val nilai: String?,
     val komentar_guru: String?,
-    val file_jawaban: String?
+    val file_jawaban: String?,
+    val catatan_siswa: String? = null,
+    val tgl_kumpul: String? = null,
+    val status_kumpul: String? = null
 )
 
 data class SubmitTugasResponse(

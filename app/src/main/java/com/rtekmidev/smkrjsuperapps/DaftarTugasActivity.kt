@@ -62,14 +62,21 @@ class DaftarTugasActivity : AppCompatActivity() {
                 intent.putExtra("IS_PERBARUI", aksi == "Perbarui")
                 startActivity(intent)
             } else if (aksi == "LihatJawaban") {
-                if (!task.file_jawaban.isNullOrEmpty()) {
-                    val intent = Intent(this, FileViewerActivity::class.java)
-                    intent.putExtra("FILE_URL", task.file_jawaban)
-                    intent.putExtra("TITLE", "Jawaban: ${task.judul}")
-                    startActivity(intent)
-                } else {
-                    Toast.makeText(this, "Tidak ada file jawaban", Toast.LENGTH_SHORT).show()
-                }
+                val intent = Intent(this, LihatJawabanActivity::class.java)
+                intent.putExtra("ID_TUGAS", task.id_tugas?.toString() ?: "")
+                intent.putExtra("MAPEL", task.mapel ?: "")
+                intent.putExtra("JUDUL", task.judul ?: "")
+                intent.putExtra("DEADLINE", task.deadline ?: "")
+                val cleanDesc = androidx.core.text.HtmlCompat.fromHtml(task.deskripsi ?: "", androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT).toString().trim()
+                intent.putExtra("DESKRIPSI", cleanDesc)
+                intent.putExtra("FILE_PENDUKUNG", task.file_pendukung ?: "")
+                intent.putExtra("FILE_JAWABAN", task.file_jawaban ?: "")
+                intent.putExtra("NILAI", task.nilai ?: "")
+                intent.putExtra("KOMENTAR_GURU", task.komentar_guru ?: "")
+                intent.putExtra("CATATAN_SISWA", task.catatan_siswa ?: "")
+                intent.putExtra("TGL_KUMPUL", task.tgl_kumpul ?: "")
+                intent.putExtra("STATUS_KUMPUL", task.status_kumpul ?: "")
+                startActivity(intent)
             }
         }
         rvTugas.adapter = tugasAdapter
