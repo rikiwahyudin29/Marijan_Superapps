@@ -147,7 +147,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingEnd="6dp">
 
                 <ImageView
                     android:id="@+id/ivIconJenis"
@@ -169,24 +170,45 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- Action Button -->
-            <Button
-                android:id="@+id/btnAksiMateri"
+            <!-- Action Buttons Container -->
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="38dp"
-                android:background="@drawable/bg_button_dark_rounded"
-                android:backgroundTint="@color/color_primary"
-                android:minHeight="0dp"
-                android:paddingHorizontal="16dp"
-                android:text="Buka Materi"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:icon="@drawable/ic_search_24"
-                app:iconGravity="textStart"
-                app:iconSize="13dp"
-                app:iconTint="#FFFFFF" />
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|end"
+                android:orientation="horizontal">
+
+                <!-- Video Button -->
+                <Button
+                    android:id="@+id/btnTontonVideo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginEnd="6dp"
+                    android:background="@drawable/bg_btn_light_amber"
+                    android:minHeight="0dp"
+                    android:paddingHorizontal="12dp"
+                    android:text="Tonton Video"
+                    android:textAllCaps="false"
+                    android:textColor="#B45309"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <!-- Action / File Button -->
+                <Button
+                    android:id="@+id/btnAksiMateri"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:background="@drawable/bg_button_dark_rounded"
+                    android:backgroundTint="@color/color_primary"
+                    android:minHeight="0dp"
+                    android:paddingHorizontal="14dp"
+                    android:text="Buka Materi"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>

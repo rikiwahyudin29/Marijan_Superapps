@@ -94,9 +94,15 @@ class MateriBelajarActivity : AppCompatActivity() {
         layMapelChips = findViewById(R.id.layMapelChips)
 
         rvMateri.layoutManager = LinearLayoutManager(this)
-        materiAdapter = MateriAdapter(emptyList()) { item ->
-            bukaMateri(item)
-        }
+        materiAdapter = MateriAdapter(
+            items = emptyList(),
+            onVideoClick = { videoUrl ->
+                bukaVideo(videoUrl)
+            },
+            onFileClick = { item ->
+                bukaBerkas(item)
+            }
+        )
         rvMateri.adapter = materiAdapter
     }
 
@@ -278,32 +284,35 @@ class MateriBelajarActivity : AppCompatActivity() {
         }
     }
 
-    private fun bukaMateri(item: DisplayItem) {
-        val jenis = item.jenisFile?.lowercase() ?: ""
-        if (jenis == "youtube" && !item.linkYoutube.isNullOrEmpty()) {
-            try {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.linkYoutube))
-                startActivity(intent)
-            } catch (e: Exception) {
-                Toast.makeText(this, "Tidak dapat membuka tautan video.", Toast.LENGTH_SHORT).show()
-            }
-        } else {
-            val fileUrl = item.urlFile ?: ""
-            if (fileUrl.isBlank()) {
-                Toast.makeText(this, "Berkas materi tidak tersedia.", Toast.LENGTH_SHORT).show()
-                return
-            }
-
-            val urlLengkap = if (fileUrl.startsWith("http")) {
-                fileUrl
-            } else {
-                "https://smkriyadhuljannahjalancagak.sch.id/uploads/materi/" + fileUrl
-            }
-
-            val viewerIntent = Intent(this, FileViewerActivity::class.java)
-            viewerIntent.putExtra("FILE_URL", urlLengkap)
-            viewerIntent.putExtra("TITLE", item.judul)
-            startActivity(viewerIntent)
+    private fun bukaVideo(videoUrl: String) {
+        if (videoUrl.isBlank()) {
+            Toast.makeText(this, "Tautan video tidak tersedia.", Toast.LENGTH_SHORT).show()
+            return
         }
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(videoUrl))
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Tidak dapat membuka tautan video.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun bukaBerkas(item: DisplayItem) {
+        val fileUrl = item.urlFile ?: ""
+        if (fileUrl.isBlank()) {
+            Toast.makeText(this, "Berkas materi tidak tersedia.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val urlLengkap = if (fileUrl.startsWith("http")) {
+            fileUrl
+        } else {
+            "https://smkriyadhuljannahjalancagak.sch.id/uploads/materi/" + fileUrl
+        }
+
+        val viewerIntent = Intent(this, FileViewerActivity::class.java)
+        viewerIntent.putExtra("FILE_URL", urlLengkap)
+        viewerIntent.putExtra("TITLE", item.judul)
+        startActivity(viewerIntent)
     }
 }
