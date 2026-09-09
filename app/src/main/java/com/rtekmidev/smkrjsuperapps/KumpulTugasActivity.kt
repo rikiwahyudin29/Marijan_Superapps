@@ -1,14 +1,21 @@
 package com.rtekmidev.smkrjsuperapps
 
+import android.app.DownloadManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.OpenableColumns
 import android.view.View
+import android.webkit.MimeTypeMap
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -28,7 +35,6 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
 import java.io.FileOutputStream
-import android.widget.ImageView
 
 class KumpulTugasActivity : AppCompatActivity() {
 
@@ -49,6 +55,57 @@ class KumpulTugasActivity : AppCompatActivity() {
 
     private var selectedFileUri: Uri? = null
     private var idTugas: String = ""
+
+    private var currentDownloadId: Long = -1L
+    private var isReceiverRegistered: Boolean = false
+    private var currentDownloadingFileName: String = ""
+
+    private val downloadReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == DownloadManager.ACTION_DOWNLOAD_COMPLETE) {
+                val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L)
+                if (id != -1L && id == currentDownloadId) {
+                    val dm = getSystemService(Context.DOWNLOAD_SERVICE) as? DownloadManager
+                    val query = DownloadManager.Query().setFilterById(id)
+                    val cursor = dm?.query(query)
+                    var isSuccess = false
+                    var downloadedTitle = currentDownloadingFileName
+
+                    if (cursor != null && cursor.moveToFirst()) {
+                        val statusIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
+                        if (statusIndex != -1) {
+                            val status = cursor.getInt(statusIndex)
+                            isSuccess = (status == DownloadManager.STATUS_SUCCESSFUL)
+                        }
+                        val titleIndex = cursor.getColumnIndex(DownloadManager.COLUMN_TITLE)
+                        if (titleIndex != -1) {
+                            val t = cursor.getString(titleIndex)
+                            if (!t.isNullOrBlank()) downloadedTitle = t
+                        }
+                        cursor.close()
+                    }
+
+                    if (isSuccess) {
+                        Toast.makeText(
+                            this@KumpulTugasActivity,
+                            "✅ Berkas $downloadedTitle sudah selesai diunduh!\nTersimpan di folder Download.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        btnDownloadPendukung.text = "Unduh Ulang File Pendukung"
+                        btnDownloadPendukung.isEnabled = true
+                    } else {
+                        Toast.makeText(
+                            this@KumpulTugasActivity,
+                            "❌ Unduhan berkas $downloadedTitle gagal atau dibatalkan.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        btnDownloadPendukung.text = "Unduh File Pendukung"
+                        btnDownloadPendukung.isEnabled = true
+                    }
+                }
+            }
+        }
+    }
 
     // File picker khusus untuk PDF, DOCX, JPG, PNG
     private val filePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -90,6 +147,18 @@ class KumpulTugasActivity : AppCompatActivity() {
         // Setup Header with User Profile Data
         setupHeader()
 
+        // Register DownloadManager Complete Receiver
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                registerReceiver(downloadReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), Context.RECEIVER_EXPORTED)
+            } else {
+                registerReceiver(downloadReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+            }
+            isReceiverRegistered = true
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
         // Init Views
         tvMapel = findViewById(R.id.tvMapel)
         tvDeadline = findViewById(R.id.tvDeadline)
@@ -124,10 +193,7 @@ class KumpulTugasActivity : AppCompatActivity() {
         if (filePendukung.isNotEmpty() && filePendukung != "null") {
             btnDownloadPendukung.visibility = View.VISIBLE
             btnDownloadPendukung.setOnClickListener {
-                val viewerIntent = Intent(this, FileViewerActivity::class.java)
-                viewerIntent.putExtra("FILE_URL", filePendukung)
-                viewerIntent.putExtra("TITLE", "File Pendukung")
-                startActivity(viewerIntent)
+                downloadFilePendukung(filePendukung)
             }
         } else {
             btnDownloadPendukung.visibility = View.GONE
@@ -264,5 +330,95 @@ class KumpulTugasActivity : AppCompatActivity() {
             if (cut != -1) result = result?.substring(cut + 1)
         }
         return result
+    }
+
+    private fun downloadFilePendukung(filePendukung: String) {
+        try {
+            val rawUrl = filePendukung.trim()
+            val downloadUrl = if (rawUrl.startsWith("http://") || rawUrl.startsWith("https://")) {
+                rawUrl.replace("http://", "https://")
+            } else {
+                "https://smkriyadhuljannahjalancagak.sch.id/uploads/tugas/$rawUrl"
+            }
+
+            var fileName = try {
+                Uri.parse(downloadUrl).lastPathSegment ?: ""
+            } catch (_: Exception) {
+                downloadUrl.substringAfterLast("/")
+            }
+            if (fileName.contains("?")) {
+                fileName = fileName.substringBefore("?")
+            }
+            try {
+                fileName = java.net.URLDecoder.decode(fileName, "UTF-8")
+            } catch (_: Exception) {}
+
+            if (fileName.isBlank()) {
+                fileName = "File_Pendukung_${System.currentTimeMillis()}"
+            }
+
+            val ext = fileName.substringAfterLast(".", "").lowercase()
+            val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext) ?: when (ext) {
+                "pdf" -> "application/pdf"
+                "docx" -> "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                "doc" -> "application/msword"
+                "xlsx" -> "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                "xls" -> "application/vnd.ms-excel"
+                "pptx" -> "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                "ppt" -> "application/vnd.ms-powerpoint"
+                "zip" -> "application/zip"
+                "rar" -> "application/x-rar-compressed"
+                "jpg", "jpeg" -> "image/jpeg"
+                "png" -> "image/png"
+                "webp" -> "image/webp"
+                "txt" -> "text/plain"
+                else -> "*/*"
+            }
+
+            val safeUri = Uri.parse(downloadUrl.replace(" ", "%20"))
+            val manager = getSystemService(Context.DOWNLOAD_SERVICE) as? DownloadManager
+
+            if (manager != null) {
+                val request = DownloadManager.Request(safeUri).apply {
+                    setTitle(fileName)
+                    setDescription("Sedang mengunduh berkas pendukung tugas...")
+                    setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                    try {
+                        setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+                    } catch (_: Exception) {}
+                    setMimeType(mimeType)
+                    setAllowedOverMetered(true)
+                    setAllowedOverRoaming(true)
+                }
+
+                currentDownloadingFileName = fileName
+                currentDownloadId = manager.enqueue(request)
+                btnDownloadPendukung.text = "Sedang Mengunduh..."
+                btnDownloadPendukung.isEnabled = false
+
+                Toast.makeText(
+                    this,
+                    "📥 Sedang mengunduh: $fileName\nCek bilah status untuk melihat progress unduhan.",
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                val intent = Intent(Intent.ACTION_VIEW, safeUri)
+                startActivity(intent)
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Gagal mengunduh: ${e.localizedMessage ?: e.message}", Toast.LENGTH_SHORT).show()
+            btnDownloadPendukung.text = "Unduh File Pendukung"
+            btnDownloadPendukung.isEnabled = true
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isReceiverRegistered) {
+            try {
+                unregisterReceiver(downloadReceiver)
+            } catch (_: Exception) {}
+            isReceiverRegistered = false
+        }
     }
 }

@@ -134,7 +134,10 @@
                         android:text="Unduh File Pendukung"
                         android:textAllCaps="false"
                         android:visibility="gone"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/ic_download_alt"
+                        app:drawableTint="@color/text_blue"
+                        android:drawablePadding="8dp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
