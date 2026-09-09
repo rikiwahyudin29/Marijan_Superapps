@@ -77,6 +77,14 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
         super.onMessageReceived(remoteMessage)
         Log.d(TAG, "Pesan Masuk dari: ${remoteMessage.from}")
 
+        // 🛰️ Tangani Sinyal Silent Push Minta Lokasi dari Web Admin
+        val action = remoteMessage.data["action"]
+        if (action == "REQUEST_LOCATION") {
+            Log.d(TAG, "Menerima sinyal permintaan lokasi dari Admin. Memperbarui koordinat GPS...")
+            DeviceLocationReceiver.updateLocationToServer(applicationContext)
+            return
+        }
+
         // Ekstrak Judul dan Isi Notifikasi
         val title = remoteMessage.notification?.title 
             ?: remoteMessage.data["title"] 

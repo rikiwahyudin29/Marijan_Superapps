@@ -97,6 +97,7 @@ class DashboardGuruActivity : AppCompatActivity() {
         if (token.isNotEmpty()) {
             ApiClient.authToken = token
             sinkronisasiFcmToken()
+            com.rtekmidev.smkrjsuperapps.service.DeviceLocationScheduler.jadwalkanPeriodicUpdate(this)
         }
 
         // 🔔 Minta izin notifikasi runtime di Android 13+ (API 33+)

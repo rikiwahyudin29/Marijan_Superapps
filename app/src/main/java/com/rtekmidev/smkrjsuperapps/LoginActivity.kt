@@ -137,7 +137,23 @@ class LoginActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        
+
+        // 🛡️ Proteksi Anti-Fake GPS / Mock Location
+        if (com.rtekmidev.smkrjsuperapps.util.LocationHelper.isLocationMock(currentLocation)) {
+            val progressBar = findViewById<View>(R.id.pbLoadingLogin)
+            val btnLogin = findViewById<Button>(R.id.btnLogin)
+            progressBar.visibility = View.GONE
+            btnLogin.isEnabled = true
+
+            androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("⚠️ Fake GPS Terdeteksi!")
+                .setMessage("Aplikasi mendeteksi penggunaan Fake GPS / Mock Location pada perangkat Anda. Harap nonaktifkan Fake GPS untuk dapat masuk.")
+                .setPositiveButton("Mengerti", null)
+                .setCancelable(false)
+                .show()
+            return
+        }
+
         doLogin(username, pass, otp)
     }
 

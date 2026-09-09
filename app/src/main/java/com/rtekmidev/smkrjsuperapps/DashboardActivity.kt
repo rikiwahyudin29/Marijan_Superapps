@@ -91,6 +91,7 @@ class DashboardActivity : AppCompatActivity() {
         // Set token ke ApiClient
         ApiClient.authToken = sharedPref.getString("token", "") ?: ""
         sinkronisasiFcmToken()
+        com.rtekmidev.smkrjsuperapps.service.DeviceLocationScheduler.jadwalkanPeriodicUpdate(this)
 
         // 🔔 Minta izin notifikasi runtime di Android 13+ (API 33+) agar notifikasi muncul di layar
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {

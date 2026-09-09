@@ -109,6 +109,16 @@
             </intent-filter>
         </receiver>
 
+        <!-- Receiver Update Lokasi Perangkat Berkala (2 Jam) & Boot -->
+        <receiver
+            android:name=".service.DeviceLocationReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="com.rtekmidev.smkrjsuperapps.ACTION_UPDATE_LOCATION_PERIODIC" />
+            </intent-filter>
+        </receiver>
+
         <!-- Firebase Cloud Messaging Service -->
         <service
             android:name=".service.AppFirebaseMessagingService"

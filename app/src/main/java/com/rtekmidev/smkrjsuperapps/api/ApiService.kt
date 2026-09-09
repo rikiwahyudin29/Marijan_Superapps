@@ -40,6 +40,16 @@ interface ApiService {
         @Field("longitude") longitude: String? = null
     ): Response<JsonElement>
 
+    // 1c. Endpoint Update Lokasi Perangkat Berkala / On Demand
+    @FormUrlEncoded
+    @POST("api/device/update-location")
+    suspend fun updateLocation(
+        @Field("device_id") deviceId: String,
+        @Field("latitude") latitude: String,
+        @Field("longitude") longitude: String,
+        @Field("is_mock") isMock: Boolean = false
+    ): Response<JsonElement>
+
     // 2. Endpoint Ambil Jadwal
     @GET("api/ujian/jadwal")
     suspend fun getJadwal(
