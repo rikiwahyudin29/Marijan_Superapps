@@ -71,6 +71,7 @@ class AkademikFragment : Fragment() {
         val tvMateriBaruBadge = view.findViewById<TextView>(R.id.tvMateriBaruBadge)
 
         // 3. Menu Utama Views
+        val tvSubMenuJadwal = view.findViewById<TextView>(R.id.tvSubMenuJadwal)
         val tvSubMenuTugas = view.findViewById<TextView>(R.id.tvSubMenuTugas)
         val tvSubMenuMateri = view.findViewById<TextView>(R.id.tvSubMenuMateri)
         val tvSubMenuRaport = view.findViewById<TextView>(R.id.tvSubMenuRaport)
@@ -80,6 +81,7 @@ class AkademikFragment : Fragment() {
         val tvKbmWaktu = view.findViewById<TextView>(R.id.tvKbmWaktu)
         val tvKbmMapel = view.findViewById<TextView>(R.id.tvKbmMapel)
         val tvKbmGuruRuang = view.findViewById<TextView>(R.id.tvKbmGuruRuang)
+        val btnLihatJadwalKbm = view.findViewById<TextView>(R.id.btnLihatJadwalKbm)
         val btnBukaModulKbm = view.findViewById<TextView>(R.id.btnBukaModulKbm)
 
         // 5. Tugas Mendatang Container
@@ -146,6 +148,7 @@ class AkademikFragment : Fragment() {
                             tvMateriBaruBadge?.text = if (materiBaru > 0) "$materiBaru Baru" else "Tersedia"
 
                             // 3. Bind Menu Utama Subtitles
+                            tvSubMenuJadwal?.text = "Jadwal KBM"
                             tvSubMenuTugas?.text = if (tugasAktif > 0) "$tugasAktif Belum Selesai" else "Semua Selesai"
                             tvSubMenuMateri?.text = "$totalMateri Modul PDF"
                             tvSubMenuRaport?.text = "Transkrip Nilai"
@@ -210,6 +213,9 @@ class AkademikFragment : Fragment() {
         }
 
         // Click Actions
+        view.findViewById<CardView>(R.id.btnMenuJadwal)?.setOnClickListener { openJadwalPelajaran() }
+        btnLihatJadwalKbm?.setOnClickListener { openJadwalPelajaran() }
+
         view.findViewById<CardView>(R.id.cardRataRata)?.setOnClickListener { openNilaiRaport() }
         view.findViewById<View>(R.id.btnRincianLengkap)?.setOnClickListener { openNilaiRaport() }
         view.findViewById<CardView>(R.id.btnMenuRaport)?.setOnClickListener { openNilaiRaport() }
@@ -355,6 +361,11 @@ class AkademikFragment : Fragment() {
 
     private fun openMateriBelajar() {
         val intent = Intent(requireContext(), MateriBelajarActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun openJadwalPelajaran() {
+        val intent = Intent(requireContext(), JadwalPelajaranActivity::class.java)
         startActivity(intent)
     }
 }

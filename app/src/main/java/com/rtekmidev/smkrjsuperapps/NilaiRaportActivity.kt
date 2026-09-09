@@ -43,6 +43,7 @@ class NilaiRaportActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nilai_raport)
+        com.rtekmidev.smkrjsuperapps.util.StatusBarHelper.setupTranslucentBar(this)
 
         val headerLayout = findViewById<View>(R.id.headerLayout)
         if (headerLayout != null) {

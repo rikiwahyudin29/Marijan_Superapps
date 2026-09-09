@@ -95,22 +95,8 @@ class KumpulTugasActivity : AppCompatActivity() {
         }
 
         
-        // Setup Edge-to-Edge Transparent Status Bar
-        @Suppress("DEPRECATION")
-        window.statusBarColor = Color.TRANSPARENT
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        
-        val currentNightMode = resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
-        val isNightMode = currentNightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES
-        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
-        insetsController.isAppearanceLightStatusBars = !isNightMode
-        
-        val rootView = findViewById<View>(android.R.id.content)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
-            val insetsType = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime())
-            v.setPadding(0, insetsType.top, 0, insetsType.bottom)
-            insets
-        }
+        // Setup Edge-to-Edge Transparent Status Bar with Dark Icons
+        com.rtekmidev.smkrjsuperapps.util.StatusBarHelper.setupTranslucentBar(this)
 
         // Init Views
         tvMapel = findViewById(R.id.tvMapel)

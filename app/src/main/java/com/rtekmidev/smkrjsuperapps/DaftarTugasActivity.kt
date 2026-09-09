@@ -37,6 +37,7 @@ class DaftarTugasActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_daftar_tugas)
+        com.rtekmidev.smkrjsuperapps.util.StatusBarHelper.setupTranslucentBar(this)
 
         // Setup Header with User Profile Data
         setupHeader()

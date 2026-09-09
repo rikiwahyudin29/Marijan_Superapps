@@ -35,6 +35,7 @@ class MateriBelajarActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_materi_belajar)
+        com.rtekmidev.smkrjsuperapps.util.StatusBarHelper.setupTranslucentBar(this)
 
         val sharedPref = getSharedPreferences("SesiUjian", Context.MODE_PRIVATE)
         nisnSiswa = sharedPref.getString("nisn", "") ?: ""

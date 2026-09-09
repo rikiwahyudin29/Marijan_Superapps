@@ -37,6 +37,7 @@ class MateriTugasActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_materi_tugas)
+        com.rtekmidev.smkrjsuperapps.util.StatusBarHelper.setupTranslucentBar(this)
 
         nisnSiswa = getSharedPreferences("SesiUjian", Context.MODE_PRIVATE).getString("nisn", "") ?: ""
         jenisKonten = intent.getStringExtra("KONTEN") ?: "TUGAS"

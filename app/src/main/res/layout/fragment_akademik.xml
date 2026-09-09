@@ -510,21 +510,21 @@
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <!-- 3 Action Cards (Tugas, Materi, Nilai Raport) -->
+            <!-- 4 Action Cards (Jadwal, Tugas, Materi, Nilai Raport) -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal"
-                android:weightSum="3">
+                android:weightSum="4">
 
-                <!-- Action 1: Tugas -->
+                <!-- Action 1: Jadwal Pelajaran -->
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/btnMenuTugas"
+                    android:id="@+id/btnMenuJadwal"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
+                    android:layout_marginEnd="3dp"
                     android:layout_weight="1"
                     app:cardBackgroundColor="#FFFFFF"
                     app:cardCornerRadius="18dp"
@@ -538,15 +538,69 @@
                         android:background="@drawable/bg_ringkasan_card"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:paddingHorizontal="8dp"
-                        android:paddingVertical="18dp">
+                        android:paddingHorizontal="4dp"
+                        android:paddingVertical="15dp">
 
                         <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="@drawable/bg_btn_primary"
+                            android:backgroundTint="#0284C7"
+                            android:padding="11dp"
+                            android:src="@drawable/ic_modern_jadwal"
+                            app:tint="#FFFFFF" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="Jadwal"
+                            android:textColor="#0F172A"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvSubMenuJadwal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="Jadwal KBM"
+                            android:textColor="#0284C7"
+                            android:textSize="9.5sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Action 2: Tugas -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/btnMenuTugas"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="2dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardCornerRadius="18dp"
+                    app:cardElevation="0dp"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_ringkasan_card"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingHorizontal="4dp"
+                        android:paddingVertical="15dp">
+
+                        <ImageView
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
                             android:background="@drawable/bg_btn_primary"
                             android:backgroundTint="#2563EB"
-                            android:padding="12dp"
+                            android:padding="11dp"
                             android:src="@drawable/ic_modern_tugas"
                             app:tint="#FFFFFF" />
 
@@ -556,7 +610,7 @@
                             android:layout_marginTop="10dp"
                             android:text="Tugas"
                             android:textColor="#0F172A"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -568,17 +622,17 @@
                             android:maxLines="1"
                             android:text="2 Belum Selesai"
                             android:textColor="#EF4444"
-                            android:textSize="10sp"
+                            android:textSize="9.5sp"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <!-- Action 2: Materi -->
+                <!-- Action 3: Materi -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/btnMenuMateri"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="5dp"
+                    android:layout_marginHorizontal="2dp"
                     android:layout_weight="1"
                     app:cardBackgroundColor="#FFFFFF"
                     app:cardCornerRadius="18dp"
@@ -592,15 +646,15 @@
                         android:background="@drawable/bg_ringkasan_card"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:paddingHorizontal="8dp"
-                        android:paddingVertical="18dp">
+                        android:paddingHorizontal="4dp"
+                        android:paddingVertical="15dp">
 
                         <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
                             android:background="@drawable/bg_btn_primary"
                             android:backgroundTint="#6D28D9"
-                            android:padding="12dp"
+                            android:padding="11dp"
                             android:src="@drawable/ic_modern_materi"
                             app:tint="#FFFFFF" />
 
@@ -610,7 +664,7 @@
                             android:layout_marginTop="10dp"
                             android:text="Materi"
                             android:textColor="#0F172A"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -622,17 +676,17 @@
                             android:maxLines="1"
                             android:text="18 Modul PDF"
                             android:textColor="#6D28D9"
-                            android:textSize="10sp"
+                            android:textSize="9.5sp"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <!-- Action 3: Nilai Raport -->
+                <!-- Action 4: Nilai Raport -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/btnMenuRaport"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginStart="3dp"
                     android:layout_weight="1"
                     app:cardBackgroundColor="#FFFFFF"
                     app:cardCornerRadius="18dp"
@@ -646,15 +700,15 @@
                         android:background="@drawable/bg_ringkasan_card"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:paddingHorizontal="8dp"
-                        android:paddingVertical="18dp">
+                        android:paddingHorizontal="4dp"
+                        android:paddingVertical="15dp">
 
                         <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
                             android:background="@drawable/bg_btn_primary"
                             android:backgroundTint="#059669"
-                            android:padding="12dp"
+                            android:padding="11dp"
                             android:src="@drawable/ic_check_circle_24"
                             app:tint="#FFFFFF" />
 
@@ -662,9 +716,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
-                            android:text="Nilai Raport"
+                            android:text="Raport"
                             android:textColor="#0F172A"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -674,9 +728,9 @@
                             android:layout_marginTop="3dp"
                             android:ellipsize="end"
                             android:maxLines="1"
-                            android:text="Transkrip PTS"
+                            android:text="Transkrip Nilai"
                             android:textColor="#059669"
-                            android:textSize="10sp"
+                            android:textSize="9.5sp"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -754,22 +808,49 @@
                         android:textColor="#93C5FD"
                         android:textSize="12sp" />
 
-                    <!-- Action Button: Buka Modul KBM -->
-                    <TextView
-                        android:id="@+id/btnBukaModulKbm"
+                    <!-- Action Buttons: Lihat Jadwal Pelajaran & Buka Modul KBM -->
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:background="@drawable/bg_btn_kbm_modul"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?attr/selectableItemBackground"
-                        android:gravity="center"
-                        android:paddingVertical="12dp"
-                        android:text="Buka Modul KBM"
-                        android:textColor="#FFFFFF"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <TextView
+                            android:id="@+id/btnLihatJadwalKbm"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="6dp"
+                            android:background="@drawable/bg_btn_primary"
+                            android:backgroundTint="#2563EB"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?attr/selectableItemBackground"
+                            android:gravity="center"
+                            android:paddingVertical="12dp"
+                            android:text="Lihat Jadwal"
+                            android:textColor="#FFFFFF"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/btnBukaModulKbm"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="6dp"
+                            android:background="@drawable/bg_btn_kbm_modul"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?attr/selectableItemBackground"
+                            android:gravity="center"
+                            android:paddingVertical="12dp"
+                            android:text="Buka Modul"
+                            android:textColor="#FFFFFF"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
