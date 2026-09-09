@@ -37,4 +37,19 @@ object DeviceLocationScheduler {
         )
         Log.d("DeviceLocationScheduler", "Pembaruan lokasi periodik 2 jam berhasil dijadwalkan.")
     }
+
+    fun batalkanPeriodicUpdate(context: Context) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager ?: return
+        val intent = Intent(context, DeviceLocationReceiver::class.java).apply {
+            action = DeviceLocationReceiver.ACTION_PERIODIC_UPDATE
+        }
+        val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
+        val pendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE, intent, flags)
+        alarmManager.cancel(pendingIntent)
+        Log.d("DeviceLocationScheduler", "Pembaruan lokasi periodik berhasil dibatalkan.")
+    }
 }

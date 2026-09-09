@@ -18,10 +18,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.imageview.ShapeableImageView
 import com.rtekmidev.smkrjsuperapps.api.ApiClient
 import com.rtekmidev.smkrjsuperapps.api.ProfilGuruData
+import com.rtekmidev.smkrjsuperapps.util.SessionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -462,19 +462,9 @@ class ProfilGuruFragment : Fragment() {
     }
 
     private fun konfirmasiKeluarAkun() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Konfirmasi Keluar")
-            .setMessage("Apakah Anda yakin ingin keluar dari akun Portal Guru SMK Riyadhul Jannah?")
-            .setPositiveButton("Ya, Keluar") { _, _ ->
-                val sharedPref = requireActivity().getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
-                sharedPref.edit().clear().apply()
-
-                val intent = Intent(requireActivity(), LoginActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                requireActivity().finish()
-            }
-            .setNegativeButton("Batal", null)
-            .show()
+        SessionManager.konfirmasiLogout(
+            requireActivity(),
+            "Apakah Anda yakin ingin keluar dari akun Portal SMK Riyadhul Jannah?"
+        )
     }
 }

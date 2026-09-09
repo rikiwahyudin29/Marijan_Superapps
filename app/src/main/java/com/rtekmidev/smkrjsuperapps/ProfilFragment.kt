@@ -33,14 +33,10 @@ class ProfilFragment : Fragment() {
         tvRole.text = "Role: ${role?.uppercase()}"
         
         btnLogout.setOnClickListener {
-            // Hapus sesi login
-            sharedPref.edit { clear() }
-            
-            // Arahkan kembali ke halaman Login
-            val intent = Intent(requireActivity(), LoginActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            requireActivity().finish()
+            com.rtekmidev.smkrjsuperapps.util.SessionManager.konfirmasiLogout(
+                requireActivity(),
+                "Apakah Anda yakin ingin keluar dari akun Anda?"
+            )
         }
         
         return view

@@ -208,11 +208,12 @@ class LoginActivity : AppCompatActivity() {
                         val user = response.body()?.data
 
                         if (user != null) {
-                            val role = user.role ?: "siswa"
+                            val role = (user.role ?: "siswa").lowercase()
+                            val isStaffOrAdmin = role in listOf("guru", "kepsek", "admin", "superadmin")
                             val token = user.token ?: ""
 
                             // Simpan sesi login ke SharedPreferences sesuai Role
-                            val prefName = if (role == "guru" || role == "kepsek" || role == "admin") "SesiGuru" else "SesiUjian"
+                            val prefName = if (isStaffOrAdmin) "SesiGuru" else "SesiUjian"
                             val sharedPref = getSharedPreferences(prefName, Context.MODE_PRIVATE)
 
                             with(sharedPref.edit()) {
@@ -223,7 +224,7 @@ class LoginActivity : AppCompatActivity() {
                                 putString("role", role)
                                 putString("token", token)
                                 
-                                if (role == "guru" || role == "kepsek" || role == "admin") {
+                                if (isStaffOrAdmin) {
                                     val fotoGuru = user.detail_guru?.foto ?: ""
                                     putString("foto_profil", fotoGuru)
                                 }
@@ -243,7 +244,7 @@ class LoginActivity : AppCompatActivity() {
                             Toast.makeText(this@LoginActivity, "Selamat Datang ${user.nama_lengkap}", Toast.LENGTH_SHORT).show()
 
                             // PINDAH HALAMAN SESUAI ROLE
-                            if (role == "guru" || role == "kepsek" || role == "admin") {
+                            if (isStaffOrAdmin) {
                                 startActivity(Intent(this@LoginActivity, DashboardGuruActivity::class.java))
                             } else {
                                 startActivity(Intent(this@LoginActivity, DashboardActivity::class.java))
