@@ -313,7 +313,14 @@ data class RekapAbsenResponse(
 )
 
 data class SummaryAbsen(
-    val hadir: Int, val sakit: Int, val izin: Int, val alpha: Int, val terlambat: Int, val cuti: Int?, val dinas_luar: Int?
+    val hadir: Int,
+    val sakit: Int,
+    val izin: Int,
+    val alpha: Int,
+    val alfa: Int? = null,
+    val terlambat: Int,
+    val cuti: Int? = null,
+    val dinas_luar: Int? = null
 )
 
 data class DataRekap(

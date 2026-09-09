@@ -146,7 +146,8 @@ class RekapActivity : AppCompatActivity() {
                         findViewById<TextView>(R.id.tvTotalHadir).text = body.summary?.hadir?.toString() ?: "0"
                         findViewById<TextView>(R.id.tvTotalIzin).text = body.summary?.izin?.toString() ?: "0"
                         findViewById<TextView>(R.id.tvTotalSakit).text = body.summary?.sakit?.toString() ?: "0"
-                        findViewById<TextView>(R.id.tvTotalAlpha).text = body.summary?.alpha?.toString() ?: "0"
+                        val countAlfa = body.summary?.alfa ?: body.summary?.alpha ?: 0
+                        findViewById<TextView>(R.id.tvTotalAlpha).text = countAlfa.toString()
                         findViewById<TextView>(R.id.tvTotalTerlambat).text = "${body.summary?.terlambat ?: 0}m"
                         findViewById<TextView>(R.id.tvTotalCuti).text = body.summary?.cuti?.toString() ?: "0"
                         findViewById<TextView>(R.id.tvTotalDinasLuar).text = body.summary?.dinas_luar?.toString() ?: "0"
@@ -257,7 +258,7 @@ class RekapActivity : AppCompatActivity() {
             } else if (status == "sakit") {
                 tvBadge.setBackgroundColor(Color.parseColor("#E5E7EB"))
                 tvBadge.setTextColor(Color.parseColor("#4B5563"))
-            } else if (status == "alfa" || status == "alpha") {
+            } else if (status == "alfa" || status == "alpha" || status == "alpa" || status == "a") {
                 tvBadge.setBackgroundColor(Color.parseColor("#FEE2E2"))
                 tvBadge.setTextColor(Color.parseColor("#991B1B"))
             } else {

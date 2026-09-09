@@ -65,12 +65,12 @@ class CalendarAdapter(
         if (day.status != null) {
             holder.viewDot.visibility = View.VISIBLE
             val drawable = holder.viewDot.background.mutate() as android.graphics.drawable.GradientDrawable
-            when (day.status?.lowercase()) {
+            when (day.status?.lowercase()?.trim()) {
                 "hadir", "tepat waktu" -> drawable.setColor(Color.parseColor("#1E3A8A")) // Blue
-                "izin", "izin pulang", "udzur syar'i" -> drawable.setColor(Color.parseColor("#00D2D3")) // Cyan
+                "izin", "izin pulang", "udzur syar'i", "cuti", "dinas luar" -> drawable.setColor(Color.parseColor("#00D2D3")) // Cyan
                 "sakit" -> drawable.setColor(Color.parseColor("#D1D5DB")) // Gray
-                "alfa", "alpha" -> drawable.setColor(Color.parseColor("#FEE2E2")) // Light red
-                "terlambat" -> drawable.setColor(Color.parseColor("#1E3A8A"))
+                "alfa", "alpha", "alpa", "a" -> drawable.setColor(Color.parseColor("#EF4444")) // Red
+                "terlambat" -> drawable.setColor(Color.parseColor("#F59E0B")) // Amber
                 else -> drawable.setColor(Color.TRANSPARENT)
             }
         } else {

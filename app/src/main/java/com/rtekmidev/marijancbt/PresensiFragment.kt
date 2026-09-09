@@ -166,6 +166,13 @@ class PresensiFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (identifier.isNotEmpty()) {
+            muatStatistikPresensi()
+        }
+    }
+
     private fun muatStatistikPresensi() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -177,11 +184,12 @@ class PresensiFragment : Fragment() {
                             val bodyObj = resp.body()
                             if (bodyObj != null) {
                                 val sum = bodyObj.summary
-                                val total = (sum?.hadir ?: 0) + (sum?.alpha ?: 0) + (sum?.sakit ?: 0) + (sum?.izin ?: 0)
+                                val countAlfa = sum?.alfa ?: sum?.alpha ?: 0
+                                val total = (sum?.hadir ?: 0) + countAlfa + (sum?.sakit ?: 0) + (sum?.izin ?: 0)
                                 val percentage = if (total > 0) (((sum?.hadir?.toFloat() ?: 0f) / total.toFloat()) * 100).toInt() else 0
                                 rootView.findViewById<TextView>(R.id.tvTotalKehadiran).text = "${percentage}%"
                                 rootView.findViewById<TextView>(R.id.tvStatHadir).text = (sum?.hadir ?: 0).toString()
-                                rootView.findViewById<TextView>(R.id.tvStatAlfa).text = (sum?.alpha ?: 0).toString()
+                                rootView.findViewById<TextView>(R.id.tvStatAlfa).text = countAlfa.toString()
                                 rootView.findViewById<TextView>(R.id.tvStatSakit).text = (sum?.sakit ?: 0).toString()
                                 rootView.findViewById<TextView>(R.id.tvStatTerlambat).text = (sum?.terlambat ?: 0).toString()
                             }
@@ -190,62 +198,44 @@ class PresensiFragment : Fragment() {
                         }
                     }
                 } else {
-                    val resp = ApiClient.instance.getRiwayatAbsen(identifier)
+                    val currentMonth = SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(Date())
+                    val resp = ApiClient.instance.getRekapAbsen(identifier, currentMonth)
                     withContext(Dispatchers.Main) {
-                        if (resp.isSuccessful) {
-                            val jsonBody = resp.body()
-                            if (jsonBody == null) {
-                                context?.let { Toast.makeText(it, "Data stat null", Toast.LENGTH_SHORT).show() }
-                            } else if (jsonBody.isJsonArray) {
-                                // FALLBACK: If backend still returns Array instead of Object
-                                val array = jsonBody.asJsonArray
-                                var hadir = 0; var alfa = 0; var sakit = 0; var izin = 0; var terlambat = 0
-                                for (i in 0 until array.size()) {
-                                    val item = array[i].asJsonObject
-                                    val statusKehadiran = item.get("status_kehadiran")?.asString?.lowercase() ?: ""
-                                    when (statusKehadiran) {
-                                        "hadir" -> hadir++
-                                        "alfa" -> alfa++
-                                        "sakit" -> sakit++
-                                        "izin" -> izin++
-                                        "terlambat" -> terlambat++
-                                    }
-                                }
-                                val total = hadir + alfa + sakit + izin + terlambat
-                                val percentage = if (total > 0) ((hadir.toFloat() / total.toFloat()) * 100).toInt() else 0
+                        if (resp.isSuccessful && resp.body()?.status == true) {
+                            val bodyObj = resp.body()
+                            val sum = bodyObj?.summary
+                            if (sum != null) {
+                                val countAlfa = sum.alfa ?: sum.alpha
+                                val total = sum.hadir + countAlfa + sum.sakit + sum.izin
+                                val percentage = if (total > 0) (((sum.hadir.toFloat()) / total.toFloat()) * 100).toInt() else 0
                                 rootView.findViewById<TextView>(R.id.tvTotalKehadiran).text = "${percentage}%"
-                                rootView.findViewById<TextView>(R.id.tvStatHadir).text = hadir.toString()
-                                rootView.findViewById<TextView>(R.id.tvStatAlfa).text = alfa.toString()
-                                rootView.findViewById<TextView>(R.id.tvStatSakit).text = sakit.toString()
-                                rootView.findViewById<TextView>(R.id.tvStatTerlambat).text = terlambat.toString()
-                            } else if (jsonBody.isJsonObject) {
-                                val jsonObj = jsonBody.asJsonObject
-                                val dataElement = jsonObj.get("data")
-                                if (dataElement != null && dataElement.isJsonObject) {
-                                    // NEW FORMAT: Object with pre-calculated stats
-                                    val dataObj = dataElement.asJsonObject
-                                    val tPercent = dataObj.get("total_percentage")?.asInt ?: 0
-                                    val tHadir = dataObj.get("hadir")?.asInt ?: 0
-                                    val tAlfa = dataObj.get("alfa")?.asInt ?: 0
-                                    val tSakit = dataObj.get("sakit")?.asInt ?: 0
-                                    val tTerlambat = dataObj.get("terlambat")?.asInt ?: 0
-                                    rootView.findViewById<TextView>(R.id.tvTotalKehadiran).text = "${tPercent}%"
-                                    rootView.findViewById<TextView>(R.id.tvStatHadir).text = tHadir.toString()
-                                    rootView.findViewById<TextView>(R.id.tvStatAlfa).text = tAlfa.toString()
-                                    rootView.findViewById<TextView>(R.id.tvStatSakit).text = tSakit.toString()
-                                    rootView.findViewById<TextView>(R.id.tvStatTerlambat).text = tTerlambat.toString()
-                                } else if (dataElement != null && dataElement.isJsonArray) {
-                                    // OLD FORMAT: Array wrapped in "data"
-                                    val array = dataElement.asJsonArray
+                                rootView.findViewById<TextView>(R.id.tvStatHadir).text = sum.hadir.toString()
+                                rootView.findViewById<TextView>(R.id.tvStatAlfa).text = countAlfa.toString()
+                                rootView.findViewById<TextView>(R.id.tvStatSakit).text = sum.sakit.toString()
+                                rootView.findViewById<TextView>(R.id.tvStatTerlambat).text = sum.terlambat.toString()
+                            }
+                        } else {
+                            // Fallback jika getRekapAbsen gagal, hitung dari riwayat
+                            val fallbackResp = ApiClient.instance.getRiwayatAbsen(identifier)
+                            if (fallbackResp.isSuccessful && fallbackResp.body() != null) {
+                                val jsonBody = fallbackResp.body()!!
+                                val array = if (jsonBody.isJsonArray) {
+                                    jsonBody.asJsonArray
+                                } else if (jsonBody.isJsonObject && jsonBody.asJsonObject.get("data")?.isJsonArray == true) {
+                                    jsonBody.asJsonObject.get("data").asJsonArray
+                                } else {
+                                    null
+                                }
+                                if (array != null) {
                                     var hadir = 0; var alfa = 0; var sakit = 0; var izin = 0; var terlambat = 0
                                     for (i in 0 until array.size()) {
                                         val item = array[i].asJsonObject
-                                        val statusKehadiran = (item.get("status_kehadiran") ?: item.get("status"))?.asString?.lowercase()?.trim() ?: ""
-                                        when (statusKehadiran) {
-                                            "hadir" -> hadir++
-                                            "alfa", "alpha" -> alfa++
+                                        val st = (item.get("status_kehadiran") ?: item.get("status"))?.asString?.lowercase()?.trim() ?: ""
+                                        when (st) {
+                                            "hadir", "tepat waktu" -> hadir++
+                                            "alfa", "alpha", "alpa", "a" -> alfa++
                                             "sakit" -> sakit++
-                                            "izin" -> izin++
+                                            "izin", "izin pulang", "udzur syar'i", "cuti", "dinas luar" -> izin++
                                             "terlambat" -> terlambat++
                                         }
                                     }
@@ -256,12 +246,10 @@ class PresensiFragment : Fragment() {
                                     rootView.findViewById<TextView>(R.id.tvStatAlfa).text = alfa.toString()
                                     rootView.findViewById<TextView>(R.id.tvStatSakit).text = sakit.toString()
                                     rootView.findViewById<TextView>(R.id.tvStatTerlambat).text = terlambat.toString()
-                                } else {
-                                    context?.let { Toast.makeText(it, "Data JSON tidak lengkap atau salah format", Toast.LENGTH_SHORT).show() }
                                 }
+                            } else {
+                                context?.let { Toast.makeText(it, "Gagal memuat rekap presensi", Toast.LENGTH_SHORT).show() }
                             }
-                        } else {
-                            context?.let { Toast.makeText(it, "API Stat Error: ${resp.code()}", Toast.LENGTH_SHORT).show() }
                         }
                     }
                 }
