@@ -40,7 +40,7 @@ class KumpulTugasActivity : AppCompatActivity() {
     private lateinit var tvFileSelectedSub: TextView
     private lateinit var btnDownloadPendukung: Button
     private lateinit var btnKirim: Button
-    private lateinit var btnBack: LinearLayout
+    private lateinit var btnBack: ImageView
     private lateinit var uploadArea: LinearLayout
     private lateinit var etCatatan: EditText
     private lateinit var loadingLayout: RelativeLayout
@@ -83,20 +83,12 @@ class KumpulTugasActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_kumpul_tugas)
-
-        // Terapkan bottom inset secara global agar konten tidak tertutup navigasi bawaan HP
-        findViewById<android.view.ViewGroup>(android.R.id.content).getChildAt(0)?.let { rootView ->
-            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
-                val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
-                // Jika view sudah punya padding top (dari header dsb), pertahankan. Hanya tambah bottom.
-                view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, systemBars.bottom)
-                insets
-            }
-        }
-
         
         // Setup Edge-to-Edge Transparent Status Bar with Dark Icons
         com.rtekmidev.smkrjsuperapps.util.StatusBarHelper.setupTranslucentBar(this)
+
+        // Setup Header with User Profile Data
+        setupHeader()
 
         // Init Views
         tvMapel = findViewById(R.id.tvMapel)
@@ -161,6 +153,18 @@ class KumpulTugasActivity : AppCompatActivity() {
         btnKirim.setOnClickListener {
             submitTugas()
         }
+    }
+
+    private fun setupHeader() {
+        val sharedPref = getSharedPreferences("SesiUjian", Context.MODE_PRIVATE)
+        val namaSiswa = sharedPref.getString("nama_siswa", "Siswa")
+        val fotoProfil = sharedPref.getString("foto_profil", "")
+
+        findViewById<TextView>(R.id.tvHeaderTitle)?.text = "Kumpulkan Tugas"
+        val ivProfil = findViewById<ImageView>(R.id.ivProfilPhoto)
+        val tvProfilInisial = findViewById<TextView>(R.id.tvProfilInisial)
+        val cvProfilPic = findViewById<androidx.cardview.widget.CardView>(R.id.cvProfilPic)
+        com.rtekmidev.smkrjsuperapps.util.AvatarHelper.setAvatar(this, namaSiswa, fotoProfil, ivProfil, tvProfilInisial, cvProfilPic)
     }
 
     private fun submitTugas() {
