@@ -90,6 +90,7 @@ class DashboardActivity : AppCompatActivity() {
 
         // Set token ke ApiClient
         ApiClient.authToken = sharedPref.getString("token", "") ?: ""
+        sinkronisasiFcmToken()
 
         // 🔔 Minta izin notifikasi runtime di Android 13+ (API 33+) agar notifikasi muncul di layar
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
@@ -392,6 +393,28 @@ class DashboardActivity : AppCompatActivity() {
                 5 -> ProfilFragment()
                 else -> BerandaFragment()
             }
+        }
+    }
+
+    private fun sinkronisasiFcmToken() {
+        try {
+            com.google.firebase.messaging.FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                if (task.isSuccessful && !task.result.isNullOrEmpty()) {
+                    val fcmToken = task.result
+                    val deviceId = android.provider.Settings.Secure.getString(contentResolver, android.provider.Settings.Secure.ANDROID_ID) ?: "UNKNOWN"
+                    val deviceName = "${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}"
+
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            ApiClient.instance.registerFcmToken(fcmToken, deviceId, deviceName)
+                        } catch (e: Exception) {
+                            android.util.Log.e("Dashboard", "Sync FCM Error: ${e.message}")
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("Dashboard", "FCM getInstance Error: ${e.message}")
         }
     }
 }
