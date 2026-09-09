@@ -59,12 +59,13 @@ class DaftarTugasActivity : AppCompatActivity() {
                 val cleanDesc = androidx.core.text.HtmlCompat.fromHtml(task.deskripsi ?: "", androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT).toString().trim()
                 intent.putExtra("DESKRIPSI", cleanDesc)
                 intent.putExtra("FILE_PENDUKUNG", task.file_pendukung ?: "")
+                intent.putExtra("IS_PERBARUI", aksi == "Perbarui")
                 startActivity(intent)
             } else if (aksi == "LihatJawaban") {
                 if (!task.file_jawaban.isNullOrEmpty()) {
                     val intent = Intent(this, FileViewerActivity::class.java)
                     intent.putExtra("FILE_URL", task.file_jawaban)
-                    intent.putExtra("NAMA_FILE", "Jawaban_Tugas_${task.id_tugas}")
+                    intent.putExtra("TITLE", "Jawaban: ${task.judul}")
                     startActivity(intent)
                 } else {
                     Toast.makeText(this, "Tidak ada file jawaban", Toast.LENGTH_SHORT).show()
@@ -73,7 +74,7 @@ class DaftarTugasActivity : AppCompatActivity() {
         }
         rvTugas.adapter = tugasAdapter
 
-        // Fetch Data
+        // Fetch Data Awal
         fetchTugas()
 
         // Tab Listeners
@@ -88,6 +89,12 @@ class DaftarTugasActivity : AppCompatActivity() {
             updateTabStyling()
             tugasAdapter.updateData(completedTasks)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Muat ulang daftar tugas setiap kali kembali ke halaman ini
+        fetchTugas()
     }
 
     private fun setupHeader() {
@@ -125,7 +132,13 @@ class DaftarTugasActivity : AppCompatActivity() {
                         tabAktif.text = "Sedang Berlangsung (${activeTasks.size})"
                         tabSelesai.text = "Selesai (${completedTasks.size})"
 
-                        // Load initial data
+                        // Jika tab aktif kosong tapi ada tugas yang sudah selesai, otomatis beralih ke tab selesai
+                        if (isTabAktif && activeTasks.isEmpty() && completedTasks.isNotEmpty()) {
+                            isTabAktif = false
+                            updateTabStyling()
+                        }
+
+                        // Load data
                         tugasAdapter.updateData(if (isTabAktif) activeTasks else completedTasks)
                     } else {
                         Toast.makeText(this@DaftarTugasActivity, "Gagal memuat tugas", Toast.LENGTH_SHORT).show()

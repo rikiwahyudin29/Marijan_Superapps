@@ -217,6 +217,11 @@ class KumpulTugasActivity : AppCompatActivity() {
             filePickerLauncher.launch(intent)
         }
 
+        val isPerbarui = intent.getBooleanExtra("IS_PERBARUI", false)
+        if (isPerbarui) {
+            btnKirim.text = "Perbarui Tugas Sekarang"
+        }
+
         btnKirim.setOnClickListener {
             submitTugas()
         }
@@ -227,7 +232,8 @@ class KumpulTugasActivity : AppCompatActivity() {
         val namaSiswa = sharedPref.getString("nama_siswa", "Siswa")
         val fotoProfil = sharedPref.getString("foto_profil", "")
 
-        findViewById<TextView>(R.id.tvHeaderTitle)?.text = "Kumpulkan Tugas"
+        val isPerbarui = intent.getBooleanExtra("IS_PERBARUI", false)
+        findViewById<TextView>(R.id.tvHeaderTitle)?.text = if (isPerbarui) "Perbarui Tugas" else "Kumpulkan Tugas"
         val ivProfil = findViewById<ImageView>(R.id.ivProfilPhoto)
         val tvProfilInisial = findViewById<TextView>(R.id.tvProfilInisial)
         val cvProfilPic = findViewById<androidx.cardview.widget.CardView>(R.id.cvProfilPic)
@@ -280,7 +286,10 @@ class KumpulTugasActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     loadingLayout.visibility = View.GONE
                     if (response.isSuccessful && response.body()?.status == true) {
-                        Toast.makeText(this@KumpulTugasActivity, "Tugas berhasil dikumpulkan!", Toast.LENGTH_LONG).show()
+                        val isPerbarui = intent.getBooleanExtra("IS_PERBARUI", false)
+                        val defaultMsg = if (isPerbarui) "Tugas berhasil diperbarui!" else "Tugas berhasil dikumpulkan!"
+                        val msg = response.body()?.message?.takeIf { it.isNotBlank() } ?: defaultMsg
+                        Toast.makeText(this@KumpulTugasActivity, msg, Toast.LENGTH_LONG).show()
                         finish()
                     } else {
                         Toast.makeText(this@KumpulTugasActivity, response.body()?.message ?: "Gagal mengirim tugas", Toast.LENGTH_SHORT).show()

@@ -51,6 +51,38 @@ class AkademikFragment : Fragment() {
             }
         }
 
+        // Click Actions
+        view.findViewById<CardView>(R.id.btnMenuJadwal)?.setOnClickListener { openJadwalPelajaran() }
+        view.findViewById<TextView>(R.id.btnLihatJadwalKbm)?.setOnClickListener { openJadwalPelajaran() }
+
+        view.findViewById<CardView>(R.id.cardRataRata)?.setOnClickListener { openNilaiRaport() }
+        view.findViewById<View>(R.id.btnRincianLengkap)?.setOnClickListener { openNilaiRaport() }
+        view.findViewById<CardView>(R.id.btnMenuRaport)?.setOnClickListener { openNilaiRaport() }
+
+        view.findViewById<CardView>(R.id.cardTugasAktif)?.setOnClickListener { openDaftarTugas() }
+        view.findViewById<CardView>(R.id.btnMenuTugas)?.setOnClickListener { openDaftarTugas() }
+        view.findViewById<View>(R.id.btnSemuaTugas)?.setOnClickListener { openDaftarTugas() }
+
+        view.findViewById<CardView>(R.id.cardTotalMateri)?.setOnClickListener { openMateriBelajar() }
+        view.findViewById<CardView>(R.id.btnMenuMateri)?.setOnClickListener { openMateriBelajar() }
+        view.findViewById<View>(R.id.btnLihatSemuaMateri)?.setOnClickListener { openMateriBelajar() }
+        view.findViewById<TextView>(R.id.btnBukaModulKbm)?.setOnClickListener { openMateriBelajar() }
+
+        // Fetch Data Awal
+        fetchAkademikData(view)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        view?.let { fetchAkademikData(it) }
+    }
+
+    private fun fetchAkademikData(view: View) {
+        val sharedPref = requireActivity().getSharedPreferences("SesiUjian", Context.MODE_PRIVATE)
+        val nisn = sharedPref.getString("nisn", null)
+
+        if (nisn.isNullOrEmpty()) return
+
         // 1. Hero Card Views
         val tvTahunAjaranSemester = view.findViewById<TextView>(R.id.tvTahunAjaranSemester)
         val tvTanggalHariIni = view.findViewById<TextView>(R.id.tvTanggalHariIni)
@@ -81,8 +113,6 @@ class AkademikFragment : Fragment() {
         val tvKbmWaktu = view.findViewById<TextView>(R.id.tvKbmWaktu)
         val tvKbmMapel = view.findViewById<TextView>(R.id.tvKbmMapel)
         val tvKbmGuruRuang = view.findViewById<TextView>(R.id.tvKbmGuruRuang)
-        val btnLihatJadwalKbm = view.findViewById<TextView>(R.id.btnLihatJadwalKbm)
-        val btnBukaModulKbm = view.findViewById<TextView>(R.id.btnBukaModulKbm)
 
         // 5. Tugas Mendatang Container
         val tvCountTugasBadge = view.findViewById<TextView>(R.id.tvCountTugasBadge)
@@ -93,141 +123,124 @@ class AkademikFragment : Fragment() {
         val llMateriTerkini = view.findViewById<LinearLayout>(R.id.llMateriTerkini)
         val tvEmptyMateri = view.findViewById<TextView>(R.id.tvEmptyMateri)
 
-        // Load Real Data from Backend
-        if (!nisn.isNullOrEmpty()) {
-            lifecycleScope.launch(Dispatchers.IO) {
-                try {
-                    val response = ApiClient.instance.getDashboard(nisn)
-                    withContext(Dispatchers.Main) {
-                        if (response.isSuccessful && response.body()?.status == true && response.body()?.data != null) {
-                            val data = response.body()?.data!!
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val response = ApiClient.instance.getDashboard(nisn)
+                withContext(Dispatchers.Main) {
+                    if (!isAdded) return@withContext
+                    if (response.isSuccessful && response.body()?.status == true && response.body()?.data != null) {
+                        val data = response.body()?.data!!
 
-                            // Update Top Bar Initials Avatar
-                            activity?.let { act ->
-                                val ivProfilPhoto = act.findViewById<ImageView>(R.id.ivProfilPhoto)
-                                val tvProfilInisial = act.findViewById<TextView>(R.id.tvProfilInisial)
-                                val cvProfilPic = act.findViewById<CardView>(R.id.cvProfilPic)
-                                AvatarHelper.setAvatar(act, data.nama, data.foto_profil, ivProfilPhoto, tvProfilInisial, cvProfilPic)
-                            }
-
-                            // 1. Bind Hero Card
-                            val ta = data.tahun_ajaran ?: "2026/2027"
-                            val sem = data.semester?.uppercase() ?: "GANJIL"
-                            tvTahunAjaranSemester?.text = "• TA $ta • $sem"
-                            tvTanggalHariIni?.text = data.tanggal_hari_ini ?: ""
-                            tvTingkatCircle?.text = data.tingkat ?: "12"
-                            tvNamaSiswaHero?.text = data.nama ?: "Siswa SMK"
-                            tvKelasNisnHero?.text = "${data.kelas ?: "-"} • NISN: ${data.nisn ?: "-"}"
-                            tvJurusanBadgeHero?.text = data.jurusan_singkat ?: (data.nama_jurusan?.take(4)?.uppercase() ?: "SMK")
-
-                            tvMingguEfektifLabel?.text = data.pekan_kbm_text ?: "Minggu Efektif KBM (Pekan 7/18)"
-                            tvPersenSelesaiLabel?.text = data.pekan_kbm_persen_text ?: "${data.pekan_kbm_persen ?: 38}% Selesai"
-                            pbMingguEfektif?.progress = data.pekan_kbm_persen ?: 38
-
-                            // 2. Bind Ringkasan Akademik
-                            val rataNilai = data.rata_rata_nilai ?: 0.0
-                            tvRataRataNilai?.text = if (rataNilai > 0.0) String.format("%.1f", rataNilai) else "0.0"
-                            tvRataRataBadge?.text = data.rata_rata_badge ?: "+2.4 pts"
-
-                            val tugasAktif = data.tugas_aktif ?: 0
-                            tvTugasAktifCount?.text = "$tugasAktif"
-                            val urgentCount = data.tugas_urgent_count ?: 0
-                            if (urgentCount > 0) {
-                                tvTugasUrgentBadge?.text = "$urgentCount Urgent"
-                                tvTugasUrgentBadge?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_badge_red_soft)
-                                tvTugasUrgentBadge?.setTextColor(android.graphics.Color.parseColor("#DC2626"))
-                            } else {
-                                tvTugasUrgentBadge?.text = "Aktif"
-                                tvTugasUrgentBadge?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_badge_green_soft)
-                                tvTugasUrgentBadge?.setTextColor(android.graphics.Color.parseColor("#059669"))
-                            }
-
-                            val totalMateri = data.total_materi ?: 0
-                            tvTotalMateriCount?.text = "$totalMateri"
-                            val materiBaru = data.materi_baru_count ?: 0
-                            tvMateriBaruBadge?.text = if (materiBaru > 0) "$materiBaru Baru" else "Tersedia"
-
-                            // 3. Bind Menu Utama Subtitles
-                            tvSubMenuJadwal?.text = "Jadwal KBM"
-                            tvSubMenuTugas?.text = if (tugasAktif > 0) "$tugasAktif Belum Selesai" else "Semua Selesai"
-                            tvSubMenuMateri?.text = "$totalMateri Modul PDF"
-                            tvSubMenuRaport?.text = "Transkrip Nilai"
-
-                            // 4. Bind Sedang Berlangsung (KBM Card)
-                            if (data.has_active_kbm == true && data.active_kbm != null) {
-                                tvKbmStatusBadge?.text = "• SEDANG BERLANGSUNG"
-                                tvKbmStatusBadge?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_badge_red_soft)
-                                tvKbmStatusBadge?.setTextColor(android.graphics.Color.parseColor("#DC2626"))
-                                tvKbmWaktu?.text = "Jam Ke ${data.active_kbm.jam_ke ?: 1} • ${data.active_kbm.waktu ?: "-"}"
-                                tvKbmMapel?.text = data.active_kbm.nama_mapel ?: "Mata Pelajaran"
-                                tvKbmGuruRuang?.text = "${data.active_kbm.guru ?: "Guru Mapel"} • ${data.active_kbm.ruang ?: "Ruang Kelas"}"
-                            } else if (data.next_kbm != null) {
-                                tvKbmStatusBadge?.text = "• JADWAL BERIKUTNYA"
-                                tvKbmStatusBadge?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_badge_blue_soft)
-                                tvKbmStatusBadge?.setTextColor(android.graphics.Color.parseColor("#2563EB"))
-                                tvKbmWaktu?.text = "Jam Ke ${data.next_kbm.jam_ke ?: 1} • ${data.next_kbm.waktu ?: "-"}"
-                                tvKbmMapel?.text = data.next_kbm.nama_mapel ?: "Mata Pelajaran"
-                                tvKbmGuruRuang?.text = "${data.next_kbm.guru ?: "Guru Mapel"} • ${data.next_kbm.ruang ?: "Ruang Kelas"}"
-                            } else if (!data.jadwal_hari_ini.isNullOrEmpty()) {
-                                // Hari ini ada jadwal pelajaran, jam KBM telah usai
-                                val lastKbm = data.jadwal_hari_ini.last()
-                                tvKbmStatusBadge?.text = "• KBM HARI INI SELESAI"
-                                tvKbmStatusBadge?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_badge_green_soft)
-                                tvKbmStatusBadge?.setTextColor(android.graphics.Color.parseColor("#059669"))
-                                tvKbmWaktu?.text = "Selesai Pukul ${lastKbm.jam_selesai ?: "-"} WIB (${data.jadwal_hari_ini.size} Mapel)"
-                                tvKbmMapel?.text = lastKbm.nama_mapel ?: "KBM Hari Ini Selesai"
-                                tvKbmGuruRuang?.text = "${lastKbm.guru ?: "Guru Mapel"} • ${lastKbm.ruang ?: "Ruang Kelas"}"
-                            } else if (data.next_day_kbm != null) {
-                                val hariLanjut = data.next_day_kbm.hari?.uppercase() ?: "SENIN"
-                                tvKbmStatusBadge?.text = "• JADWAL $hariLanjut"
-                                tvKbmStatusBadge?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_badge_blue_soft)
-                                tvKbmStatusBadge?.setTextColor(android.graphics.Color.parseColor("#2563EB"))
-                                tvKbmWaktu?.text = "Jam Ke 1 • ${data.next_day_kbm.waktu ?: "-"}"
-                                tvKbmMapel?.text = data.next_day_kbm.nama_mapel ?: "Mata Pelajaran"
-                                tvKbmGuruRuang?.text = "${data.next_day_kbm.guru ?: "Guru Pengampu"} • ${data.next_day_kbm.ruang ?: "Ruang Kelas"}"
-                            } else {
-                                tvKbmStatusBadge?.text = "• JADWAL KBM"
-                                tvKbmStatusBadge?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_badge_green_soft)
-                                tvKbmStatusBadge?.setTextColor(android.graphics.Color.parseColor("#059669"))
-                                tvKbmWaktu?.text = data.tanggal_hari_ini ?: "-"
-                                tvKbmMapel?.text = "Jadwal Pelajaran Kelas ${data.kelas ?: "-"}"
-                                tvKbmGuruRuang?.text = "Silakan klik Buka Modul KBM untuk materi pelajaran."
-                            }
-
-                            // 5. Populate Tugas Mendatang
-                            populateTugasMendatang(llTugasMendatang, tvEmptyTugas, tvCountTugasBadge, data.tugas_preview)
-
-                            // 6. Populate Aktivitas & Materi Terkini
-                            populateMateriTerkini(llMateriTerkini, tvEmptyMateri, data.materi_preview)
-
-                        } else {
-                            Toast.makeText(requireContext(), "Gagal memuat data akademik terbaru", Toast.LENGTH_SHORT).show()
+                        // Update Top Bar Initials Avatar
+                        activity?.let { act ->
+                            val ivProfilPhoto = act.findViewById<ImageView>(R.id.ivProfilPhoto)
+                            val tvProfilInisial = act.findViewById<TextView>(R.id.tvProfilInisial)
+                            val cvProfilPic = act.findViewById<CardView>(R.id.cvProfilPic)
+                            AvatarHelper.setAvatar(act, data.nama, data.foto_profil, ivProfilPhoto, tvProfilInisial, cvProfilPic)
                         }
+
+                        // 1. Bind Hero Card
+                        val ta = data.tahun_ajaran ?: "2026/2027"
+                        val sem = data.semester?.uppercase() ?: "GANJIL"
+                        tvTahunAjaranSemester?.text = "• TA $ta • $sem"
+                        tvTanggalHariIni?.text = data.tanggal_hari_ini ?: ""
+                        tvTingkatCircle?.text = data.tingkat ?: "12"
+                        tvNamaSiswaHero?.text = data.nama ?: "Siswa SMK"
+                        tvKelasNisnHero?.text = "${data.kelas ?: "-"} • NISN: ${data.nisn ?: "-"}"
+                        tvJurusanBadgeHero?.text = data.jurusan_singkat ?: (data.nama_jurusan?.take(4)?.uppercase() ?: "SMK")
+
+                        tvMingguEfektifLabel?.text = data.pekan_kbm_text ?: "Minggu Efektif KBM (Pekan 7/18)"
+                        tvPersenSelesaiLabel?.text = data.pekan_kbm_persen_text ?: "${data.pekan_kbm_persen ?: 38}% Selesai"
+                        pbMingguEfektif?.progress = data.pekan_kbm_persen ?: 38
+
+                        // 2. Bind Ringkasan Akademik
+                        val rataNilai = data.rata_rata_nilai ?: 0.0
+                        tvRataRataNilai?.text = if (rataNilai > 0.0) String.format("%.1f", rataNilai) else "0.0"
+                        tvRataRataBadge?.text = data.rata_rata_badge ?: "+2.4 pts"
+
+                        val tugasAktif = data.tugas_aktif ?: 0
+                        tvTugasAktifCount?.text = "$tugasAktif"
+                        val urgentCount = data.tugas_urgent_count ?: 0
+                        if (urgentCount > 0) {
+                            tvTugasUrgentBadge?.text = "$urgentCount Urgent"
+                            tvTugasUrgentBadge?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_badge_red_soft)
+                            tvTugasUrgentBadge?.setTextColor(android.graphics.Color.parseColor("#DC2626"))
+                        } else {
+                            tvTugasUrgentBadge?.text = "Aktif"
+                            tvTugasUrgentBadge?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_badge_green_soft)
+                            tvTugasUrgentBadge?.setTextColor(android.graphics.Color.parseColor("#059669"))
+                        }
+
+                        val totalMateri = data.total_materi ?: 0
+                        tvTotalMateriCount?.text = "$totalMateri"
+                        val materiBaru = data.materi_baru_count ?: 0
+                        tvMateriBaruBadge?.text = if (materiBaru > 0) "$materiBaru Baru" else "Tersedia"
+
+                        // 3. Bind Menu Utama Subtitles
+                        tvSubMenuJadwal?.text = "Jadwal KBM"
+                        tvSubMenuTugas?.text = if (tugasAktif > 0) "$tugasAktif Belum Selesai" else "Semua Selesai"
+                        tvSubMenuMateri?.text = "$totalMateri Modul PDF"
+                        tvSubMenuRaport?.text = "Transkrip Nilai"
+
+                        // 4. Bind Sedang Berlangsung (KBM Card)
+                        if (data.has_active_kbm == true && data.active_kbm != null) {
+                            tvKbmStatusBadge?.text = "• SEDANG BERLANGSUNG"
+                            tvKbmStatusBadge?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_badge_red_soft)
+                            tvKbmStatusBadge?.setTextColor(android.graphics.Color.parseColor("#DC2626"))
+                            tvKbmWaktu?.text = "Jam Ke ${data.active_kbm.jam_ke ?: 1} • ${data.active_kbm.waktu ?: "-"}"
+                            tvKbmMapel?.text = data.active_kbm.nama_mapel ?: "Mata Pelajaran"
+                            tvKbmGuruRuang?.text = "${data.active_kbm.guru ?: "Guru Mapel"} • ${data.active_kbm.ruang ?: "Ruang Kelas"}"
+                        } else if (data.next_kbm != null) {
+                            tvKbmStatusBadge?.text = "• JADWAL BERIKUTNYA"
+                            tvKbmStatusBadge?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_badge_blue_soft)
+                            tvKbmStatusBadge?.setTextColor(android.graphics.Color.parseColor("#2563EB"))
+                            tvKbmWaktu?.text = "Jam Ke ${data.next_kbm.jam_ke ?: 1} • ${data.next_kbm.waktu ?: "-"}"
+                            tvKbmMapel?.text = data.next_kbm.nama_mapel ?: "Mata Pelajaran"
+                            tvKbmGuruRuang?.text = "${data.next_kbm.guru ?: "Guru Mapel"} • ${data.next_kbm.ruang ?: "Ruang Kelas"}"
+                        } else if (!data.jadwal_hari_ini.isNullOrEmpty()) {
+                            // Hari ini ada jadwal pelajaran, jam KBM telah usai
+                            val lastKbm = data.jadwal_hari_ini.last()
+                            tvKbmStatusBadge?.text = "• KBM HARI INI SELESAI"
+                            tvKbmStatusBadge?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_badge_green_soft)
+                            tvKbmStatusBadge?.setTextColor(android.graphics.Color.parseColor("#059669"))
+                            tvKbmWaktu?.text = "Selesai Pukul ${lastKbm.jam_selesai ?: "-"} WIB (${data.jadwal_hari_ini.size} Mapel)"
+                            tvKbmMapel?.text = lastKbm.nama_mapel ?: "KBM Hari Ini Selesai"
+                            tvKbmGuruRuang?.text = "${lastKbm.guru ?: "Guru Mapel"} • ${lastKbm.ruang ?: "Ruang Kelas"}"
+                        } else if (data.next_day_kbm != null) {
+                            val hariLanjut = data.next_day_kbm.hari?.uppercase() ?: "SENIN"
+                            tvKbmStatusBadge?.text = "• JADWAL $hariLanjut"
+                            tvKbmStatusBadge?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_badge_blue_soft)
+                            tvKbmStatusBadge?.setTextColor(android.graphics.Color.parseColor("#2563EB"))
+                            tvKbmWaktu?.text = "Jam Ke 1 • ${data.next_day_kbm.waktu ?: "-"}"
+                            tvKbmMapel?.text = data.next_day_kbm.nama_mapel ?: "Mata Pelajaran"
+                            tvKbmGuruRuang?.text = "${data.next_day_kbm.guru ?: "Guru Pengampu"} • ${data.next_day_kbm.ruang ?: "Ruang Kelas"}"
+                        } else {
+                            tvKbmStatusBadge?.text = "• JADWAL KBM"
+                            tvKbmStatusBadge?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_badge_green_soft)
+                            tvKbmStatusBadge?.setTextColor(android.graphics.Color.parseColor("#059669"))
+                            tvKbmWaktu?.text = data.tanggal_hari_ini ?: "-"
+                            tvKbmMapel?.text = "Jadwal Pelajaran Kelas ${data.kelas ?: "-"}"
+                            tvKbmGuruRuang?.text = "Silakan klik Buka Modul KBM untuk materi pelajaran."
+                        }
+
+                        // 5. Populate Tugas Mendatang
+                        populateTugasMendatang(llTugasMendatang, tvEmptyTugas, tvCountTugasBadge, data.tugas_preview)
+
+                        // 6. Populate Aktivitas & Materi Terkini
+                        populateMateriTerkini(llMateriTerkini, tvEmptyMateri, data.materi_preview)
+
+                    } else {
+                        Toast.makeText(requireContext(), "Gagal memuat data akademik terbaru", Toast.LENGTH_SHORT).show()
                     }
-                } catch (e: Exception) {
-                    withContext(Dispatchers.Main) {
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    if (isAdded) {
                         Toast.makeText(requireContext(), "Error koneksi akademik", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
-
-        // Click Actions
-        view.findViewById<CardView>(R.id.btnMenuJadwal)?.setOnClickListener { openJadwalPelajaran() }
-        btnLihatJadwalKbm?.setOnClickListener { openJadwalPelajaran() }
-
-        view.findViewById<CardView>(R.id.cardRataRata)?.setOnClickListener { openNilaiRaport() }
-        view.findViewById<View>(R.id.btnRincianLengkap)?.setOnClickListener { openNilaiRaport() }
-        view.findViewById<CardView>(R.id.btnMenuRaport)?.setOnClickListener { openNilaiRaport() }
-
-        view.findViewById<CardView>(R.id.cardTugasAktif)?.setOnClickListener { openDaftarTugas() }
-        view.findViewById<CardView>(R.id.btnMenuTugas)?.setOnClickListener { openDaftarTugas() }
-        view.findViewById<View>(R.id.btnSemuaTugas)?.setOnClickListener { openDaftarTugas() }
-
-        view.findViewById<CardView>(R.id.cardTotalMateri)?.setOnClickListener { openMateriBelajar() }
-        view.findViewById<CardView>(R.id.btnMenuMateri)?.setOnClickListener { openMateriBelajar() }
-        view.findViewById<View>(R.id.btnLihatSemuaMateri)?.setOnClickListener { openMateriBelajar() }
-        btnBukaModulKbm?.setOnClickListener { openMateriBelajar() }
     }
 
     private fun populateTugasMendatang(
@@ -243,8 +256,11 @@ class AkademikFragment : Fragment() {
         tvBadgeCount?.text = "${activeList.size}"
 
         if (activeList.isEmpty()) {
-            tvEmpty?.visibility = View.VISIBLE
-            container.addView(tvEmpty)
+            tvEmpty?.let {
+                if (it.parent != null) (it.parent as? ViewGroup)?.removeView(it)
+                it.visibility = View.VISIBLE
+                container.addView(it)
+            }
             return
         }
 
@@ -298,8 +314,11 @@ class AkademikFragment : Fragment() {
         container.removeAllViews()
 
         if (list.isNullOrEmpty()) {
-            tvEmpty?.visibility = View.VISIBLE
-            container.addView(tvEmpty)
+            tvEmpty?.let {
+                if (it.parent != null) (it.parent as? ViewGroup)?.removeView(it)
+                it.visibility = View.VISIBLE
+                container.addView(it)
+            }
             return
         }
 

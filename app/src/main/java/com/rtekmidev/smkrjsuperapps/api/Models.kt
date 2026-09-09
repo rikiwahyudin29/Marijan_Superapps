@@ -420,6 +420,7 @@ data class DataTugas(
     val file_pendukung: String?,
     val deadline: String?,
     val status: String?,
+    val is_selesai: Boolean? = false,
     val nilai: String?,
     val komentar_guru: String?,
     val file_jawaban: String?

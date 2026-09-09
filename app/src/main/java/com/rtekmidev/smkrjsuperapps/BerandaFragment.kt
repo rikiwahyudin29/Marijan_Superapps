@@ -223,51 +223,63 @@ class BerandaFragment : Fragment() {
         }
 
         // Fetch Dashboard Data from API
-        if (!nisn.isNullOrEmpty()) {
-            loadDashboardData(
-                nisn = nisn,
-                userName = userName,
-                ivProfilPhoto = ivProfilPhoto,
-                tvHeroTa = tvHeroTa,
-                tvHeroDate = tvHeroDate,
-                tvNamaDashboard = tvNamaDashboard,
-                tvHeroNisKelas = tvHeroNisKelas,
-                tvHeroJurusan = tvHeroJurusan,
-                tvHeroStatus = tvHeroStatus,
-                tvHeroWaliKelas = tvHeroWaliKelas,
-                tvHeroPoinDisiplin = tvHeroPoinDisiplin,
-                pbHeroDisiplin = pbHeroDisiplin,
-                tvStatPresensiVal = tvStatPresensiVal,
-                tvStatPresensiSub = tvStatPresensiSub,
-                tvStatTugasVal = tvStatTugasVal,
-                tvStatTugasSub = tvStatTugasSub,
-                tvStatUjianVal = tvStatUjianVal,
-                tvStatUjianSub = tvStatUjianSub,
-                tvStatTagihanVal = tvStatTagihanVal,
-                tvStatTagihanSub = tvStatTagihanSub,
-                layoutUjianHariIniWrapper = layoutUjianHariIniWrapper,
-                tvUjianBadge = tvUjianBadge,
-                tvUjianWaktu = tvUjianWaktu,
-                tvUjianJudul = tvUjianJudul,
-                tvUjianRuang = tvUjianRuang,
-                tvMapelHariPill = tvMapelHariPill,
-                cardActiveKbm = cardActiveKbm,
-                tvKbmStatusBadge = tvKbmStatusBadge,
-                tvKbmWaktuRuang = tvKbmWaktuRuang,
-                tvKbmMapel = tvKbmMapel,
-                tvKbmGuru = tvKbmGuru,
-                containerOtherSubjects = containerOtherSubjects,
-                tvPresensiRadiusPill = tvPresensiRadiusPill,
-                tvPresensiLokasiSub = tvPresensiLokasiSub,
-                tvPresensiJamMasuk = tvPresensiJamMasuk,
-                tvPresensiStatusMasuk = tvPresensiStatusMasuk,
-                tvPresensiJamPulang = tvPresensiJamPulang,
-                tvPresensiStatusPulang = tvPresensiStatusPulang,
-                containerTugasPreview = containerTugasPreview,
-                tvTagihanTotalBesar = tvTagihanTotalBesar,
-                containerTagihanPreview = containerTagihanPreview
-            )
-        }
+        fetchBerandaData(view)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        view?.let { fetchBerandaData(it) }
+    }
+
+    private fun fetchBerandaData(view: View) {
+        val sharedPref = requireActivity().getSharedPreferences("SesiUjian", Context.MODE_PRIVATE)
+        val nisn = sharedPref.getString("nisn", null) ?: return
+        val userName = sharedPref.getString("nama_lengkap", "Siswa") ?: "Siswa"
+        val ivProfilPhoto = requireActivity().findViewById<ImageView>(R.id.ivProfilPhoto)
+
+        loadDashboardData(
+            nisn = nisn,
+            userName = userName,
+            ivProfilPhoto = ivProfilPhoto,
+            tvHeroTa = view.findViewById(R.id.tvHeroTa),
+            tvHeroDate = view.findViewById(R.id.tvHeroDate),
+            tvNamaDashboard = view.findViewById(R.id.tvNamaDashboard),
+            tvHeroNisKelas = view.findViewById(R.id.tvHeroNisKelas),
+            tvHeroJurusan = view.findViewById(R.id.tvHeroJurusan),
+            tvHeroStatus = view.findViewById(R.id.tvHeroStatus),
+            tvHeroWaliKelas = view.findViewById(R.id.tvHeroWaliKelas),
+            tvHeroPoinDisiplin = view.findViewById(R.id.tvHeroPoinDisiplin),
+            pbHeroDisiplin = view.findViewById(R.id.pbHeroDisiplin),
+            tvStatPresensiVal = view.findViewById(R.id.tvStatPresensiVal),
+            tvStatPresensiSub = view.findViewById(R.id.tvStatPresensiSub),
+            tvStatTugasVal = view.findViewById(R.id.tvStatTugasVal),
+            tvStatTugasSub = view.findViewById(R.id.tvStatTugasSub),
+            tvStatUjianVal = view.findViewById(R.id.tvStatUjianVal),
+            tvStatUjianSub = view.findViewById(R.id.tvStatUjianSub),
+            tvStatTagihanVal = view.findViewById(R.id.tvStatTagihanVal),
+            tvStatTagihanSub = view.findViewById(R.id.tvStatTagihanSub),
+            layoutUjianHariIniWrapper = view.findViewById(R.id.layoutUjianHariIniWrapper),
+            tvUjianBadge = view.findViewById(R.id.tvUjianBadge),
+            tvUjianWaktu = view.findViewById(R.id.tvUjianWaktu),
+            tvUjianJudul = view.findViewById(R.id.tvUjianJudul),
+            tvUjianRuang = view.findViewById(R.id.tvUjianRuang),
+            tvMapelHariPill = view.findViewById(R.id.tvMapelHariPill),
+            cardActiveKbm = view.findViewById(R.id.cardActiveKbm),
+            tvKbmStatusBadge = view.findViewById(R.id.tvKbmStatusBadge),
+            tvKbmWaktuRuang = view.findViewById(R.id.tvKbmWaktuRuang),
+            tvKbmMapel = view.findViewById(R.id.tvKbmMapel),
+            tvKbmGuru = view.findViewById(R.id.tvKbmGuru),
+            containerOtherSubjects = view.findViewById(R.id.containerOtherSubjects),
+            tvPresensiRadiusPill = view.findViewById(R.id.tvPresensiRadiusPill),
+            tvPresensiLokasiSub = view.findViewById(R.id.tvPresensiLokasiSub),
+            tvPresensiJamMasuk = view.findViewById(R.id.tvPresensiJamMasuk),
+            tvPresensiStatusMasuk = view.findViewById(R.id.tvPresensiStatusMasuk),
+            tvPresensiJamPulang = view.findViewById(R.id.tvPresensiJamPulang),
+            tvPresensiStatusPulang = view.findViewById(R.id.tvPresensiStatusPulang),
+            containerTugasPreview = view.findViewById(R.id.containerTugasPreview),
+            tvTagihanTotalBesar = view.findViewById(R.id.tvTagihanTotalBesar),
+            containerTagihanPreview = view.findViewById(R.id.containerTagihanPreview)
+        )
     }
 
     private fun loadDashboardData(
@@ -434,10 +446,11 @@ class BerandaFragment : Fragment() {
                             tvPresensiStatusPulang?.text = "● ${ps.jam_pulang_status ?: "Menunggu Waktu"}"
                         }
 
-                        // 7. Preview Tugas Sekolah
+                        // 7. Preview Tugas Sekolah (Hanya tugas yang belum selesai)
                         containerTugasPreview?.removeAllViews()
-                        if (data.tugas_preview != null && data.tugas_preview.isNotEmpty()) {
-                            for (tugas in data.tugas_preview) {
+                        val pendingTasks = data.tugas_preview?.filter { it.is_selesai != true }
+                        if (pendingTasks != null && pendingTasks.isNotEmpty()) {
+                            for (tugas in pendingTasks) {
                                 val itemTugas = layoutInflater.inflate(R.layout.item_tugas_preview, containerTugasPreview, false)
                                 itemTugas.findViewById<TextView>(R.id.tvMapelTugas).text = tugas.mapel ?: "Mata Pelajaran"
                                 itemTugas.findViewById<TextView>(R.id.tvDeadlineTugas).text = "Tenggat: ${tugas.deadline ?: "-"}"

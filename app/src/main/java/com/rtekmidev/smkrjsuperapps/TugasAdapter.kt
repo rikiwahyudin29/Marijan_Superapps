@@ -31,12 +31,17 @@ class TugasAdapter(
             tvMapel.text = task.mapel ?: "Mata Pelajaran"
             tvJudulTugas.text = task.judul ?: "Judul Tugas"
             
-            // Sama seperti MateriTugasActivity, kalau bukan "Belum Selesai" berarti selesai
-            val isCompleted = !(task.status?.equals("Belum Selesai", ignoreCase = true) == true)
+            // Cek apakah tugas sudah dikerjakan (is_selesai == true atau status bukan "Belum Selesai")
+            val isCompleted = task.is_selesai == true || !(task.status?.equals("Belum Selesai", ignoreCase = true) == true)
             
             if (isCompleted) {
                 // Selesai
-                tvStatus.text = "SUDAH SELESAI"
+                val displayStatus = if (task.status.isNullOrBlank() || task.status.equals("Belum Selesai", ignoreCase = true)) {
+                    "SUDAH SELESAI"
+                } else {
+                    task.status.uppercase()
+                }
+                tvStatus.text = displayStatus
                 tvStatus.setTextColor(ContextCompat.getColor(itemView.context, android.R.color.holo_green_dark))
                 tvStatus.setBackgroundResource(R.drawable.bg_tag_status_grey)
                 
@@ -45,9 +50,10 @@ class TugasAdapter(
                 tvDeadline.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                 
                 layNilaiKomentar.visibility = View.VISIBLE
-                tvNilai.text = task.nilai ?: "Belum dinilai"
-                tvKomentar.text = task.komentar_guru ?: "Tidak ada komentar"
+                tvNilai.text = if (!task.nilai.isNullOrBlank()) task.nilai else "Belum dinilai"
+                tvKomentar.text = if (!task.komentar_guru.isNullOrBlank()) task.komentar_guru else "Tidak ada catatan."
                 btnPerbaruiJawaban.visibility = View.VISIBLE
+                btnPerbaruiJawaban.text = "Perbarui Jawaban"
                 
                 btnAksi.text = "Lihat Jawaban"
                 btnAksi.backgroundTintList = ContextCompat.getColorStateList(itemView.context, R.color.bg_light_grey)
