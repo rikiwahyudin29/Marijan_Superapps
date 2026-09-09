@@ -1,4 +1,3 @@
-@file:Suppress("DEPRECATION")
 package com.rtekmidev.smkrjsuperapps
 
 import android.content.Context
@@ -6,6 +5,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -14,18 +15,40 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import com.bumptech.glide.Glide
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.rtekmidev.smkrjsuperapps.api.ApiClient
-import kotlinx.coroutines.*
+import com.rtekmidev.smkrjsuperapps.util.AvatarHelper
+import com.rtekmidev.smkrjsuperapps.util.StatusBarHelper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MateriBelajarActivity : AppCompatActivity() {
+
     private var nisnSiswa = ""
     private var searchQuery = ""
+    private var selectedMapel = "Semua"
+
     private var listDataAsli = listOf<DisplayItem>()
 
+    private lateinit var rvMateri: RecyclerView
+    private lateinit var materiAdapter: MateriAdapter
+    private lateinit var layLoading: LinearLayout
+    private lateinit var layEmpty: LinearLayout
+    private lateinit var tvEmptySubtitle: TextView
+    private lateinit var etSearch: EditText
+    private lateinit var btnClearSearch: ImageView
+    private lateinit var layMapelChips: LinearLayout
+
     data class DisplayItem(
-        val id: String, val judul: String, val mapel: String,
-        val guru: String, val waktu: String, val urlFile: String?,
+        val id: String,
+        val judul: String,
+        val mapel: String,
+        val guru: String,
+        val waktu: String,
+        val urlFile: String?,
         val deskripsi: String? = null,
         val jenisFile: String? = null,
         val linkYoutube: String? = null,
@@ -35,55 +58,87 @@ class MateriBelajarActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_materi_belajar)
-        com.rtekmidev.smkrjsuperapps.util.StatusBarHelper.setupTranslucentBar(this)
+
+        // Setup Edge-to-Edge Status Bar Transparan & Insets
+        StatusBarHelper.setupTranslucentBar(this, findViewById(R.id.main))
 
         val sharedPref = getSharedPreferences("SesiUjian", Context.MODE_PRIVATE)
         nisnSiswa = sharedPref.getString("nisn", "") ?: ""
-        val namaSiswa = sharedPref.getString("nama_siswa", "Siswa")
-        val fotoProfil = sharedPref.getString("foto_profil", "")
-        
+        val namaSiswa = sharedPref.getString("nama_siswa", "Siswa") ?: "Siswa"
+        val fotoProfil = sharedPref.getString("foto_profil", "") ?: ""
+
+        setupHeader(namaSiswa, fotoProfil)
+        initViews()
+        setupSearch()
+        muatDataMateri()
+    }
+
+    private fun setupHeader(namaSiswa: String, fotoProfil: String) {
         findViewById<TextView>(R.id.tvHeaderTitle)?.text = "Materi Belajar"
+        findViewById<TextView>(R.id.tvHeaderCategory)?.text = "E-LEARNING SISWA"
         findViewById<ImageView>(R.id.btnBack)?.setOnClickListener { finish() }
 
         val ivProfilPhoto = findViewById<ImageView>(R.id.ivProfilPhoto)
         val tvProfilInisial = findViewById<TextView>(R.id.tvProfilInisial)
-        val cvProfilPic = findViewById<androidx.cardview.widget.CardView>(R.id.cvProfilPic)
-        com.rtekmidev.smkrjsuperapps.util.AvatarHelper.setAvatar(this, namaSiswa, fotoProfil, ivProfilPhoto, tvProfilInisial, cvProfilPic)
+        val cvProfilPic = findViewById<CardView>(R.id.cvProfilPic)
+        AvatarHelper.setAvatar(this, namaSiswa, fotoProfil, ivProfilPhoto, tvProfilInisial, cvProfilPic)
+    }
 
-        val etSearch = findViewById<EditText>(R.id.etSearch)
-        etSearch.addTextChangedListener(object : android.text.TextWatcher {
+    private fun initViews() {
+        rvMateri = findViewById(R.id.rvMateri)
+        layLoading = findViewById(R.id.layLoading)
+        layEmpty = findViewById(R.id.layEmpty)
+        tvEmptySubtitle = findViewById(R.id.tvEmptySubtitle)
+        etSearch = findViewById(R.id.etSearch)
+        btnClearSearch = findViewById(R.id.btnClearSearch)
+        layMapelChips = findViewById(R.id.layMapelChips)
+
+        rvMateri.layoutManager = LinearLayoutManager(this)
+        materiAdapter = MateriAdapter(emptyList()) { item ->
+            bukaMateri(item)
+        }
+        rvMateri.adapter = materiAdapter
+    }
+
+    private fun setupSearch() {
+        etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                searchQuery = s.toString()
-                renderData()
+                searchQuery = s.toString().trim()
+                btnClearSearch.visibility = if (searchQuery.isNotEmpty()) View.VISIBLE else View.GONE
+                applyFilter()
             }
-            override fun afterTextChanged(s: android.text.Editable?) {}
+            override fun afterTextChanged(s: Editable?) {}
         })
 
-        muatDataMateri()
+        btnClearSearch.setOnClickListener {
+            etSearch.text.clear()
+            searchQuery = ""
+            btnClearSearch.visibility = View.GONE
+            applyFilter()
+        }
     }
 
     private fun muatDataMateri() {
-        val wadah = findViewById<LinearLayout>(R.id.wadahDataMateri)
-        wadah.removeAllViews()
-        val loadingView = android.widget.ProgressBar(this)
-        wadah.addView(loadingView)
+        layLoading.visibility = View.VISIBLE
+        layEmpty.visibility = View.GONE
+        rvMateri.visibility = View.GONE
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val resp = ApiClient.instance.getMateri(nisnSiswa)
                 withContext(Dispatchers.Main) {
-                    wadah.removeView(loadingView)
+                    layLoading.visibility = View.GONE
                     if (resp.isSuccessful && resp.body()?.status == true) {
                         val rawData = resp.body()?.data
                         if (rawData != null && rawData.isJsonArray) {
                             val arr = rawData.asJsonArray
                             val extractedList = mutableListOf<DisplayItem>()
-                            
+
                             for (groupItem in arr) {
                                 val groupObj = groupItem.asJsonObject
                                 val mapel = groupObj.get("mapel")?.asString ?: "UMUM"
-                                
+
                                 val materiArr = groupObj.get("materi")?.asJsonArray
                                 if (materiArr != null) {
                                     for (materiItem in materiArr) {
@@ -92,7 +147,7 @@ class MateriBelajarActivity : AppCompatActivity() {
                                             val el = obj.get(key)
                                             return if (el != null && !el.isJsonNull) el.asString else null
                                         }
-                                        
+
                                         val id = getStr("id_materi") ?: getStr("id") ?: ""
                                         val judul = getStr("judul") ?: "Tanpa Judul"
                                         val guru = getStr("guru") ?: getStr("nama_guru") ?: "-"
@@ -115,100 +170,140 @@ class MateriBelajarActivity : AppCompatActivity() {
                         } else {
                             listDataAsli = emptyList()
                         }
-                        renderData()
+                        renderMapelChips()
+                        applyFilter()
                     } else {
                         Toast.makeText(this@MateriBelajarActivity, "Gagal memuat materi", Toast.LENGTH_SHORT).show()
+                        applyFilter()
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    wadah.removeView(loadingView)
+                    layLoading.visibility = View.GONE
                     Toast.makeText(this@MateriBelajarActivity, "Koneksi ke server gagal", Toast.LENGTH_SHORT).show()
+                    applyFilter()
                 }
             }
         }
     }
 
-    private fun renderData() {
-        val wadah = findViewById<LinearLayout>(R.id.wadahDataMateri)
-        wadah.removeAllViews()
+    private fun renderMapelChips() {
+        layMapelChips.removeAllViews()
 
-        val listFinal = if (searchQuery.isNotEmpty()) {
-            listDataAsli.filter { it.judul.contains(searchQuery, true) || it.mapel.contains(searchQuery, true) }
-        } else listDataAsli
+        val mapelSet = mutableListOf("Semua")
+        val uniqueMapel = listDataAsli.map { it.mapel.trim() }.distinct().sorted()
+        mapelSet.addAll(uniqueMapel)
 
-        if (listFinal.isEmpty()) {
-            val tvKosong = TextView(this)
-            tvKosong.text = "Materi tidak ditemukan."
-            tvKosong.setTextColor(Color.parseColor("#6B7280"))
-            tvKosong.setPadding(0, 40, 0, 0)
-            wadah.addView(tvKosong)
+        for (mapel in mapelSet) {
+            val chip = TextView(this)
+            chip.text = mapel
+            chip.textSize = 11f
+            chip.setPadding(32, 14, 32, 14)
+            chip.isClickable = true
+            chip.isFocusable = true
+
+            val isSelected = (mapel == selectedMapel)
+            updateChipStyle(chip, isSelected)
+
+            val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            params.setMargins(0, 0, 16, 0)
+            chip.layoutParams = params
+
+            chip.setOnClickListener {
+                selectedMapel = mapel
+                for (i in 0 until layMapelChips.childCount) {
+                    val child = layMapelChips.getChildAt(i) as? TextView
+                    if (child != null) {
+                        val active = (child.text == selectedMapel)
+                        updateChipStyle(child, active)
+                    }
+                }
+                applyFilter()
+            }
+
+            layMapelChips.addView(chip)
+        }
+    }
+
+    private fun updateChipStyle(chip: TextView, isSelected: Boolean) {
+        if (isSelected) {
+            chip.setBackgroundResource(R.drawable.bg_button_dark_rounded)
+            chip.backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#1A1B41"))
+            chip.setTextColor(Color.WHITE)
+            chip.setTypeface(null, android.graphics.Typeface.BOLD)
         } else {
-            val grouped = listFinal.groupBy { it.mapel }
-            grouped.forEach { (mapel, items) ->
-                val header = layoutInflater.inflate(R.layout.item_header_mapel, wadah, false)
-                header.findViewById<TextView>(R.id.tvHeaderMapel).text = mapel
-                wadah.addView(header)
-
-                items.forEach { item ->
-                    val card = layoutInflater.inflate(R.layout.item_materi_modern, wadah, false) as CardView
-                    setCardDataMateriModern(card, item)
-                    wadah.addView(card)
-                }
-            }
+            chip.setBackgroundResource(R.drawable.bg_tag_mapel)
+            chip.backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#F1F5F9"))
+            chip.setTextColor(Color.parseColor("#64748B"))
+            chip.setTypeface(null, android.graphics.Typeface.NORMAL)
         }
     }
 
-    private fun setCardDataMateriModern(card: CardView, item: DisplayItem) {
-        card.findViewById<TextView>(R.id.tvJudulMateri).text = item.judul
-        val tvDesc = card.findViewById<TextView>(R.id.tvDeskripsi)
-        val cleanDesc = androidx.core.text.HtmlCompat.fromHtml(item.deskripsi ?: "", androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT).toString().trim()
-        tvDesc.text = if (cleanDesc.isNotEmpty()) cleanDesc else "Tanpa deskripsi"
-        tvDesc.maxLines = 20
-        card.findViewById<TextView>(R.id.tvTanggalMateri).text = item.waktu
+    private fun applyFilter() {
+        var filtered = listDataAsli
 
-        val tvBadge = card.findViewById<TextView>(R.id.tvBadgeType)
-        val tvAction = card.findViewById<TextView>(R.id.tvAction)
-        val border = card.findViewById<View>(R.id.viewBorderType)
-        val tvUkuran = card.findViewById<TextView>(R.id.tvUkuran)
+        // Filter Mapel
+        if (selectedMapel != "Semua") {
+            filtered = filtered.filter { it.mapel.equals(selectedMapel, ignoreCase = true) }
+        }
 
+        // Filter Search Query
+        if (searchQuery.isNotEmpty()) {
+            filtered = filtered.filter {
+                it.judul.contains(searchQuery, ignoreCase = true) ||
+                it.mapel.contains(searchQuery, ignoreCase = true) ||
+                it.guru.contains(searchQuery, ignoreCase = true) ||
+                (it.deskripsi?.contains(searchQuery, ignoreCase = true) == true)
+            }
+        }
+
+        materiAdapter.updateData(filtered)
+
+        if (filtered.isEmpty()) {
+            rvMateri.visibility = View.GONE
+            layEmpty.visibility = View.VISIBLE
+            if (searchQuery.isNotEmpty()) {
+                tvEmptySubtitle.text = "Tidak ada materi yang sesuai dengan kata kunci \"$searchQuery\"."
+            } else if (selectedMapel != "Semua") {
+                tvEmptySubtitle.text = "Belum ada materi pelajaran untuk mata pelajaran $selectedMapel."
+            } else {
+                tvEmptySubtitle.text = "Belum ada materi pelajaran yang diunggah oleh guru."
+            }
+        } else {
+            rvMateri.visibility = View.VISIBLE
+            layEmpty.visibility = View.GONE
+        }
+    }
+
+    private fun bukaMateri(item: DisplayItem) {
         val jenis = item.jenisFile?.lowercase() ?: ""
-        tvBadge.text = item.jenisFile ?: "File"
-
-        if (jenis == "youtube" || jenis == "video") {
-            border.setBackgroundColor(Color.parseColor("#F97316")) // Orange
-            tvBadge.setTextColor(Color.parseColor("#EA580C"))
-            tvBadge.backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#FFEDD5"))
-            tvAction.text = "Tonton →"
-            tvAction.setTextColor(Color.parseColor("#EA580C"))
-        } else {
-            border.setBackgroundColor(Color.parseColor("#06B6D4")) // Cyan
-            tvBadge.setTextColor(Color.parseColor("#0284C7"))
-            tvBadge.backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#E0F2FE"))
-            tvAction.text = "Unduh →"
-            tvAction.setTextColor(Color.parseColor("#06B6D4"))
-        }
-
-        tvUkuran.text = item.ukuranFile ?: ""
-        if (tvUkuran.text.isEmpty()) tvUkuran.visibility = View.GONE
-
-        card.setOnClickListener {
-            if (jenis == "youtube" && !item.linkYoutube.isNullOrEmpty()) {
+        if (jenis == "youtube" && !item.linkYoutube.isNullOrEmpty()) {
+            try {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.linkYoutube))
                 startActivity(intent)
-            } else {
-                val fileUrl = item.urlFile ?: ""
-                val urlLengkap = if (fileUrl.startsWith("http")) {
-                    fileUrl
-                } else {
-                    "https://smkriyadhuljannahjalancagak.sch.id/uploads/materi/" + fileUrl
-                }
-
-                val viewerIntent = Intent(this, FileViewerActivity::class.java)
-                viewerIntent.putExtra("FILE_URL", urlLengkap)
-                viewerIntent.putExtra("TITLE", item.judul)
-                startActivity(viewerIntent)
+            } catch (e: Exception) {
+                Toast.makeText(this, "Tidak dapat membuka tautan video.", Toast.LENGTH_SHORT).show()
             }
+        } else {
+            val fileUrl = item.urlFile ?: ""
+            if (fileUrl.isBlank()) {
+                Toast.makeText(this, "Berkas materi tidak tersedia.", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            val urlLengkap = if (fileUrl.startsWith("http")) {
+                fileUrl
+            } else {
+                "https://smkriyadhuljannahjalancagak.sch.id/uploads/materi/" + fileUrl
+            }
+
+            val viewerIntent = Intent(this, FileViewerActivity::class.java)
+            viewerIntent.putExtra("FILE_URL", urlLengkap)
+            viewerIntent.putExtra("TITLE", item.judul)
+            startActivity(viewerIntent)
         }
     }
 }
