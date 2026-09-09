@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.rtekmidev.marijancbt"
+    namespace = "com.rtekmidev.smkrjsuperapps"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1

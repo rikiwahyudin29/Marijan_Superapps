@@ -22,7 +22,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MarijanCBT"
+        android:theme="@style/Theme.SmkRjSuperapps"
         android:usesCleartextTraffic="true">
 
         <activity
@@ -103,9 +103,9 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="com.rtekmidev.marijancbt.ACTION_MULAI_MENGAJAR" />
-                <action android:name="com.rtekmidev.marijancbt.ACTION_SELESAI_MENGAJAR" />
-                <action android:name="com.rtekmidev.marijancbt.ACTION_TEST_PENGINGAT" />
+                <action android:name="com.rtekmidev.smkrjsuperapps.ACTION_MULAI_MENGAJAR" />
+                <action android:name="com.rtekmidev.smkrjsuperapps.ACTION_SELESAI_MENGAJAR" />
+                <action android:name="com.rtekmidev.smkrjsuperapps.ACTION_TEST_PENGINGAT" />
             </intent-filter>
         </receiver>
 

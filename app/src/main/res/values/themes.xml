@@ -1,11 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme with global smooth transitions -->
-    <style name="Theme.MarijanCBT" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.SmkRjSuperapps" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">#FFFFFF</item>
         <item name="android:windowBackground">#F8FAFC</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimation.Smooth</item>
     </style>
+
+    <style name="Theme.MarijanCBT" parent="Theme.SmkRjSuperapps" />
 
     <style name="WindowAnimation.Smooth" parent="@android:style/Animation.Activity">
         <item name="android:activityOpenEnterAnimation">@anim/fade_in_smooth</item>
