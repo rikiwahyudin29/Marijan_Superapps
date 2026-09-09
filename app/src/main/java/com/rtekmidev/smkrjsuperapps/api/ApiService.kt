@@ -35,7 +35,9 @@ interface ApiService {
     suspend fun registerFcmToken(
         @Field("fcm_token") fcmToken: String,
         @Field("device_id") deviceId: String? = null,
-        @Field("device_name") deviceName: String? = null
+        @Field("device_name") deviceName: String? = null,
+        @Field("latitude") latitude: String? = null,
+        @Field("longitude") longitude: String? = null
     ): Response<JsonElement>
 
     // 2. Endpoint Ambil Jadwal

@@ -404,9 +404,24 @@ class DashboardActivity : AppCompatActivity() {
                     val deviceId = android.provider.Settings.Secure.getString(contentResolver, android.provider.Settings.Secure.ANDROID_ID) ?: "UNKNOWN"
                     val deviceName = "${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}"
 
+                    var lat: String? = null
+                    var lon: String? = null
+                    try {
+                        if (ContextCompat.checkSelfPermission(this@DashboardActivity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                            ContextCompat.checkSelfPermission(this@DashboardActivity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                            val lm = getSystemService(Context.LOCATION_SERVICE) as? android.location.LocationManager
+                            val loc = lm?.getLastKnownLocation(android.location.LocationManager.NETWORK_PROVIDER)
+                                ?: lm?.getLastKnownLocation(android.location.LocationManager.GPS_PROVIDER)
+                            if (loc != null && loc.latitude != 0.0 && loc.longitude != 0.0) {
+                                lat = loc.latitude.toString()
+                                lon = loc.longitude.toString()
+                            }
+                        }
+                    } catch (_: Exception) {}
+
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
-                            ApiClient.instance.registerFcmToken(fcmToken, deviceId, deviceName)
+                            ApiClient.instance.registerFcmToken(fcmToken, deviceId, deviceName, lat, lon)
                         } catch (e: Exception) {
                             android.util.Log.e("Dashboard", "Sync FCM Error: ${e.message}")
                         }
