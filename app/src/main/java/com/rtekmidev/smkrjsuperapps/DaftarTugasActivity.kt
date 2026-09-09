@@ -56,7 +56,8 @@ class DaftarTugasActivity : AppCompatActivity() {
                 intent.putExtra("MAPEL", task.mapel ?: "")
                 intent.putExtra("JUDUL", task.judul ?: "")
                 intent.putExtra("DEADLINE", task.deadline ?: "")
-                intent.putExtra("DESKRIPSI", task.deskripsi ?: "")
+                val cleanDesc = androidx.core.text.HtmlCompat.fromHtml(task.deskripsi ?: "", androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT).toString().trim()
+                intent.putExtra("DESKRIPSI", cleanDesc)
                 intent.putExtra("FILE_PENDUKUNG", task.file_pendukung ?: "")
                 startActivity(intent)
             } else if (aksi == "LihatJawaban") {

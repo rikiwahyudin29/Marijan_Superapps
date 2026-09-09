@@ -112,7 +112,8 @@ class KumpulTugasActivity : AppCompatActivity() {
         tvJudulTugas.text = intent.getStringExtra("JUDUL") ?: "Judul Tugas"
         tvDeadline.text = intent.getStringExtra("DEADLINE") ?: "-"
         
-        val deskripsi = intent.getStringExtra("DESKRIPSI") ?: ""
+        val rawDeskripsi = intent.getStringExtra("DESKRIPSI") ?: ""
+        val deskripsi = androidx.core.text.HtmlCompat.fromHtml(rawDeskripsi, androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT).toString().trim()
         if (deskripsi.isNotEmpty() && deskripsi != "null") {
             tvDeskripsi.text = deskripsi
         } else {

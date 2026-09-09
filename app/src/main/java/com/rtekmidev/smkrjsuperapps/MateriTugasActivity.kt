@@ -251,7 +251,8 @@ class MateriTugasActivity : AppCompatActivity() {
 
     private fun setCardDataMateriModern(card: CardView, item: DisplayItem) {
         card.findViewById<TextView>(R.id.tvJudulMateri).text = item.judul
-        card.findViewById<TextView>(R.id.tvDeskripsi).text = item.deskripsi ?: "Tanpa deskripsi"
+        val cleanDesc = androidx.core.text.HtmlCompat.fromHtml(item.deskripsi ?: "", androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT).toString().trim()
+        card.findViewById<TextView>(R.id.tvDeskripsi).text = if (cleanDesc.isNotEmpty()) cleanDesc else "Tanpa deskripsi"
         card.findViewById<TextView>(R.id.tvTanggalMateri).text = item.waktu
 
         val tvBadge = card.findViewById<TextView>(R.id.tvBadgeType)
