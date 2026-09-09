@@ -1,111 +1,217 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardJadwalItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="2dp"
-    app:cardBackgroundColor="#FFFFFF">
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="18dp"
+    app:cardElevation="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:background="#FFFFFF"
+        android:orientation="horizontal">
 
-        <!-- Top Row: Time Badge & Status Badge -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp">
+        <!-- Left Colored Accent Bar -->
+        <View
+            android:id="@+id/viewColorAccent"
+            android:layout_width="5dp"
+            android:layout_height="match_parent"
+            android:background="#4F46E5" />
 
-            <TextView
-                android:id="@+id/tvJadwalWaktu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_badge_cbt_blue"
-                android:textColor="#1D4ED8"
-                android:textSize="11sp"
-                android:textStyle="bold"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp"
-                android:text="07:00 - 09:00 WIB"
-                android:layout_alignParentStart="true" />
-
-            <TextView
-                android:id="@+id/tvJadwalStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_rounded_border"
-                android:backgroundTint="#DCFCE7"
-                android:textColor="#15803D"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="4dp"
-                android:text="● Sedang Berlangsung"
-                android:layout_alignParentEnd="true"
-                android:visibility="gone" />
-        </RelativeLayout>
-
-        <!-- Nama Mata Pelajaran -->
-        <TextView
-            android:id="@+id/tvJadwalMapel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#1E1B4B"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:text="Nama Mata Pelajaran"
-            android:layout_marginBottom="6dp" />
-
-        <!-- Guru Pengampu -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="4dp">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <ImageView
-                android:layout_width="14dp"
-                android:layout_height="14dp"
-                android:src="@drawable/ic_modern_akademik"
-                app:tint="#64748B" />
-
-            <TextView
-                android:id="@+id/tvJadwalGuru"
-                android:layout_width="wrap_content"
+            <!-- Top Row: Time Pill & Status / Jam Ke -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#64748B"
-                android:textSize="12sp"
-                android:text="Guru: Nama Guru Pengampu"
-                android:layout_marginStart="6dp" />
-        </LinearLayout>
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-        <!-- Ruang Kelas -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+                <!-- Time Pill -->
+                <LinearLayout
+                    android:id="@+id/layTimeBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    android:background="@drawable/bg_badge_cbt_blue">
 
-            <ImageView
-                android:layout_width="14dp"
-                android:layout_height="14dp"
-                android:src="@drawable/ic_location_pin_16"
-                app:tint="#94A3B8" />
+                    <ImageView
+                        android:id="@+id/ivTimeIcon"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:src="@drawable/ic_modern_clock"
+                        app:tint="#4F46E5" />
 
-            <TextView
-                android:id="@+id/tvJadwalRuang"
-                android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/tvJadwalWaktu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:text="07:00 - 08:30 WIB"
+                        android:textColor="#4F46E5"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <!-- Sedang Berlangsung Badge -->
+                <TextView
+                    android:id="@+id/tvJadwalStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_badge_green_soft"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="4dp"
+                    android:text="● Sedang Berlangsung"
+                    android:textColor="#16A34A"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <!-- Jam Ke Tag -->
+                <TextView
+                    android:id="@+id/tvJamKeTag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/bg_tag_mapel"
+                    android:backgroundTint="#F1F5F9"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="3dp"
+                    android:text="Jam Ke-1"
+                    android:textColor="#64748B"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Middle Row: Subject Icon Box & Mapel Title + Guru -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#94A3B8"
-                android:textSize="11sp"
-                android:text="Ruang: Kelas 12 TKJT 1"
-                android:layout_marginStart="6dp" />
-        </LinearLayout>
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
+                <!-- Colorful Squircle Icon Container -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cvIconBox"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#EEF2FF">
+
+                    <ImageView
+                        android:id="@+id/ivMapelIcon"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_subject_tech"
+                        app:tint="#4F46E5" />
+                </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvJadwalMapel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Pemrograman Berorientasi Objek"
+                        android:textColor="#0F172A"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <!-- Guru Pengampu -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
+                            android:src="@drawable/ic_modern_profile"
+                            app:tint="#64748B" />
+
+                        <TextView
+                            android:id="@+id/tvJadwalGuru"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="Guru: Nama Guru Pengampu"
+                            android:textColor="#64748B"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Bottom Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="10dp"
+                android:background="#F8FAFC" />
+
+            <!-- Bottom Row: Ruang Kelas -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:src="@drawable/ic_location_pin_16"
+                    app:tint="#94A3B8" />
+
+                <TextView
+                    android:id="@+id/tvJadwalRuang"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Ruang: Kelas 12 TKJT 1"
+                    android:textColor="#64748B"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:id="@+id/tvKategoriBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mata Pelajaran"
+                    android:textColor="#94A3B8"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+        </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
