@@ -253,8 +253,40 @@ class LoginActivity : AppCompatActivity() {
                             finish() // Tutup halaman login
                         }
                     } else {
-                        val msg = response.body()?.message ?: "Login Gagal! Cek Username & Password"
-                        Toast.makeText(this@LoginActivity, msg, Toast.LENGTH_SHORT).show()
+                        var msg = response.body()?.message
+                        if (msg.isNullOrEmpty()) {
+                            try {
+                                val errorBodyStr = response.errorBody()?.string()
+                                if (!errorBodyStr.isNullOrEmpty()) {
+                                    val errorJson = org.json.JSONObject(errorBodyStr)
+                                    if (errorJson.has("message")) {
+                                        msg = errorJson.getString("message")
+                                    }
+                                }
+                            } catch (_: Exception) {}
+                        }
+                        if (msg.isNullOrEmpty()) {
+                            msg = "Login Gagal! Cek Username & Password"
+                        }
+
+                        val isDeviceError = msg.contains("perangkat", ignoreCase = true) ||
+                                            msg.contains("terikat", ignoreCase = true) ||
+                                            msg.contains("tertaut", ignoreCase = true) ||
+                                            msg.contains("reset", ignoreCase = true)
+
+                        if (isDeviceError) {
+                            androidx.appcompat.app.AlertDialog.Builder(this@LoginActivity)
+                                .setTitle("Perangkat Terikat")
+                                .setMessage(msg)
+                                .setPositiveButton("Mengerti", null)
+                                .show()
+                        } else {
+                            androidx.appcompat.app.AlertDialog.Builder(this@LoginActivity)
+                                .setTitle("Login Gagal")
+                                .setMessage(msg)
+                                .setPositiveButton("Tutup", null)
+                                .show()
+                        }
                     }
                 }
             } catch (e: Exception) {
