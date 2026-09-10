@@ -219,10 +219,6 @@ class DashboardActivity : AppCompatActivity() {
         navKeuangan.setOnClickListener { viewPager.setCurrentItem(4, false); showBottomNav() }
         navProfil.setOnClickListener { viewPager.setCurrentItem(5, false); showBottomNav() }
 
-        findViewById<View>(R.id.fabScanner)?.setOnClickListener {
-            cekRadiusDanScan()
-        }
-
         onBackPressedDispatcher.addCallback(this, object : androidx.activity.OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (viewPager.currentItem != 0) {

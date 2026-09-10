@@ -109,57 +109,40 @@ class IzinActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvNamaDashboard)?.text = "Pengajuan Izin Tidak Masuk"
 
         val ivProfilPhoto = findViewById<ImageView>(R.id.ivProfilPhoto)
-        if (ivProfilPhoto != null && fotoProfilUrl.isNotEmpty()) {
-            val finalUrl = if (!fotoProfilUrl.startsWith("http") && userRole == "GURU") {
+        val tvProfilInisial = findViewById<TextView>(R.id.tvProfilInisial)
+        val cvProfilPic = findViewById<CardView>(R.id.cvProfilPic)
+
+        val finalUrl = if (fotoProfilUrl.isNotEmpty()) {
+            if (!fotoProfilUrl.startsWith("http") && userRole == "GURU") {
                 "https://smkriyadhuljannahjalancagak.sch.id/uploads/guru/" + fotoProfilUrl
             } else if (!fotoProfilUrl.startsWith("http") && userRole == "SISWA") {
                 "https://smkriyadhuljannahjalancagak.sch.id/uploads/siswa/" + fotoProfilUrl
             } else {
                 fotoProfilUrl
             }
-            
-            com.bumptech.glide.Glide.with(this)
-                .load(finalUrl)
-                .placeholder(android.R.drawable.ic_menu_myplaces)
-                .error(android.R.drawable.ic_menu_myplaces)
-                .circleCrop()
-                .into(ivProfilPhoto)
+        } else {
+            null
         }
+
+        com.rtekmidev.smkrjsuperapps.util.AvatarHelper.setAvatar(
+            context = this,
+            name = namaUser,
+            fotoUrl = finalUrl,
+            ivPhoto = ivProfilPhoto,
+            tvInitial = tvProfilInisial,
+            cardContainer = cvProfilPic
+        )
 
         viewFinder = findViewById(R.id.viewFinderIzin)
 
-        // Setup Bottom Nav & FAB as back buttons (since this is an overlay activity)
-        val closeAction = View.OnClickListener { finish() }
-        
-        val bottomNavSiswa = findViewById<LinearLayout>(R.id.bottomNavigationSiswa)
-        val bottomNavGuru = findViewById<LinearLayout>(R.id.bottomNavigationGuru)
-        
+        // Konfigurasi jenis izin khusus (Dinas Luar hanya untuk Guru)
         if (userRole == "GURU" || userRole == "USTADZ") {
-            bottomNavSiswa.visibility = View.GONE
-            bottomNavGuru.visibility = View.VISIBLE
-            findViewById<View>(R.id.navBerandaGuru).setOnClickListener(closeAction)
-            findViewById<View>(R.id.navPresensiGuru).setOnClickListener(closeAction)
-            findViewById<View>(R.id.navAkademikGuru).setOnClickListener(closeAction)
-            findViewById<View>(R.id.navProfilGuru).setOnClickListener(closeAction)
-            
-            // Tampilkan Dinas Luar untuk Guru
-            findViewById<View>(R.id.rbDinasLuar).visibility = View.VISIBLE
+            findViewById<View>(R.id.rbDinasLuar)?.visibility = View.VISIBLE
         } else {
-            bottomNavSiswa.visibility = View.VISIBLE
-            bottomNavGuru.visibility = View.GONE
-            findViewById<View>(R.id.navBeranda).setOnClickListener(closeAction)
-            findViewById<View>(R.id.navAkademik).setOnClickListener(closeAction)
-            findViewById<View>(R.id.navCbt).setOnClickListener(closeAction)
-            findViewById<View>(R.id.navPresensi).setOnClickListener(closeAction)
-            findViewById<View>(R.id.navKeuangan).setOnClickListener(closeAction)
-            findViewById<View>(R.id.navProfil).setOnClickListener(closeAction)
-            
-            // Sembunyikan Dinas Luar untuk Siswa
-            findViewById<View>(R.id.rbDinasLuar).visibility = View.GONE
+            findViewById<View>(R.id.rbDinasLuar)?.visibility = View.GONE
         }
 
-        findViewById<View>(R.id.fabScanner).setOnClickListener(closeAction)
-        findViewById<View>(R.id.cvProfilPic).setOnClickListener(closeAction)
+        cvProfilPic?.setOnClickListener { finish() }
 
         // 1. Pilih Tanggal
         val etTgl = findViewById<EditText>(R.id.etTanggalIzin)

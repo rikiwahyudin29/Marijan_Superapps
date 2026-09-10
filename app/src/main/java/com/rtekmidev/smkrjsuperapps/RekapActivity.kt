@@ -10,10 +10,12 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rtekmidev.smkrjsuperapps.api.ApiClient
 import com.rtekmidev.smkrjsuperapps.api.DataRekap
+import com.rtekmidev.smkrjsuperapps.util.AvatarHelper
 import kotlinx.coroutines.*
 import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
@@ -41,7 +43,7 @@ class RekapActivity : AppCompatActivity() {
         @Suppress("DEPRECATION")
         window.statusBarColor = android.graphics.Color.TRANSPARENT
         androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
-        
+
         val currentNightMode = resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
         val isNightMode = currentNightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES
         androidx.core.view.WindowCompat.getInsetsController(window, window.decorView)?.isAppearanceLightStatusBars = !isNightMode
@@ -53,18 +55,20 @@ class RekapActivity : AppCompatActivity() {
             insets
         }
 
-
         val prefGuru = getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
         val prefSiswa = getSharedPreferences("SesiUjian", Context.MODE_PRIVATE)
 
+        var namaUser = ""
         var fotoProfilUrl = ""
         if (prefGuru.getBoolean("isLoggedIn", false)) {
             userRole = "GURU"
             identifier = prefGuru.getString("id_user", "") ?: ""
+            namaUser = prefGuru.getString("nama", "Guru") ?: "Guru"
             fotoProfilUrl = prefGuru.getString("foto_profil", "") ?: ""
         } else if (prefSiswa.getBoolean("isLoggedIn", false)) {
             userRole = "SISWA"
             identifier = prefSiswa.getString("nisn", "") ?: ""
+            namaUser = prefSiswa.getString("nama", "Siswa") ?: "Siswa"
             fotoProfilUrl = prefSiswa.getString("foto_profil", "") ?: ""
         } else {
             Toast.makeText(this, "Sesi tidak valid!", Toast.LENGTH_SHORT).show()
@@ -75,25 +79,30 @@ class RekapActivity : AppCompatActivity() {
         findViewById<ImageView>(R.id.btnBackRekap).setOnClickListener { finish() }
 
         val ivProfilPhoto = findViewById<ImageView>(R.id.ivProfilPhoto)
-        if (ivProfilPhoto != null && fotoProfilUrl.isNotEmpty()) {
-            val finalUrl = if (fotoProfilUrl.startsWith("http")) {
+        val tvProfilInisial = findViewById<TextView>(R.id.tvProfilInisial)
+        val cvProfilPic = findViewById<CardView>(R.id.cvProfilPic)
+
+        val finalUrl = if (fotoProfilUrl.isNotEmpty()) {
+            if (fotoProfilUrl.startsWith("http")) {
                 fotoProfilUrl
             } else if (userRole == "GURU") {
                 "https://smkriyadhuljannahjalancagak.sch.id/uploads/guru/$fotoProfilUrl"
             } else {
                 "https://smkriyadhuljannahjalancagak.sch.id/uploads/siswa/$fotoProfilUrl"
             }
-            try {
-                Glide.with(this)
-                    .load(finalUrl)
-                    .placeholder(android.R.drawable.ic_menu_myplaces)
-                    .error(android.R.drawable.ic_menu_myplaces)
-                    .circleCrop()
-                    .into(ivProfilPhoto)
-            } catch (e: Exception) {
-                // Ignore glide errors
-            }
+        } else {
+            null
         }
+
+        AvatarHelper.setAvatar(
+            context = this,
+            name = namaUser,
+            fotoUrl = finalUrl,
+            ivPhoto = ivProfilPhoto,
+            tvInitial = tvProfilInisial,
+            cardContainer = cvProfilPic
+        )
+        cvProfilPic?.setOnClickListener { finish() }
 
         findViewById<ImageView>(R.id.btnPrevMonth).setOnClickListener {
             currentMonthCalendar.add(Calendar.MONTH, -1)
