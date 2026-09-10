@@ -197,7 +197,7 @@
             <ImageView
                 android:layout_width="14dp"
                 android:layout_height="14dp"
-                android:src="@drawable/ic_calendar_event"
+                android:src="@drawable/ic_modern_jadwal"
                 app:tint="#64748B" />
 
             <TextView
@@ -214,7 +214,7 @@
                 android:layout_width="14dp"
                 android:layout_height="14dp"
                 android:layout_marginStart="8dp"
-                android:src="@drawable/ic_clock"
+                android:src="@drawable/ic_modern_clock"
                 app:tint="#64748B" />
 
             <TextView
