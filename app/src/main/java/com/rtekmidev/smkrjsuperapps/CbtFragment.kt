@@ -600,12 +600,37 @@ class CbtFragment : Fragment(), RefreshableFragment {
     }
 
     private fun bukaKonfirmasi(jadwal: JadwalUjian) {
+        // Ambil nama jenis ujian yang diselenggarakan
+        var jenisUjian = (jadwal.jenis_ujian ?: jadwal.kategori_ujian ?: "").trim()
+        if (jenisUjian.isBlank() || jenisUjian.equals("UJIAN SEKOLAH", ignoreCase = true) || jenisUjian.equals("ASESMEN CBT", ignoreCase = true)) {
+            val rawSource = jadwal.deskripsi ?: jadwal.judul_ujian ?: ""
+            if (rawSource.contains("_")) {
+                val firstToken = rawSource.split("_").firstOrNull()?.trim()
+                if (!firstToken.isNullOrBlank()) {
+                    jenisUjian = firstToken
+                }
+            } else if (rawSource.isNotBlank()) {
+                jenisUjian = rawSource.trim()
+            }
+        }
+        if (jenisUjian.isBlank()) {
+            jenisUjian = "PENILAIAN SUMATIF"
+        }
+
         val intent = Intent(requireContext(), KonfirmasiActivity::class.java).apply {
             putExtra("ID_JADWAL", jadwal.id_jadwal)
             putExtra("MAPEL", jadwal.nama_mapel ?: jadwal.judul_ujian)
             putExtra("DURASI", jadwal.durasi)
             putExtra("TOKEN_SERVER", jadwal.token)
             putExtra("SETTING_TOKEN", jadwal.setting_token)
+            putExtra("JENIS_UJIAN", jenisUjian)
+            putExtra("WAKTU_MULAI", jadwal.waktu_mulai)
+            putExtra("WAKTU_SELESAI", jadwal.waktu_selesai ?: jadwal.waktu_berakhir)
+            putExtra("TOTAL_SOAL", (jadwal.total_soal ?: 40).toString())
+            putExtra("TIPE_SOAL", jadwal.tipe_soal ?: "PG, PGK, Isian & Menjodohkan")
+            putExtra("SERVER_NODE", jadwal.server_node ?: "RTEKMI-Node01 • High-Speed Online")
+            putExtra("DESKRIPSI", jadwal.deskripsi)
+            putExtra("ID_UJIAN_SISWA", jadwal.id_ujian_siswa)
         }
         startActivity(intent)
     }
