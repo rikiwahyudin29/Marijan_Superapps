@@ -209,6 +209,22 @@ class BerandaFragment : Fragment(), RefreshableFragment {
             requireActivity().findViewById<ViewPager2>(R.id.viewPager)?.currentItem = 4
         }
 
+        cardStatPresensi?.setOnClickListener {
+            requireActivity().findViewById<ViewPager2>(R.id.viewPager)?.currentItem = 3
+        }
+
+        cardStatTugas?.setOnClickListener {
+            startActivity(Intent(requireContext(), DaftarTugasActivity::class.java))
+        }
+
+        cardStatUjian?.setOnClickListener {
+            requireActivity().findViewById<ViewPager2>(R.id.viewPager)?.currentItem = 2
+        }
+
+        cardStatTagihan?.setOnClickListener {
+            requireActivity().findViewById<ViewPager2>(R.id.viewPager)?.currentItem = 4
+        }
+
         menuShortcutBantuan?.setOnClickListener {
             try {
                 val phone = "6285155232366"
