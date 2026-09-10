@@ -155,6 +155,8 @@ data class JadwalUjian(
     val pengawas: String?,
     val deskripsi: String? = null,
     val kategori_ujian: String? = null,
+    val jenis_ujian: String? = null,
+    val kode_jenis: String? = null,
     val total_soal: Int? = null,
     val tipe_soal: String? = null,
     val server_node: String? = null

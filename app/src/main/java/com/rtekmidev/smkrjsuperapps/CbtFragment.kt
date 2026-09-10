@@ -35,7 +35,7 @@ class CbtFragment : Fragment(), RefreshableFragment {
     private var nisnSiswa: String = ""
     private var fullJadwalList: List<JadwalUjian> = emptyList()
     private var riwayatList: List<RiwayatUjianItem> = emptyList()
-    private var currentFilterJenis: String = "SEMUA"
+    private var currentFilterStatus: String = "SEMUA" // "SEMUA", "BISA_UJIAN", "BELUM_MULAI", "SUDAH_UJIAN"
 
     // Views - Hero
     private var tvHeroStudentName: TextView? = null
@@ -45,8 +45,21 @@ class CbtFragment : Fragment(), RefreshableFragment {
     private var tvStatAktifUjian: TextView? = null
     private var tvStatSelesaiUjian: TextView? = null
 
-    // Views - Filter Jenis Ujian Dinamis
-    private var llFilterJenisUjianContainer: LinearLayout? = null
+    // Views - Filter Status Pelaksanaan
+    private var btnFilterSemua: View? = null
+    private var btnFilterBisaUjian: View? = null
+    private var btnFilterBelumMulai: View? = null
+    private var btnFilterSudahUjian: View? = null
+
+    private var tvFilterSemuaLabel: TextView? = null
+    private var tvFilterBisaUjianLabel: TextView? = null
+    private var tvFilterBelumMulaiLabel: TextView? = null
+    private var tvFilterSudahUjianLabel: TextView? = null
+
+    private var tvFilterSemuaBadge: TextView? = null
+    private var tvFilterBisaUjianBadge: TextView? = null
+    private var tvFilterBelumMulaiBadge: TextView? = null
+    private var tvFilterSudahUjianBadge: TextView? = null
 
     // Views - Status & Content
     private var tvInfoJadwal: TextView? = null
@@ -85,8 +98,26 @@ class CbtFragment : Fragment(), RefreshableFragment {
         tvHeroStudentClassNis?.text = "$localKelas • NIS: $localNis"
         tvHeroStudentSemester?.text = if (localSem?.startsWith("Semester") == true) localSem else "Semester $localSem"
 
-        // Bind Filter Jenis Ujian Container
-        llFilterJenisUjianContainer = root.findViewById(R.id.llFilterJenisUjianContainer)
+        // Bind Filter Status Buttons & Badges
+        btnFilterSemua = root.findViewById(R.id.btnFilterSemua)
+        btnFilterBisaUjian = root.findViewById(R.id.btnFilterBisaUjian)
+        btnFilterBelumMulai = root.findViewById(R.id.btnFilterBelumMulai)
+        btnFilterSudahUjian = root.findViewById(R.id.btnFilterSudahUjian)
+
+        tvFilterSemuaLabel = root.findViewById(R.id.tvFilterSemuaLabel)
+        tvFilterBisaUjianLabel = root.findViewById(R.id.tvFilterBisaUjianLabel)
+        tvFilterBelumMulaiLabel = root.findViewById(R.id.tvFilterBelumMulaiLabel)
+        tvFilterSudahUjianLabel = root.findViewById(R.id.tvFilterSudahUjianLabel)
+
+        tvFilterSemuaBadge = root.findViewById(R.id.tvFilterSemuaBadge)
+        tvFilterBisaUjianBadge = root.findViewById(R.id.tvFilterBisaUjianBadge)
+        tvFilterBelumMulaiBadge = root.findViewById(R.id.tvFilterBelumMulaiBadge)
+        tvFilterSudahUjianBadge = root.findViewById(R.id.tvFilterSudahUjianBadge)
+
+        btnFilterSemua?.setOnClickListener { setFilterStatus("SEMUA") }
+        btnFilterBisaUjian?.setOnClickListener { setFilterStatus("BISA_UJIAN") }
+        btnFilterBelumMulai?.setOnClickListener { setFilterStatus("BELUM_MULAI") }
+        btnFilterSudahUjian?.setOnClickListener { setFilterStatus("SUDAH_UJIAN") }
 
         // Bind Status & Content
         tvInfoJadwal = root.findViewById(R.id.tvInfoJadwal)
@@ -159,9 +190,10 @@ class CbtFragment : Fragment(), RefreshableFragment {
                             calculateLocalStats()
                         }
 
-                        // 3. Render Filter Jenis Ujian Chips & List Jadwal
-                        renderFilterChips()
-                        applyCurrentFilter()
+                        // 3. Update Status Filter Badges & Render List Jadwal
+                        updateFilterBadgesAndCounters()
+                        updateFilterUI()
+                        applyFilter()
 
                         // 4. Render Riwayat & Nilai Ujian CBT
                         riwayatList = body.riwayat_ujian ?: emptyList()
@@ -237,105 +269,102 @@ class CbtFragment : Fragment(), RefreshableFragment {
         tvStatSelesaiUjian?.text = "$selesai"
     }
 
-    private fun renderFilterChips() {
-        val container = llFilterJenisUjianContainer ?: return
-        container.removeAllViews()
+    private fun setFilterStatus(status: String) {
+        currentFilterStatus = status
+        updateFilterUI()
+        applyFilter()
+    }
 
-        if (!isAdded) return
+    private fun updateFilterUI() {
+        val buttons = listOf(btnFilterSemua, btnFilterBisaUjian, btnFilterBelumMulai, btnFilterSudahUjian)
+        val labels = listOf(tvFilterSemuaLabel, tvFilterBisaUjianLabel, tvFilterBelumMulaiLabel, tvFilterSudahUjianLabel)
+        val badges = listOf(tvFilterSemuaBadge, tvFilterBisaUjianBadge, tvFilterBelumMulaiBadge, tvFilterSudahUjianBadge)
+        val statuses = listOf("SEMUA", "BISA_UJIAN", "BELUM_MULAI", "SUDAH_UJIAN")
 
-        val categories = mutableListOf("SEMUA")
-        val uniqueTypes = fullJadwalList.mapNotNull { it.kategori_ujian }
-            .filter { it.isNotBlank() }
-            .distinct()
-        categories.addAll(uniqueTypes)
-
-        val context = requireContext()
-        val density = resources.displayMetrics.density
-
-        for (cat in categories) {
-            val isSelected = cat.equals(currentFilterJenis, ignoreCase = true)
-            val count = if (cat == "SEMUA") {
-                fullJadwalList.size
+        for (i in statuses.indices) {
+            val isSelected = (statuses[i] == currentFilterStatus)
+            if (isSelected) {
+                // Aktif: Latar Navy Deep, Teks Putih, Badge Biru Pekat
+                buttons[i]?.setBackgroundResource(R.drawable.bg_chip_filter_active)
+                labels[i]?.setTextColor(Color.WHITE)
+                badges[i]?.setBackgroundResource(R.drawable.bg_pill_filter_badge)
+                badges[i]?.setTextColor(Color.WHITE)
             } else {
-                fullJadwalList.count { it.kategori_ujian.equals(cat, ignoreCase = true) }
+                // Inaktif: Latar Putih border abu-abu, Teks Slate gelap, Badge abu-abu muda
+                buttons[i]?.setBackgroundResource(R.drawable.bg_chip_filter_inactive)
+                labels[i]?.setTextColor(Color.parseColor("#334155"))
+                badges[i]?.setBackgroundResource(R.drawable.bg_pill_filter_badge_inactive)
+                badges[i]?.setTextColor(Color.parseColor("#64748B"))
             }
-
-            val card = CardView(context).apply {
-                radius = 20 * density
-                cardElevation = if (isSelected) 2 * density else 0f
-                setCardBackgroundColor(if (isSelected) Color.parseColor("#1E1B4B") else Color.WHITE)
-                isClickable = true
-                isFocusable = true
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply {
-                    marginEnd = (8 * density).toInt()
-                }
-            }
-
-            val linear = LinearLayout(context).apply {
-                orientation = LinearLayout.HORIZONTAL
-                gravity = Gravity.CENTER_VERTICAL
-                val padH = (14 * density).toInt()
-                val padV = (8 * density).toInt()
-                setPadding(padH, padV, padH, padV)
-                if (!isSelected) {
-                    setBackgroundResource(R.drawable.bg_chip_filter_inactive)
-                }
-            }
-
-            val labelText = if (cat == "SEMUA") "Semua Ujian" else cat
-            val tvLabel = TextView(context).apply {
-                text = labelText
-                setTextColor(if (isSelected) Color.WHITE else Color.parseColor("#334155"))
-                textSize = 13f
-                setTypeface(null, Typeface.BOLD)
-            }
-            linear.addView(tvLabel)
-
-            val tvBadge = TextView(context).apply {
-                text = "$count"
-                setTextColor(if (isSelected) Color.WHITE else Color.parseColor("#64748B"))
-                textSize = 11f
-                setTypeface(null, Typeface.BOLD)
-                setBackgroundResource(if (isSelected) R.drawable.bg_pill_filter_badge else R.drawable.bg_pill_filter_badge_inactive)
-                val padBH = (7 * density).toInt()
-                val padBV = (2 * density).toInt()
-                setPadding(padBH, padBV, padBH, padBV)
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply {
-                    marginStart = (6 * density).toInt()
-                }
-            }
-            linear.addView(tvBadge)
-
-            card.addView(linear)
-            card.setOnClickListener {
-                currentFilterJenis = cat
-                renderFilterChips()
-                applyCurrentFilter()
-            }
-
-            container.addView(card)
         }
     }
 
-    private fun applyCurrentFilter() {
-        val filteredList = if (currentFilterJenis == "SEMUA") {
-            fullJadwalList
-        } else {
-            fullJadwalList.filter {
-                it.kategori_ujian.equals(currentFilterJenis, ignoreCase = true)
+    private fun updateFilterBadgesAndCounters() {
+        val sekarang = Calendar.getInstance().time
+        val total = fullJadwalList.size
+        var bisaUjian = 0
+        var belumMulai = 0
+        var sudahUjian = 0
+
+        for (item in fullJadwalList) {
+            if (item.status_pengerjaan == "2") {
+                sudahUjian++
+            } else {
+                val waktuMulaiDb = parseDate(item.waktu_mulai)
+                val waktuSelesaiDb = parseDate(item.waktu_selesai ?: item.waktu_berakhir)
+                val isExpired = (waktuSelesaiDb != null && sekarang.after(waktuSelesaiDb))
+                val isBelum = (waktuMulaiDb != null && sekarang.before(waktuMulaiDb))
+
+                if (isBelum) {
+                    belumMulai++
+                } else if (!isExpired) {
+                    bisaUjian++
+                }
             }
+        }
+
+        tvFilterSemuaBadge?.text = "$total"
+        tvFilterBisaUjianBadge?.text = "$bisaUjian"
+        tvFilterBelumMulaiBadge?.text = "$belumMulai"
+        tvFilterSudahUjianBadge?.text = "$sudahUjian"
+
+        // Sinkronkan juga kotak metrik hero
+        tvStatTotalUjian?.text = "$total"
+        tvStatAktifUjian?.text = "$bisaUjian"
+        tvStatSelesaiUjian?.text = "$sudahUjian"
+    }
+
+    private fun applyFilter() {
+        val sekarang = Calendar.getInstance().time
+
+        val filteredList = when (currentFilterStatus) {
+            "BISA_UJIAN" -> fullJadwalList.filter {
+                val waktuMulaiDb = parseDate(it.waktu_mulai)
+                val waktuSelesaiDb = parseDate(it.waktu_selesai ?: it.waktu_berakhir)
+                val isExpired = (waktuSelesaiDb != null && sekarang.after(waktuSelesaiDb))
+                val isBelum = (waktuMulaiDb != null && sekarang.before(waktuMulaiDb))
+                it.status_pengerjaan != "2" && !isExpired && !isBelum
+            }
+            "BELUM_MULAI" -> fullJadwalList.filter {
+                val waktuMulaiDb = parseDate(it.waktu_mulai)
+                val isBelum = (waktuMulaiDb != null && sekarang.before(waktuMulaiDb))
+                it.status_pengerjaan != "2" && isBelum
+            }
+            "SUDAH_UJIAN" -> fullJadwalList.filter {
+                it.status_pengerjaan == "2"
+            }
+            else -> fullJadwalList
         }
 
         renderJadwal(filteredList)
 
-        val filterLabel = if (currentFilterJenis == "SEMUA") "semua jenis ujian" else currentFilterJenis
-        tvInfoJadwal?.text = "Menampilkan ${filteredList.size} jadwal ($filterLabel)"
+        val statusLabel = when (currentFilterStatus) {
+            "BISA_UJIAN" -> "bisa ujian"
+            "BELUM_MULAI" -> "belum mulai"
+            "SUDAH_UJIAN" -> "sudah ujian"
+            else -> "semua status"
+        }
+        tvInfoJadwal?.text = "Menampilkan ${filteredList.size} jadwal ($statusLabel)"
     }
 
     private fun renderJadwal(jadwalList: List<JadwalUjian>) {
@@ -370,9 +399,24 @@ class CbtFragment : Fragment(), RefreshableFragment {
             val ivBtnIconStart = itemView.findViewById<ImageView>(R.id.ivBtnIconStart)
             val ivBtnIconEnd = itemView.findViewById<ImageView>(R.id.ivBtnIconEnd)
 
-            // Category & Titles
-            val kategoriText = jadwal.kategori_ujian ?: "ASESMEN CBT"
-            tvKategoriUjian.text = kategoriText.uppercase()
+            // Ekstraksi nama jenis ujian asli yang diselenggarakan untuk jadwal ini
+            var jenisUjian = (jadwal.jenis_ujian ?: jadwal.kategori_ujian ?: "").trim()
+            if (jenisUjian.isBlank() || jenisUjian.equals("UJIAN SEKOLAH", ignoreCase = true) || jenisUjian.equals("ASESMEN CBT", ignoreCase = true)) {
+                val rawSource = jadwal.deskripsi ?: jadwal.judul_ujian ?: ""
+                if (rawSource.contains("_")) {
+                    val firstToken = rawSource.split("_").firstOrNull()?.trim()
+                    if (!firstToken.isNullOrBlank()) {
+                        jenisUjian = firstToken
+                    }
+                } else if (rawSource.isNotBlank()) {
+                    jenisUjian = rawSource.trim()
+                }
+            }
+            if (jenisUjian.isBlank()) {
+                jenisUjian = "PENILAIAN SUMATIF"
+            }
+            tvKategoriUjian.text = jenisUjian.uppercase(Locale.getDefault())
+
             tvMapelJudul.text = jadwal.nama_mapel ?: jadwal.judul_ujian
 
             val deskripsiStr = jadwal.deskripsi ?: "Penilaian Sumatif Akhir Semester • ${jadwal.nama_mapel ?: "Mata Pelajaran"}"
