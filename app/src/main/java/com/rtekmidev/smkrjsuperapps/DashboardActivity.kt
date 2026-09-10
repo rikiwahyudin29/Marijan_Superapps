@@ -220,8 +220,14 @@ class DashboardActivity : AppCompatActivity() {
             }
         }
         
-        // Apply initial colors without animation
-        updateNavSelection(0, animate = false)
+        // Apply initial tab selection (support TARGET_TAB e.g. from CBT exam finish)
+        val initialTab = intent.getIntExtra("TARGET_TAB", 0)
+        if (initialTab in 0..5) {
+            viewPager.setCurrentItem(initialTab, false)
+            updateNavSelection(initialTab, animate = false)
+        } else {
+            updateNavSelection(0, animate = false)
+        }
 
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -248,6 +254,16 @@ class DashboardActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        val targetTab = intent.getIntExtra("TARGET_TAB", -1)
+        if (targetTab in 0..5) {
+            viewPager.setCurrentItem(targetTab, false)
+            showBottomNav()
+        }
     }
 
     fun cekRadiusDanScan() {

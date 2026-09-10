@@ -533,6 +533,11 @@ class UjianActivity : AppCompatActivity() {
             .setTitle("Menunggu Sinyal 📡")
             .setMessage("Jawaban Anda telah diselamatkan secara Offline di HP ini.\n\nSilakan cari jaringan internet yang lebih bagus, lalu masuk kembali ke ujian ini. Sistem akan MENGIRIM JAWABAN ANDA SECARA OTOMATIS tanpa perlu bantuan pengawas.")
             .setPositiveButton("KELUAR") { _, _ ->
+                val intent = Intent(this@UjianActivity, DashboardActivity::class.java).apply {
+                    putExtra("TARGET_TAB", 2)
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                }
+                startActivity(intent)
                 finish()
             }.setCancelable(false).show()
     }
@@ -1090,6 +1095,11 @@ class UjianActivity : AppCompatActivity() {
                         .setMessage("Jawaban Anda telah diselamatkan secara Offline.\n\nLayar telah dibuka. Silakan cari jaringan internet yang stabil, lalu masuk kembali ke aplikasi.\n\nStatus ujian Anda TERKUNCI dan butuh di-RESET LOG / BUKA KUNCI oleh Pengawas.")
                         .setCancelable(false)
                         .setPositiveButton("KELUAR") { _, _ ->
+                            val intent = Intent(this@UjianActivity, DashboardActivity::class.java).apply {
+                                putExtra("TARGET_TAB", 2)
+                                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                            }
+                            startActivity(intent)
                             finish()
                         }
                         .show()
@@ -1101,7 +1111,11 @@ class UjianActivity : AppCompatActivity() {
     private fun bukaKunciDanKeluar() {
         try { stopLockTask() } catch (e: Exception) {}
         disableDndMode()
-        startActivity(Intent(this, JadwalActivity::class.java))
+        val intent = Intent(this, DashboardActivity::class.java).apply {
+            putExtra("TARGET_TAB", 2)
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
+        startActivity(intent)
         finish()
     }
 
