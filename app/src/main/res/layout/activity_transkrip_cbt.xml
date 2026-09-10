@@ -1,90 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8FAFC">
+    android:orientation="vertical"
+    android:background="#F8FAFC"
+    android:fitsSystemWindows="true">
 
-    <!-- Top AppBar Toolbar -->
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
+    <!-- ========================================== -->
+    <!-- 1. TOP BAR TOOLBAR (SENADA DENGAN MODUL LAIN) -->
+    <!-- ========================================== -->
+    <LinearLayout
+        android:id="@+id/topBarTranskrip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_cbt_hero_gradient"
-        app:elevation="0dp">
+        android:background="#FFFFFF"
+        android:elevation="3dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/btnBack"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:clipToOutline="true"
+            android:foreground="@drawable/ripple_rounded_pill"
+            app:cardBackgroundColor="#F1F5F9"
+            app:cardCornerRadius="19dp"
+            app:cardElevation="0dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_baseline_arrow_back_24"
+                app:tint="#1E293B" />
+        </androidx.cardview.widget.CardView>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:paddingTop="36dp"
-            android:paddingBottom="16dp">
+            android:layout_marginStart="14dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/btnBack"
-                android:layout_width="38dp"
-                android:layout_height="38dp"
-                android:background="@drawable/bg_cbt_metric_box"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
-                android:padding="8dp"
-                android:src="@drawable/ic_baseline_arrow_back_24"
-                app:tint="#FFFFFF" />
-
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/tvHeaderTitle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="14dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:text="Transkrip Nilai CBT"
+                android:textColor="#0F172A"
+                android:textSize="17sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Transkrip Nilai CBT"
-                    android:textColor="#FFFFFF"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tvHeaderCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:text="SMK RJ SuperApps • Rekapitulasi Nilai"
+                android:textColor="#64748B"
+                android:textSize="11.5sp" />
+        </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="Evaluasi &amp; Ujian Berbasis Komputer"
-                    android:textColor="#94A3B8"
-                    android:textSize="11.5sp" />
-            </LinearLayout>
+        <!-- Tombol Refresh Berputar -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/btnRefresh"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginEnd="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:clipToOutline="true"
+            android:foreground="@drawable/ripple_rounded_pill"
+            app:cardBackgroundColor="#F1F5F9"
+            app:cardCornerRadius="19dp"
+            app:cardElevation="0dp">
 
             <ImageView
-                android:id="@+id/btnRefresh"
-                android:layout_width="38dp"
-                android:layout_height="38dp"
-                android:background="@drawable/bg_cbt_metric_box"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
-                android:padding="9dp"
+                android:id="@+id/ivRefreshIcon"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="center"
                 android:src="@drawable/ic_refresh_cw"
-                app:tint="#FFFFFF" />
-        </LinearLayout>
-    </com.google.android.material.appbar.AppBarLayout>
+                app:tint="#1E293B" />
+        </androidx.cardview.widget.CardView>
 
+        <!-- Logo Sekolah SMK RJ -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="19dp"
+            app:cardElevation="0dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="3dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/logo_marj" />
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+    <!-- ========================================== -->
+    <!-- 2. SCROLLABLE CONTENT BODY                 -->
+    <!-- ========================================== -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:overScrollMode="never"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="32dp">
+            android:paddingBottom="36dp">
 
             <!-- 1. Student Info Card -->
             <androidx.cardview.widget.CardView
@@ -93,7 +133,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
+                app:cardElevation="1dp"
                 app:cardBackgroundColor="#FFFFFF">
 
                 <LinearLayout
@@ -103,14 +143,21 @@
                     android:orientation="horizontal"
                     android:padding="16dp">
 
-                    <ImageView
-                        android:id="@+id/ivStudentAvatar"
+                    <androidx.cardview.widget.CardView
                         android:layout_width="52dp"
                         android:layout_height="52dp"
-                        android:background="@drawable/bg_avatar_circle"
-                        android:contentDescription="Avatar"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/ic_modern_profile" />
+                        app:cardCornerRadius="26dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#EEF2FF">
+
+                        <ImageView
+                            android:id="@+id/ivStudentAvatar"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="Avatar"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ic_modern_profile" />
+                    </androidx.cardview.widget.CardView>
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -132,7 +179,7 @@
                             android:id="@+id/tvStudentClassNis"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"
+                            android:layout_marginTop="2dp"
                             android:text="12 TKJT 1 • NISN: -"
                             android:textColor="#64748B"
                             android:textSize="12sp" />
@@ -141,7 +188,11 @@
                             android:id="@+id/tvStudentJurusan"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
+                            android:layout_marginTop="4dp"
+                            android:background="@drawable/bg_pill_green_badge"
+                            android:backgroundTint="#F0FDFA"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="2dp"
                             android:text="Teknik Komputer dan Jaringan Telekomunikasi"
                             android:textColor="#0D9488"
                             android:textSize="11sp"
@@ -157,7 +208,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="12dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
+                app:cardElevation="1dp"
                 app:cardBackgroundColor="#FFFFFF">
 
                 <LinearLayout
@@ -166,19 +217,33 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Filter Evaluasi Ujian"
-                        android:textColor="#0F172A"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_modern_kalender"
+                            app:tint="#4F46E5" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Filter Evaluasi Ujian"
+                            android:textColor="#0F172A"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
 
                     <!-- Filter 1: Tahun Ajaran -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="12dp"
                         android:text="Tahun Ajaran / Semester"
                         android:textColor="#64748B"
                         android:textSize="11sp"
@@ -190,7 +255,7 @@
                         android:layout_height="44dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/bg_spinner_rounded"
-                        android:paddingHorizontal="8dp" />
+                        android:paddingHorizontal="10dp" />
 
                     <!-- Filter 2: Jenis Ujian -->
                     <TextView
@@ -208,7 +273,7 @@
                         android:layout_height="44dp"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/bg_spinner_rounded"
-                        android:paddingHorizontal="8dp" />
+                        android:paddingHorizontal="10dp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -219,7 +284,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="12dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
+                app:cardElevation="1dp"
                 app:cardBackgroundColor="#FFFFFF">
 
                 <LinearLayout
@@ -228,13 +293,27 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Rekapitulasi Performa Ujian"
-                        android:textColor="#0F172A"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_modern_star"
+                            app:tint="#D97706" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Rekapitulasi Performa Ujian"
+                            android:textColor="#0F172A"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -251,7 +330,8 @@
                             android:backgroundTint="#F0FDF4"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:padding="10dp">
+                            android:paddingVertical="12dp"
+                            android:paddingHorizontal="4dp">
 
                             <TextView
                                 android:id="@+id/tvStatRataRata"
@@ -259,7 +339,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="0.0"
                                 android:textColor="#16A34A"
-                                android:textSize="20sp"
+                                android:textSize="19sp"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -282,7 +362,8 @@
                             android:backgroundTint="#EEF2FF"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:padding="10dp">
+                            android:paddingVertical="12dp"
+                            android:paddingHorizontal="4dp">
 
                             <TextView
                                 android:id="@+id/tvStatTotalUjian"
@@ -290,7 +371,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="0"
                                 android:textColor="#4338CA"
-                                android:textSize="20sp"
+                                android:textSize="19sp"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -310,10 +391,11 @@
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
                             android:background="@drawable/bg_rounded_border"
-                            android:backgroundTint="#F8FAFC"
+                            android:backgroundTint="#F0FDFA"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:padding="10dp">
+                            android:paddingVertical="12dp"
+                            android:paddingHorizontal="4dp">
 
                             <TextView
                                 android:id="@+id/tvStatTertinggi"
@@ -321,7 +403,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="0.0"
                                 android:textColor="#0F766E"
-                                android:textSize="20sp"
+                                android:textSize="19sp"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -329,7 +411,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
                                 android:text="Tertinggi"
-                                android:textColor="#334155"
+                                android:textColor="#115E59"
                                 android:textSize="10.5sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
@@ -344,7 +426,8 @@
                             android:backgroundTint="#F8FAFC"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:padding="10dp">
+                            android:paddingVertical="12dp"
+                            android:paddingHorizontal="4dp">
 
                             <TextView
                                 android:id="@+id/tvStatLulusRemedial"
@@ -352,14 +435,14 @@
                                 android:layout_height="wrap_content"
                                 android:text="0 / 0"
                                 android:textColor="#0F172A"
-                                android:textSize="17sp"
+                                android:textSize="15.5sp"
                                 android:textStyle="bold" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Lulus / Remedial"
+                                android:text="Lulus / Rem"
                                 android:textColor="#64748B"
                                 android:textSize="9.5sp"
                                 android:textStyle="bold" />
@@ -373,8 +456,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp">
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -383,7 +466,7 @@
                     android:layout_centerVertical="true"
                     android:text="Rincian Nilai Ujian"
                     android:textColor="#0F172A"
-                    android:textSize="14sp"
+                    android:textSize="14.5sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -393,11 +476,11 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:background="@drawable/bg_rounded_border"
-                    android:backgroundTint="#E2E8F0"
-                    android:paddingHorizontal="9dp"
-                    android:paddingVertical="3dp"
+                    android:backgroundTint="#EEF2FF"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
                     android:text="0 Ujian"
-                    android:textColor="#475569"
+                    android:textColor="#4338CA"
                     android:textSize="11sp"
                     android:textStyle="bold" />
             </RelativeLayout>
@@ -409,6 +492,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginVertical="24dp"
+                android:indeterminateTint="#4338CA"
                 android:visibility="gone" />
 
             <!-- Empty State -->
@@ -417,7 +501,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:layout_marginVertical="20dp"
+                android:layout_marginVertical="16dp"
                 android:background="@drawable/bg_rounded_border"
                 android:backgroundTint="#FFFFFF"
                 android:gravity="center"
@@ -429,7 +513,7 @@
                     android:layout_width="54dp"
                     android:layout_height="54dp"
                     android:alpha="0.4"
-                    android:src="@drawable/ic_document_bill"
+                    android:src="@drawable/ic_modern_cbt"
                     app:tint="#64748B" />
 
                 <TextView
@@ -462,4 +546,4 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

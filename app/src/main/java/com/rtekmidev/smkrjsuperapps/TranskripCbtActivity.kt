@@ -39,7 +39,8 @@ class TranskripCbtActivity : AppCompatActivity() {
     private lateinit var pbLoading: ProgressBar
     private lateinit var layoutEmptyState: LinearLayout
     private lateinit var rvTranskrip: RecyclerView
-    private lateinit var btnRefresh: ImageView
+    private lateinit var btnRefresh: View
+    private lateinit var ivRefreshIcon: ImageView
 
     private lateinit var adapter: TranskripCbtAdapter
     private var nisnSiswa: String = ""
@@ -70,6 +71,7 @@ class TranskripCbtActivity : AppCompatActivity() {
     private fun initViews() {
         findViewById<View>(R.id.btnBack).setOnClickListener { finish() }
         btnRefresh = findViewById(R.id.btnRefresh)
+        ivRefreshIcon = findViewById(R.id.ivRefreshIcon)
 
         ivStudentAvatar = findViewById(R.id.ivStudentAvatar)
         tvStudentName = findViewById(R.id.tvStudentName)
@@ -93,7 +95,7 @@ class TranskripCbtActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         btnRefresh.setOnClickListener {
-            btnRefresh.animate().rotationBy(360f).setDuration(500).start()
+            ivRefreshIcon.animate().rotationBy(360f).setDuration(500).start()
             fetchTranskrip(isInitial = false)
         }
     }
