@@ -44,30 +44,33 @@ class NavigasiAdapter(
         val isRagu = dbHelper.getRaguStatus(soal.id_soal)
 
         // Penentuan Warna Kotak
-        var bgColor = Color.parseColor("#E0E0E0") // Abu-abu (Belum dijawab)
-        var textColor = Color.parseColor("#333333")
+        var bgColor = Color.parseColor("#F1F5F9") // Abu-abu muda (Belum dijawab)
+        var textColor = Color.parseColor("#334155")
+        var strokeColor = Color.parseColor("#CBD5E1")
+        var strokeWidth = 2
 
         if (jawaban.isNotEmpty()) {
-            bgColor = Color.parseColor("#1976D2") // Biru (Sudah dijawab)
+            bgColor = Color.parseColor("#1E1B4B") // Navy Gelap (Sudah dijawab)
             textColor = Color.WHITE
+            strokeColor = Color.parseColor("#1E1B4B")
         }
         if (isRagu) {
-            bgColor = Color.parseColor("#F57C00") // Orange (Ragu-ragu)
+            bgColor = Color.parseColor("#F59E0B") // Amber / Orange (Ragu-ragu)
             textColor = Color.WHITE
+            strokeColor = Color.parseColor("#D97706")
         }
 
-        // Gambar kotak dinamis (Biar tidak usah bikin file XML drawable lagi)
+        // Outline tebal untuk soal yang sedang aktif dibuka
+        if (position == currentIndex) {
+            strokeColor = Color.parseColor("#2563EB")
+            strokeWidth = 6
+        }
+
         val shape = GradientDrawable()
         shape.shape = GradientDrawable.RECTANGLE
-        shape.cornerRadius = 12f
+        shape.cornerRadius = 16f
         shape.setColor(bgColor)
-
-        // Outline / Border Merah untuk soal yang sedang aktif dibuka
-        if (position == currentIndex) {
-            shape.setStroke(6, Color.parseColor("#D32F2F"))
-        } else {
-            shape.setStroke(2, Color.LTGRAY)
-        }
+        shape.setStroke(strokeWidth, strokeColor)
 
         textView.background = shape
         textView.setTextColor(textColor)

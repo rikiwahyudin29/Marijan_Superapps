@@ -2,6 +2,8 @@
 package com.rtekmidev.smkrjsuperapps
 
 import android.app.ActivityManager
+import android.app.NotificationManager
+import android.bluetooth.BluetoothAdapter
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -10,7 +12,9 @@ import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.media.AudioManager
 import android.os.BatteryManager
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
@@ -19,13 +23,13 @@ import android.text.Editable
 import android.text.Html
 import android.text.TextWatcher
 import android.util.Base64
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.gson.Gson
@@ -59,6 +63,15 @@ class UjianActivity : AppCompatActivity() {
     private lateinit var navAdapter: NavigasiAdapter
     private lateinit var drawerLayout: DrawerLayout
 
+    // Dialogs Keamanan
+    private var dialogBluetooth: AlertDialog? = null
+    private var dialogHeadset: AlertDialog? = null
+
+    private fun dpToPx(dp: Int): Int {
+        return (dp * resources.displayMetrics.density).toInt()
+    }
+
+    // 1. MONITOR BATERAI
     private val batteryReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val level = intent?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: -1
@@ -70,6 +83,37 @@ class UjianActivity : AppCompatActivity() {
         }
     }
 
+    // 2. MONITOR BLUETOOTH (WAJIB MATI)
+    private val bluetoothReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == BluetoothAdapter.ACTION_STATE_CHANGED) {
+                val state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR)
+                if (state == BluetoothAdapter.STATE_ON || state == BluetoothAdapter.STATE_TURNING_ON) {
+                    tampilkanDialogBluetoothWajibMati()
+                } else if (state == BluetoothAdapter.STATE_OFF) {
+                    dialogBluetooth?.dismiss()
+                    dialogBluetooth = null
+                }
+            }
+        }
+    }
+
+    // 3. MONITOR HEADSET KABEL (WAJIB DILEPAS)
+    private val headsetReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == Intent.ACTION_HEADSET_PLUG) {
+                val state = intent.getIntExtra("state", -1)
+                if (state == 1) {
+                    tampilkanDialogHeadset()
+                } else if (state == 0) {
+                    dialogHeadset?.dismiss()
+                    dialogHeadset = null
+                }
+            }
+        }
+    }
+
+    // 4. SCREEN PINNING / LOCK TASK (PENALTI AUTO-SUBMIT JIKA DILEPAS PAKSA)
     private val pinCheckHandler = Handler(Looper.getMainLooper())
     private val checkPinTask = object : Runnable {
         override fun run() {
@@ -96,16 +140,108 @@ class UjianActivity : AppCompatActivity() {
     private fun getRoundedBackground(): GradientDrawable {
         val shape = GradientDrawable()
         shape.shape = GradientDrawable.RECTANGLE
-        shape.cornerRadius = 32f
+        shape.cornerRadius = 28f
         shape.setColor(Color.WHITE)
-        shape.setStroke(3, Color.parseColor("#E5E7EB"))
+        shape.setStroke(3, Color.parseColor("#E2E8F0"))
         return shape
+    }
+
+    // 5. ANTI-OVERLAY / FLOATING WINDOW BLOCKER
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        val isObscured = (ev.flags and MotionEvent.FLAG_WINDOW_IS_OBSCURED != 0) ||
+                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && (ev.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0))
+
+        if (isObscured) {
+            Toast.makeText(
+                this,
+                "⚠️ PERINGATAN KEAMANAN: Layar tertutup aplikasi mengambang / overlay! Sentuhan diblokir.",
+                Toast.LENGTH_SHORT
+            ).show()
+            return false // Blokir sentuhan
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
+    // 6. MODE JANGAN GANGGU (DND)
+    private fun enableDndMode() {
+        try {
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && notificationManager.isNotificationPolicyAccessGranted) {
+                notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
+            }
+        } catch (e: Exception) {}
+    }
+
+    private fun disableDndMode() {
+        try {
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && notificationManager.isNotificationPolicyAccessGranted) {
+                notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
+            }
+        } catch (e: Exception) {}
+    }
+
+    private fun cekBluetoothWajibMati() {
+        try {
+            @Suppress("DEPRECATION")
+            val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+            if (bluetoothAdapter != null && bluetoothAdapter.isEnabled) {
+                tampilkanDialogBluetoothWajibMati()
+            }
+        } catch (e: Exception) {}
+    }
+
+    private fun tampilkanDialogBluetoothWajibMati() {
+        if (isFinishing || isDestroyed) return
+        if (dialogBluetooth?.isShowing == true) return
+
+        val builder = AlertDialog.Builder(this)
+            .setTitle("⚠️ BLUETOOTH WAJIB MATI!")
+            .setMessage("Demi keamanan ujian dan mencegah kecurangan nirkabel, Bluetooth WAJIB dimatikan.\n\nHarap nonaktifkan Bluetooth untuk melanjutkan ujian.")
+            .setCancelable(false)
+            .setPositiveButton("Matikan Bluetooth") { _, _ ->
+                try {
+                    @Suppress("DEPRECATION")
+                    BluetoothAdapter.getDefaultAdapter()?.disable()
+                } catch (e: Exception) {
+                    try {
+                        startActivity(Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS))
+                    } catch (_: Exception) {}
+                }
+            }
+
+        dialogBluetooth = builder.show()
+    }
+
+    private fun cekHeadsetKabel() {
+        try {
+            val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            @Suppress("DEPRECATION")
+            if (audioManager.isWiredHeadsetOn) {
+                tampilkanDialogHeadset()
+            }
+        } catch (e: Exception) {}
+    }
+
+    private fun tampilkanDialogHeadset() {
+        if (isFinishing || isDestroyed) return
+        if (dialogHeadset?.isShowing == true) return
+
+        val builder = AlertDialog.Builder(this)
+            .setTitle("🎧 HEADSET TERDETEKSI!")
+            .setMessage("Dilarang menggunakan headset atau earphone selama ujian berlangsung.\n\nHarap cabut headset/earphone untuk melanjutkan.")
+            .setCancelable(false)
+
+        dialogHeadset = builder.show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_SECURE or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContentView(R.layout.activity_ujian)
+
+        // Aktifkan DND otomatis
+        enableDndMode()
 
         onBackPressedDispatcher.addCallback(this) {
             if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
@@ -117,31 +253,75 @@ class UjianActivity : AppCompatActivity() {
 
         try { startLockTask() } catch (e: Exception) {}
         pinCheckHandler.postDelayed(checkPinTask, 1000)
+
+        // Daftarkan Broadcast Receivers
         registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        registerReceiver(bluetoothReceiver, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
+        registerReceiver(headsetReceiver, IntentFilter(Intent.ACTION_HEADSET_PLUG))
 
         dbHelper = DatabaseHelper(this)
         drawerLayout = findViewById(R.id.drawerLayout)
 
+        // Inisialisasi Header & Watermark dari Sesi Siswa
+        val sharedPref = getSharedPreferences("SesiUjian", Context.MODE_PRIVATE)
+        val namaSiswa = sharedPref.getString("nama_siswa", null) ?: sharedPref.getString("nama", "SISWA") ?: "SISWA"
+        val nisnSiswa = sharedPref.getString("nis", null) ?: sharedPref.getString("nisn", "") ?: ""
+        val tvWatermark = findViewById<TextView>(R.id.tvSecurityWatermark)
+        tvWatermark.text = "${namaSiswa.uppercase()} • NIS: $nisnSiswa\nSMK RIYADHUL JANNAH CBT"
+
+        val mapelIntent = intent.getStringExtra("MAPEL")
+            ?: sharedPref.getString("CURRENT_MAPEL_UJIAN", "Mata Pelajaran Ujian")
+        val jenisUjianIntent = intent.getStringExtra("JENIS_UJIAN")
+            ?: sharedPref.getString("CURRENT_JENIS_UJIAN", "Ujian Berlangsung")
+
+        findViewById<TextView>(R.id.tvJudulUjianHeader).text = jenisUjianIntent
+        findViewById<TextView>(R.id.tvSubJudulUjian).text = mapelIntent
+
         muatDataOffline()
 
-        findViewById<CardView>(R.id.btnNext).setOnClickListener {
+        // Tombol Navigasi Bawah
+        findViewById<View>(R.id.btnNext).setOnClickListener {
             if (currentIndex < daftarSoal.size - 1) { currentIndex++; tampilkanSoal() }
         }
-        findViewById<CardView>(R.id.btnPrev).setOnClickListener {
+        findViewById<View>(R.id.btnPrev).setOnClickListener {
             if (currentIndex > 0) { currentIndex--; tampilkanSoal() }
         }
-        findViewById<Button>(R.id.btnSelesai).setOnClickListener { dialogSelesaiUjian() }
-        findViewById<CardView>(R.id.btnGridNavigasi).setOnClickListener {
+        findViewById<View>(R.id.btnSelesai).setOnClickListener { dialogSelesaiUjian() }
+
+        // Buka & Tutup Drawer Navigasi
+        findViewById<View>(R.id.btnGridNavigasi).setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.END)
         }
+        findViewById<View>(R.id.btnCloseDrawer).setOnClickListener {
+            drawerLayout.closeDrawers()
+        }
 
+        // Kontrol Ukuran Font Soal (A- / A+)
         val tvTeksSoal = findViewById<TextView>(R.id.tvTeksSoal)
-        findViewById<Button>(R.id.btnZoomOut).setOnClickListener {
-            if (currentTextSize > 12f) { currentTextSize -= 2f; tvTeksSoal.textSize = currentTextSize }
+        findViewById<View>(R.id.btnZoomOut).setOnClickListener {
+            if (currentTextSize > 12f) {
+                currentTextSize -= 2f
+                tvTeksSoal.textSize = currentTextSize
+            }
         }
-        findViewById<Button>(R.id.btnZoomIn).setOnClickListener {
-            if (currentTextSize < 30f) { currentTextSize += 2f; tvTeksSoal.textSize = currentTextSize }
+        findViewById<View>(R.id.btnZoomIn).setOnClickListener {
+            if (currentTextSize < 30f) {
+                currentTextSize += 2f
+                tvTeksSoal.textSize = currentTextSize
+            }
         }
+
+        // Tap container ragu-ragu
+        findViewById<View>(R.id.layoutRaguContainer).setOnClickListener {
+            val cb = findViewById<CheckBox>(R.id.cbRaguRagu)
+            cb.isChecked = !cb.isChecked
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        cekBluetoothWajibMati()
+        cekHeadsetKabel()
     }
 
     private fun penaltiKecurangan(alasan: String) {
@@ -158,10 +338,9 @@ class UjianActivity : AppCompatActivity() {
             try { ApiClient.instance.submitJawaban(payload) } catch (e: Exception) {}
         }
         try { stopLockTask() } catch (e: Exception) {}
+        disableDndMode()
         finishAffinity()
     }
-
-    override fun onPause() { super.onPause() }
 
     private fun muatDataOffline() {
         val sesi = dbHelper.getDetailSesi()
@@ -169,6 +348,9 @@ class UjianActivity : AppCompatActivity() {
         val jsonString = sesi["json_soal"] ?: ""
         durasiMilis = (sesi["durasi"] ?: "90").toLong() * 60 * 1000
         minFinishMilis = (sesi["min_finish"] ?: "0").toLong() * 60 * 1000
+
+        // Set ID Sesi di Footer
+        findViewById<TextView>(R.id.tvSessionId).text = "ID Sesi: CBT-$idUjianSiswa"
 
         if (jsonString.isNotEmpty()) {
             val type = object : TypeToken<List<Soal>>() {}.type
@@ -204,7 +386,6 @@ class UjianActivity : AppCompatActivity() {
         }
     }
 
-    // FITUR KUNCI: SINKRONISASI WAKTU & AUTO-RECOVERY JARINGAN
     private fun sinkronisasiWaktuServer() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -240,6 +421,7 @@ class UjianActivity : AppCompatActivity() {
     private fun tampilkanDialogTerkunci() {
         isSafeToLeave = true
         try { stopLockTask() } catch (e: Exception) {}
+        disableDndMode()
 
         AlertDialog.Builder(this)
             .setTitle("Menunggu Sinyal 📡")
@@ -255,15 +437,14 @@ class UjianActivity : AppCompatActivity() {
 
         val soal = daftarSoal[currentIndex]
         findViewById<TextView>(R.id.tvNomorSoal).text = "SOAL KE - ${currentIndex + 1}"
+        findViewById<TextView>(R.id.tvTotalSoalLabel).text = "dari ${daftarSoal.size} Soal"
 
         val tvTeks = findViewById<TextView>(R.id.tvTeksSoal)
-
-        // Sembunyikan ivAtas karena engine kita sudah merender gambar INLINE langsung di dalam teks
         findViewById<ImageView>(R.id.ivSoalAtas).visibility = View.GONE
 
         // Pasang Engine Render Rumus (Base64 + Image Web)
         val imageGetter = URLImageParser(tvTeks)
-        tvTeks.text = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        tvTeks.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Html.fromHtml(soal.teks_soal, Html.FROM_HTML_MODE_COMPACT, imageGetter, null)
         } else {
             @Suppress("DEPRECATION")
@@ -292,8 +473,8 @@ class UjianActivity : AppCompatActivity() {
             navAdapter.notifyDataSetChanged()
         }
 
-        val btnNext = findViewById<CardView>(R.id.btnNext)
-        val btnSelesai = findViewById<Button>(R.id.btnSelesai)
+        val btnNext = findViewById<View>(R.id.btnNext)
+        val btnSelesai = findViewById<View>(R.id.btnSelesai)
         if (currentIndex == daftarSoal.size - 1) {
             btnNext.visibility = View.GONE
             btnSelesai.visibility = View.VISIBLE
@@ -303,52 +484,222 @@ class UjianActivity : AppCompatActivity() {
         }
     }
 
+    // ==============================================================
+    // REDESAIN OPSI PILIHAN GANDA BIASA (SESUAI MOCKUP PERSIS)
+    // Lingkaran Huruf A/B/C/D/E di kiri, Teks di tengah, Indikator di kanan
+    // ==============================================================
     private fun renderPGBiasa(wadah: LinearLayout, soal: Soal, jawaban: String) {
-        val radioButtons = mutableListOf<RadioButton>()
-        for (opsi in soal.opsi) {
-            val card = LinearLayout(this)
-            card.orientation = LinearLayout.VERTICAL
-            card.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { setMargins(0, 0, 0, 32) }
-            card.background = getRoundedBackground()
-            card.setPadding(40, 40, 40, 40)
+        for ((index, opsi) in soal.opsi.withIndex()) {
+            val letter = ('A'.code + index).toChar().toString()
+            val isSelected = (opsi.id_opsi == jawaban)
 
-            val rb = RadioButton(this)
-
-            // Render Math Formula & Gambar di Opsi
-            val imageGetter = URLImageParser(rb)
-            rb.text = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                Html.fromHtml(opsi.teks_opsi, Html.FROM_HTML_MODE_COMPACT, imageGetter, null)
-            } else {
-                @Suppress("DEPRECATION")
-                Html.fromHtml(opsi.teks_opsi, imageGetter, null)
+            val card = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = android.view.Gravity.CENTER_VERTICAL
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    setMargins(0, 0, 0, dpToPx(10))
+                }
+                setBackgroundResource(
+                    if (isSelected) R.drawable.bg_opsi_jawaban_selected
+                    else R.drawable.bg_opsi_jawaban_normal
+                )
+                setPadding(dpToPx(12), dpToPx(12), dpToPx(12), dpToPx(12))
+                isClickable = true
+                isFocusable = true
             }
 
-            rb.buttonTintList = ColorStateList.valueOf(Color.parseColor("#2563EB"))
-            rb.textSize = 15f
-            if (opsi.id_opsi == jawaban) rb.isChecked = true
-            radioButtons.add(rb)
+            val tvLetter = TextView(this).apply {
+                text = letter
+                textSize = 14f
+                setTypeface(null, android.graphics.Typeface.BOLD)
+                gravity = android.view.Gravity.CENTER
+                layoutParams = LinearLayout.LayoutParams(dpToPx(34), dpToPx(34))
+                setBackgroundResource(
+                    if (isSelected) R.drawable.bg_opsi_letter_selected
+                    else R.drawable.bg_opsi_letter_normal
+                )
+                setTextColor(
+                    if (isSelected) Color.WHITE
+                    else Color.parseColor("#475569")
+                )
+            }
 
-            val clickListener = View.OnClickListener {
-                radioButtons.forEach { it.isChecked = false }
-                rb.isChecked = true
+            val tvTeksOpsi = TextView(this).apply {
+                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                    marginStart = dpToPx(12)
+                    marginEnd = dpToPx(10)
+                }
+                textSize = 14.5f
+                setTextColor(Color.parseColor("#0F172A"))
+                setLineSpacing(dpToPx(3).toFloat(), 1.0f)
+                setTextIsSelectable(false)
+
+                val imageGetter = URLImageParser(this)
+                text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    Html.fromHtml(opsi.teks_opsi, Html.FROM_HTML_MODE_COMPACT, imageGetter, null)
+                } else {
+                    @Suppress("DEPRECATION")
+                    Html.fromHtml(opsi.teks_opsi, imageGetter, null)
+                }
+            }
+
+            val ivIndicator = ImageView(this).apply {
+                layoutParams = LinearLayout.LayoutParams(dpToPx(22), dpToPx(22))
+                setImageResource(
+                    if (isSelected) R.drawable.ic_option_selected_check
+                    else R.drawable.ic_option_unselected_circle
+                )
+            }
+
+            card.addView(tvLetter)
+            card.addView(tvTeksOpsi)
+            card.addView(ivIndicator)
+
+            card.setOnClickListener {
+                // Reset semua child card di wadah
+                for (i in 0 until wadah.childCount) {
+                    val childCard = wadah.getChildAt(i) as? LinearLayout ?: continue
+                    val cLetter = childCard.getChildAt(0) as? TextView
+                    val cIndicator = childCard.getChildAt(2) as? ImageView
+
+                    childCard.setBackgroundResource(R.drawable.bg_opsi_jawaban_normal)
+                    cLetter?.setBackgroundResource(R.drawable.bg_opsi_letter_normal)
+                    cLetter?.setTextColor(Color.parseColor("#475569"))
+                    cIndicator?.setImageResource(R.drawable.ic_option_unselected_circle)
+                }
+
+                // Aktifkan card yang dipilih
+                card.setBackgroundResource(R.drawable.bg_opsi_jawaban_selected)
+                tvLetter.setBackgroundResource(R.drawable.bg_opsi_letter_selected)
+                tvLetter.setTextColor(Color.WHITE)
+                ivIndicator.setImageResource(R.drawable.ic_option_selected_check)
+
                 dbHelper.simpanJawaban(soal.id_soal, soal.jenis_soal, opsi.id_opsi)
                 navAdapter.notifyDataSetChanged()
             }
-            rb.setOnClickListener(clickListener)
-            card.setOnClickListener(clickListener)
-            card.addView(rb)
+
             wadah.addView(card)
         }
     }
 
+    // ==============================================================
+    // REDESAIN OPSI PILIHAN GANDA KOMPLEKS (MULTI-SELECT)
+    // ==============================================================
+    private fun renderPGKompleks(wadah: LinearLayout, soal: Soal, jawaban: String) {
+        val selectedIds = jawaban.split(",").filter { it.isNotBlank() }.toMutableSet()
+
+        for ((index, opsi) in soal.opsi.withIndex()) {
+            val letter = ('A'.code + index).toChar().toString()
+            val isSelected = selectedIds.contains(opsi.id_opsi)
+
+            val card = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = android.view.Gravity.CENTER_VERTICAL
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    setMargins(0, 0, 0, dpToPx(10))
+                }
+                setBackgroundResource(
+                    if (isSelected) R.drawable.bg_opsi_jawaban_selected
+                    else R.drawable.bg_opsi_jawaban_normal
+                )
+                setPadding(dpToPx(12), dpToPx(12), dpToPx(12), dpToPx(12))
+                isClickable = true
+                isFocusable = true
+            }
+
+            val tvLetter = TextView(this).apply {
+                text = letter
+                textSize = 14f
+                setTypeface(null, android.graphics.Typeface.BOLD)
+                gravity = android.view.Gravity.CENTER
+                layoutParams = LinearLayout.LayoutParams(dpToPx(34), dpToPx(34))
+                setBackgroundResource(
+                    if (isSelected) R.drawable.bg_opsi_letter_selected
+                    else R.drawable.bg_opsi_letter_normal
+                )
+                setTextColor(
+                    if (isSelected) Color.WHITE
+                    else Color.parseColor("#475569")
+                )
+            }
+
+            val tvTeksOpsi = TextView(this).apply {
+                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                    marginStart = dpToPx(12)
+                    marginEnd = dpToPx(10)
+                }
+                textSize = 14.5f
+                setTextColor(Color.parseColor("#0F172A"))
+                setLineSpacing(dpToPx(3).toFloat(), 1.0f)
+                setTextIsSelectable(false)
+
+                val imageGetter = URLImageParser(this)
+                text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    Html.fromHtml(opsi.teks_opsi, Html.FROM_HTML_MODE_COMPACT, imageGetter, null)
+                } else {
+                    @Suppress("DEPRECATION")
+                    Html.fromHtml(opsi.teks_opsi, imageGetter, null)
+                }
+            }
+
+            val ivIndicator = ImageView(this).apply {
+                layoutParams = LinearLayout.LayoutParams(dpToPx(22), dpToPx(22))
+                setImageResource(
+                    if (isSelected) R.drawable.ic_option_selected_check
+                    else R.drawable.ic_option_unselected_circle
+                )
+            }
+
+            card.addView(tvLetter)
+            card.addView(tvTeksOpsi)
+            card.addView(ivIndicator)
+
+            card.setOnClickListener {
+                if (selectedIds.contains(opsi.id_opsi)) {
+                    selectedIds.remove(opsi.id_opsi)
+                    card.setBackgroundResource(R.drawable.bg_opsi_jawaban_normal)
+                    tvLetter.setBackgroundResource(R.drawable.bg_opsi_letter_normal)
+                    tvLetter.setTextColor(Color.parseColor("#475569"))
+                    ivIndicator.setImageResource(R.drawable.ic_option_unselected_circle)
+                } else {
+                    selectedIds.add(opsi.id_opsi)
+                    card.setBackgroundResource(R.drawable.bg_opsi_jawaban_selected)
+                    tvLetter.setBackgroundResource(R.drawable.bg_opsi_letter_selected)
+                    tvLetter.setTextColor(Color.WHITE)
+                    ivIndicator.setImageResource(R.drawable.ic_option_selected_check)
+                }
+
+                dbHelper.simpanJawaban(soal.id_soal, soal.jenis_soal, selectedIds.joinToString(","))
+                navAdapter.notifyDataSetChanged()
+            }
+
+            wadah.addView(card)
+        }
+    }
+
+    // ==============================================================
+    // REDESAIN SOAL ESAI / ISIAN
+    // ==============================================================
     private fun renderEsai(wadah: LinearLayout, soal: Soal, jawaban: String, isMulti: Boolean) {
         val et = EditText(this).apply {
             hint = "Ketik jawaban di sini..."
             setText(jawaban)
             background = getRoundedBackground()
-            setPadding(40, 40, 40, 40)
-            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { setMargins(0, 0, 0, 32) }
-            if (isMulti) minLines = 4
+            setPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16))
+            setTextColor(Color.parseColor("#0F172A"))
+            setHintTextColor(Color.parseColor("#94A3B8"))
+            textSize = 14.5f
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, dpToPx(16)) }
+            if (isMulti) minLines = 5
         }
         et.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -361,69 +712,39 @@ class UjianActivity : AppCompatActivity() {
         wadah.addView(et)
     }
 
-    private fun renderPGKompleks(wadah: LinearLayout, soal: Soal, jawaban: String) {
-        val jwbArray = jawaban.split(",")
-        val checkBoxes = mutableListOf<Pair<String, CheckBox>>()
-
-        for (opsi in soal.opsi) {
-            val card = LinearLayout(this)
-            card.orientation = LinearLayout.VERTICAL
-            card.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { setMargins(0, 0, 0, 32) }
-            card.background = getRoundedBackground()
-            card.setPadding(40, 40, 40, 40)
-
-            val cb = CheckBox(this)
-            val imageGetter = URLImageParser(cb)
-            cb.text = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                Html.fromHtml(opsi.teks_opsi, Html.FROM_HTML_MODE_COMPACT, imageGetter, null)
-            } else {
-                @Suppress("DEPRECATION")
-                Html.fromHtml(opsi.teks_opsi, imageGetter, null)
-            }
-
-            cb.buttonTintList = ColorStateList.valueOf(Color.parseColor("#2563EB"))
-            cb.textSize = 15f
-            if (jwbArray.contains(opsi.id_opsi)) cb.isChecked = true
-
-            checkBoxes.add(Pair(opsi.id_opsi, cb))
-
-            val updateDb = {
-                val listCentang = checkBoxes.filter { it.second.isChecked }.map { it.first }
-                dbHelper.simpanJawaban(soal.id_soal, soal.jenis_soal, listCentang.joinToString(","))
-                navAdapter.notifyDataSetChanged()
-            }
-            cb.setOnCheckedChangeListener { _, _ -> updateDb() }
-            card.setOnClickListener { cb.isChecked = !cb.isChecked }
-
-            card.addView(cb)
-            wadah.addView(card)
-        }
-    }
-
+    // ==============================================================
+    // REDESAIN SOAL BENAR / SALAH
+    // ==============================================================
     private fun renderBenarSalah(wadah: LinearLayout, soal: Soal, jawaban: String) {
         val mapJwb = jawaban.split(",").associate {
             val part = it.split("-")
-            if(part.size == 2) part[0] to part[1] else "" to ""
+            if (part.size == 2) part[0] to part[1] else "" to ""
         }
 
         for (opsi in soal.opsi) {
-            val card = LinearLayout(this)
-            card.orientation = LinearLayout.VERTICAL
-            card.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { setMargins(0, 0, 0, 32) }
-            card.background = getRoundedBackground()
-            card.setPadding(40, 40, 40, 40)
-
-            val tv = TextView(this)
-            val imageGetter = URLImageParser(tv)
-            tv.text = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                Html.fromHtml(opsi.teks_opsi, Html.FROM_HTML_MODE_COMPACT, imageGetter, null)
-            } else {
-                @Suppress("DEPRECATION")
-                Html.fromHtml(opsi.teks_opsi, imageGetter, null)
+            val card = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { setMargins(0, 0, 0, dpToPx(12)) }
+                background = getRoundedBackground()
+                setPadding(dpToPx(14), dpToPx(14), dpToPx(14), dpToPx(14))
             }
-            tv.setPadding(0, 0, 0, 16)
-            tv.textSize = 15f
-            tv.setTextColor(Color.BLACK)
+
+            val tv = TextView(this).apply {
+                val imageGetter = URLImageParser(this)
+                text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    Html.fromHtml(opsi.teks_opsi, Html.FROM_HTML_MODE_COMPACT, imageGetter, null)
+                } else {
+                    @Suppress("DEPRECATION")
+                    Html.fromHtml(opsi.teks_opsi, imageGetter, null)
+                }
+                setPadding(0, 0, 0, dpToPx(10))
+                textSize = 14.5f
+                setTextColor(Color.parseColor("#0F172A"))
+                setTextIsSelectable(false)
+            }
             card.addView(tv)
 
             val rg = RadioGroup(this).apply { orientation = RadioGroup.HORIZONTAL }
@@ -431,18 +752,24 @@ class UjianActivity : AppCompatActivity() {
             val rbBenar = RadioButton(this).apply {
                 text = "Benar"
                 buttonTintList = ColorStateList.valueOf(Color.parseColor("#2563EB"))
-                setPadding(16,0,32,0)
+                setPadding(dpToPx(6), 0, dpToPx(24), 0)
+                textSize = 14f
+                setTextColor(Color.parseColor("#1E293B"))
             }
             val rbSalah = RadioButton(this).apply {
                 text = "Salah"
-                buttonTintList = ColorStateList.valueOf(Color.parseColor("#E53935"))
-                setPadding(16,0,32,0)
+                buttonTintList = ColorStateList.valueOf(Color.parseColor("#EF4444"))
+                setPadding(dpToPx(6), 0, dpToPx(24), 0)
+                textSize = 14f
+                setTextColor(Color.parseColor("#1E293B"))
             }
 
             if (mapJwb[opsi.id_opsi] == "1") rbBenar.isChecked = true
             if (mapJwb[opsi.id_opsi] == "0") rbSalah.isChecked = true
 
-            rg.addView(rbBenar); rg.addView(rbSalah)
+            rg.addView(rbBenar)
+            rg.addView(rbSalah)
+
             rg.setOnCheckedChangeListener { _, _ ->
                 val listBs = mutableListOf<String>()
                 for (i in 0 until wadah.childCount) {
@@ -462,48 +789,59 @@ class UjianActivity : AppCompatActivity() {
         }
     }
 
+    // ==============================================================
+    // REDESAIN SOAL MENJODOHKAN
+    // ==============================================================
     private fun renderMenjodohkan(wadah: LinearLayout, soal: Soal, jawaban: String) {
         if (soal.couple == null) return
         val mapJwb = jawaban.split(",").associate {
             val part = it.split("-")
-            if(part.size == 2) part[0] to part[1] else "" to ""
+            if (part.size == 2) part[0] to part[1] else "" to ""
         }
 
         val arrayOpsiId = mutableListOf("")
         val arrayOpsiNama = mutableListOf("-- Pilih Pasangan --")
         for (o in soal.opsi) {
             arrayOpsiId.add(o.id_opsi)
-            // Hilangkan tag gambar secara visual untuk spinner saja agar text rapi di dropdown
             val noImgText = o.teks_opsi.replace("<img[^>]*>".toRegex(), "[Gambar/Rumus]")
             arrayOpsiNama.add(Html.fromHtml(noImgText, Html.FROM_HTML_MODE_COMPACT).toString())
         }
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, arrayOpsiNama)
 
         for (c in soal.couple) {
-            val card = LinearLayout(this)
-            card.orientation = LinearLayout.VERTICAL
-            card.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { setMargins(0, 0, 0, 32) }
-            card.background = getRoundedBackground()
-            card.setPadding(40, 40, 40, 40)
-
-            val tv = TextView(this)
-            val imageGetter = URLImageParser(tv)
-            tv.text = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                Html.fromHtml(c.teks_couple, Html.FROM_HTML_MODE_COMPACT, imageGetter, null)
-            } else {
-                @Suppress("DEPRECATION")
-                Html.fromHtml(c.teks_couple, imageGetter, null)
+            val card = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { setMargins(0, 0, 0, dpToPx(12)) }
+                background = getRoundedBackground()
+                setPadding(dpToPx(14), dpToPx(14), dpToPx(14), dpToPx(14))
             }
-            tv.setPadding(0, 0, 0, 16)
-            tv.textSize = 15f
-            tv.setTextColor(Color.BLACK)
+
+            val tv = TextView(this).apply {
+                val imageGetter = URLImageParser(this)
+                text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    Html.fromHtml(c.teks_couple, Html.FROM_HTML_MODE_COMPACT, imageGetter, null)
+                } else {
+                    @Suppress("DEPRECATION")
+                    Html.fromHtml(c.teks_couple, imageGetter, null)
+                }
+                setPadding(0, 0, 0, dpToPx(10))
+                textSize = 14.5f
+                setTextColor(Color.parseColor("#0F172A"))
+                setTextIsSelectable(false)
+            }
             card.addView(tv)
 
             val spinner = Spinner(this).apply {
                 this.adapter = adapter
                 background = getRoundedBackground()
-                layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { setMargins(0, 8, 0, 32) }
-                setPadding(32,32,32,32)
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { setMargins(0, dpToPx(4), 0, dpToPx(4)) }
+                setPadding(dpToPx(12), dpToPx(12), dpToPx(12), dpToPx(12))
             }
 
             val savedOpsiId = mapJwb[c.id_couple]
@@ -530,14 +868,15 @@ class UjianActivity : AppCompatActivity() {
         }
     }
 
+    // ==============================================================
     // TIMER ABSOLUT ANTI-TIDUR
+    // ==============================================================
     private fun jalankanTimer(waktuMilis: Long) {
         val tvTimer = findViewById<TextView>(R.id.tvTimer)
         val targetFinishTime = System.currentTimeMillis() + waktuMilis
 
         countDownTimer = object : CountDownTimer(waktuMilis, 1000) {
             override fun onTick(milis: Long) {
-                // Selalu hitung ulang dari waktu absolut
                 val realSisa = targetFinishTime - System.currentTimeMillis()
                 sisaWaktuMilis = realSisa
 
@@ -577,7 +916,7 @@ class UjianActivity : AppCompatActivity() {
 
         AlertDialog.Builder(this)
             .setTitle("Selesai Ujian?")
-            .setMessage("Apakah Anda yakin ingin menyelesaikan ujian dan mengirim jawaban?")
+            .setMessage("Apakah Anda yakin ingin menyelesaikan ujian dan mengirim jawaban sekarang?")
             .setPositiveButton("YA, KIRIM") { _, _ -> submitJawabanKeServer() }
             .setNegativeButton("BATAL", null)
             .setCancelable(false)
@@ -589,8 +928,9 @@ class UjianActivity : AppCompatActivity() {
         isSubmitting = true
         isSafeToLeave = true
 
-        val btnSelesai = findViewById<Button>(R.id.btnSelesai)
-        btnSelesai.text = "MENGIRIM..."
+        val btnSelesai = findViewById<View>(R.id.btnSelesai)
+        val tvBtnSelesaiText = findViewById<TextView>(R.id.tvBtnSelesaiText)
+        tvBtnSelesaiText.text = "MENGIRIM..."
         btnSelesai.isEnabled = false
 
         val payload = SubmitRequest(idUjianSiswa, dbHelper.getAllJawaban())
@@ -612,7 +952,7 @@ class UjianActivity : AppCompatActivity() {
                     } else {
                         isSubmitting = false
                         isSafeToLeave = false
-                        btnSelesai.text = "SELESAI"
+                        tvBtnSelesaiText.text = "Selesai Ujian"
                         btnSelesai.isEnabled = true
                         Toast.makeText(this@UjianActivity, "Gagal: ${response.body()?.message}", Toast.LENGTH_LONG).show()
                     }
@@ -631,6 +971,7 @@ class UjianActivity : AppCompatActivity() {
                         .apply()
 
                     try { stopLockTask() } catch (e: Exception) {}
+                    disableDndMode()
 
                     AlertDialog.Builder(this@UjianActivity)
                         .setTitle("Jaringan Terputus! 📡")
@@ -647,20 +988,26 @@ class UjianActivity : AppCompatActivity() {
 
     private fun bukaKunciDanKeluar() {
         try { stopLockTask() } catch (e: Exception) {}
+        disableDndMode()
         startActivity(Intent(this, JadwalActivity::class.java))
         finish()
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        disableDndMode()
         countDownTimer?.cancel()
         pinCheckHandler.removeCallbacks(checkPinTask)
         try { unregisterReceiver(batteryReceiver) } catch (e: Exception) {}
+        try { unregisterReceiver(bluetoothReceiver) } catch (e: Exception) {}
+        try { unregisterReceiver(headsetReceiver) } catch (e: Exception) {}
+        try { dialogBluetooth?.dismiss() } catch (e: Exception) {}
+        try { dialogHeadset?.dismiss() } catch (e: Exception) {}
     }
 
-    // ==========================================
+    // ==============================================================
     // ENGINE RENDER RUMUS & GAMBAR INLINE (BASE64 + URL)
-    // ==========================================
+    // ==============================================================
     inner class URLImageParser(private val container: TextView) : android.text.Html.ImageGetter {
         override fun getDrawable(source: String?): android.graphics.drawable.Drawable {
             if (source == null) return android.graphics.drawable.ColorDrawable(Color.TRANSPARENT)
@@ -668,7 +1015,6 @@ class UjianActivity : AppCompatActivity() {
             val levelListDrawable = android.graphics.drawable.LevelListDrawable()
 
             if (source.startsWith("data:image")) {
-                // LOGIKA BACA GAMBAR BASE64 (RUMUS MATEMATIKA CANDY CBT)
                 try {
                     val base64String = source.substringAfter(",")
                     val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
@@ -676,23 +1022,19 @@ class UjianActivity : AppCompatActivity() {
 
                     if (bitmap != null) {
                         val drawable = android.graphics.drawable.BitmapDrawable(resources, bitmap)
-                        // Perbesar 2.5x lipat agar rumus/pecahan lebih terbaca
                         val width = (drawable.intrinsicWidth * 2.5).toInt()
                         val height = (drawable.intrinsicHeight * 2.5).toInt()
                         drawable.setBounds(0, 0, width, height)
-                        return drawable // Return langsung agar bounds terdeteksi sinkron
+                        return drawable
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             } else {
-                // LOGIKA BACA GAMBAR URL BIASA
                 var fullUrl = source
                 if (fullUrl.contains("http")) {
-                    // Bersihkan bug dari server (misal: "../https://...") menjadi "https://..."
                     fullUrl = fullUrl.substring(fullUrl.indexOf("http"))
                 } else {
-                    // URL relatif murni
                     val baseUrl = "https://smkriyadhuljannahjalancagak.sch.id/"
                     fullUrl = if (fullUrl.startsWith("/")) baseUrl + fullUrl.substring(1) else baseUrl + fullUrl
                 }
@@ -714,7 +1056,7 @@ class UjianActivity : AppCompatActivity() {
                                 levelListDrawable.addLevel(1, 1, drawable)
                                 levelListDrawable.setBounds(0, 0, width, height)
                                 levelListDrawable.level = 1
-                                container.text = container.text // Force redraw UI
+                                container.text = container.text
                             }
                         }
                     } catch (e: Exception) {}

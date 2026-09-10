@@ -182,7 +182,14 @@ class KonfirmasiActivity : AppCompatActivity() {
 
                                 Toast.makeText(this@KonfirmasiActivity, "Soal berhasil diunduh! Memasuki ruang ujian.", Toast.LENGTH_SHORT).show()
 
-                                val intentUjian = Intent(this@KonfirmasiActivity, UjianActivity::class.java)
+                                val intentUjian = Intent(this@KonfirmasiActivity, UjianActivity::class.java).apply {
+                                    putExtra("MAPEL", mapel)
+                                    putExtra("JENIS_UJIAN", jenisUjian)
+                                }
+                                sharedPref.edit()
+                                    .putString("CURRENT_MAPEL_UJIAN", mapel)
+                                    .putString("CURRENT_JENIS_UJIAN", jenisUjian)
+                                    .apply()
                                 startActivity(intentUjian)
                                 finish()
 
