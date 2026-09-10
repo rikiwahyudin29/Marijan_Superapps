@@ -829,6 +829,29 @@ data class JadwalItemModel(
     val id_jurnal: Int?
 )
 
+// --- PORTAL PRESENSI SISWA (RESPONS REAL-TIME) ---
+data class PortalPresensiSiswaResponse(
+    val status: Boolean = false,
+    val message: String? = null,
+    val siswa_info: PortalSiswaInfo? = null,
+    val shift_info: PortalShiftInfo? = null,
+    val lokasi_sekolah: PortalLokasiSekolah? = null,
+    val presensi_hari_ini: PortalPresensiHariIni? = null,
+    val statistik_kehadiran: PortalStatistikKehadiran? = null,
+    val riwayat_terakhir: List<PortalRiwayatItem>? = null,
+    val unduh_rekap_url: String? = null
+)
+
+data class PortalSiswaInfo(
+    val id_siswa: Any? = null,
+    val nama: String? = null,
+    val nisn: String? = null,
+    val nama_kelas: String? = null,
+    val jurusan: String? = null,
+    val tahun_ajaran: String? = null,
+    val tanggal_hari_ini: String? = null
+)
+
 // --- PORTAL PRESENSI GURU (RESPONS REAL-TIME) ---
 data class PortalPresensiGuruResponse(
     val status: Boolean = false,
