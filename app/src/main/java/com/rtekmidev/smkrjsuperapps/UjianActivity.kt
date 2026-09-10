@@ -13,6 +13,10 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.media.AudioManager
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.wifi.WifiManager
 import android.os.BatteryManager
 import android.os.Build
 import android.os.Bundle
@@ -71,15 +75,114 @@ class UjianActivity : AppCompatActivity() {
         return (dp * resources.displayMetrics.density).toInt()
     }
 
-    // 1. MONITOR BATERAI
+    // 1. MONITOR BATERAI (REAL-TIME)
     private val batteryReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            val level = intent?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: -1
-            val scale = intent?.getIntExtra(BatteryManager.EXTRA_SCALE, -1) ?: -1
-            if (level != -1 && scale != -1) {
-                val batteryPct = level * 100 / scale.toFloat()
-                findViewById<TextView>(R.id.tvBatteryInfo).text = "🔋 ${batteryPct.toInt()}%"
+            updateRealtimeBattery(intent)
+        }
+    }
+
+    private fun updateRealtimeBattery(intent: Intent?) {
+        val level = intent?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: -1
+        val scale = intent?.getIntExtra(BatteryManager.EXTRA_SCALE, -1) ?: -1
+        val batteryPct = if (level != -1 && scale != -1) {
+            (level * 100 / scale.toFloat()).toInt()
+        } else {
+            val bm = getSystemService(Context.BATTERY_SERVICE) as? BatteryManager
+            bm?.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY) ?: 100
+        }
+        val tvBattery = findViewById<TextView>(R.id.tvBatteryInfo)
+        tvBattery?.text = "$batteryPct%"
+        if (batteryPct <= 15) {
+            tvBattery?.setTextColor(Color.parseColor("#EF4444"))
+        } else {
+            tvBattery?.setTextColor(Color.parseColor("#0F172A"))
+        }
+    }
+
+    // MONITOR SINYAL / JARINGAN (REAL-TIME)
+    private var connectivityManager: ConnectivityManager? = null
+    private var networkCallback: ConnectivityManager.NetworkCallback? = null
+
+    private fun initRealtimeSignalMonitor() {
+        connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+        updateNetworkStatus()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            networkCallback = object : ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    runOnUiThread { updateNetworkStatus() }
+                }
+                override fun onLost(network: Network) {
+                    runOnUiThread {
+                        val tvSignal = findViewById<TextView>(R.id.tvSignalStatus)
+                        tvSignal?.text = "Terputus"
+                        tvSignal?.setTextColor(Color.parseColor("#EF4444"))
+                    }
+                }
+                override fun onCapabilitiesChanged(network: Network, capabilities: NetworkCapabilities) {
+                    runOnUiThread { updateNetworkStatus() }
+                }
             }
+            try {
+                connectivityManager?.registerDefaultNetworkCallback(networkCallback!!)
+            } catch (e: Exception) {}
+        }
+    }
+
+    private fun updateNetworkStatus() {
+        val cm = connectivityManager ?: return
+        val tvSignal = findViewById<TextView>(R.id.tvSignalStatus) ?: return
+
+        val activeNetwork = cm.activeNetwork
+        val capabilities = cm.getNetworkCapabilities(activeNetwork)
+
+        if (capabilities == null || !capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
+            tvSignal.text = "Terputus"
+            tvSignal.setTextColor(Color.parseColor("#EF4444"))
+            return
+        }
+
+        val isValidated = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+        val isWifi = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+        val isCellular = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+
+        if (!isValidated) {
+            tvSignal.text = "Lambat"
+            tvSignal.setTextColor(Color.parseColor("#F59E0B"))
+            return
+        }
+
+        if (isWifi) {
+            try {
+                val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager
+                val rssi = wifiManager?.connectionInfo?.rssi ?: -60
+                @Suppress("DEPRECATION")
+                val level = WifiManager.calculateSignalLevel(rssi, 5)
+                when {
+                    level >= 3 -> {
+                        tvSignal.text = "Stabil"
+                        tvSignal.setTextColor(Color.parseColor("#0D9488"))
+                    }
+                    level == 2 -> {
+                        tvSignal.text = "Cukup"
+                        tvSignal.setTextColor(Color.parseColor("#0284C7"))
+                    }
+                    else -> {
+                        tvSignal.text = "Lemah"
+                        tvSignal.setTextColor(Color.parseColor("#F59E0B"))
+                    }
+                }
+            } catch (e: Exception) {
+                tvSignal.text = "Stabil"
+                tvSignal.setTextColor(Color.parseColor("#0D9488"))
+            }
+        } else if (isCellular) {
+            tvSignal.text = "Stabil"
+            tvSignal.setTextColor(Color.parseColor("#0D9488"))
+        } else {
+            tvSignal.text = "Aktif"
+            tvSignal.setTextColor(Color.parseColor("#0D9488"))
         }
     }
 
@@ -254,8 +357,11 @@ class UjianActivity : AppCompatActivity() {
         try { startLockTask() } catch (e: Exception) {}
         pinCheckHandler.postDelayed(checkPinTask, 1000)
 
-        // Daftarkan Broadcast Receivers
-        registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        // Daftarkan Broadcast Receivers & Monitor Realtime
+        val stickyBattery = registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        updateRealtimeBattery(stickyBattery)
+        initRealtimeSignalMonitor()
+
         registerReceiver(bluetoothReceiver, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
         registerReceiver(headsetReceiver, IntentFilter(Intent.ACTION_HEADSET_PLUG))
 
@@ -436,8 +542,8 @@ class UjianActivity : AppCompatActivity() {
         navAdapter.notifyDataSetChanged()
 
         val soal = daftarSoal[currentIndex]
-        findViewById<TextView>(R.id.tvNomorSoal).text = "SOAL KE - ${currentIndex + 1}"
-        findViewById<TextView>(R.id.tvTotalSoalLabel).text = "dari ${daftarSoal.size} Soal"
+        findViewById<TextView>(R.id.tvNomorSoal).text = "SOAL KE\n- ${currentIndex + 1}"
+        findViewById<TextView>(R.id.tvTotalSoalLabel).text = "dari ${daftarSoal.size}\nSoal"
 
         val tvTeks = findViewById<TextView>(R.id.tvTeksSoal)
         findViewById<ImageView>(R.id.ivSoalAtas).visibility = View.GONE
@@ -506,6 +612,8 @@ class UjianActivity : AppCompatActivity() {
                     if (isSelected) R.drawable.bg_opsi_jawaban_selected
                     else R.drawable.bg_opsi_jawaban_normal
                 )
+                clipToOutline = true
+                foreground = androidx.core.content.ContextCompat.getDrawable(this@UjianActivity, R.drawable.ripple_rounded_14dp)
                 setPadding(dpToPx(12), dpToPx(12), dpToPx(12), dpToPx(12))
                 isClickable = true
                 isFocusable = true
@@ -608,6 +716,8 @@ class UjianActivity : AppCompatActivity() {
                     if (isSelected) R.drawable.bg_opsi_jawaban_selected
                     else R.drawable.bg_opsi_jawaban_normal
                 )
+                clipToOutline = true
+                foreground = androidx.core.content.ContextCompat.getDrawable(this@UjianActivity, R.drawable.ripple_rounded_14dp)
                 setPadding(dpToPx(12), dpToPx(12), dpToPx(12), dpToPx(12))
                 isClickable = true
                 isFocusable = true
@@ -888,6 +998,8 @@ class UjianActivity : AppCompatActivity() {
                 val menit = (realSisa / (1000 * 60)) % 60
                 val detik = (realSisa / 1000) % 60
                 tvTimer.text = String.format("%02d:%02d:%02d", jam, menit, detik)
+                val sisaMenitTotal = realSisa / (1000 * 60)
+                findViewById<TextView>(R.id.tvSisaMenit)?.text = "$sisaMenitTotal Menit"
             }
             override fun onFinish() {
                 sisaWaktuMilis = 0
@@ -1001,6 +1113,11 @@ class UjianActivity : AppCompatActivity() {
         try { unregisterReceiver(batteryReceiver) } catch (e: Exception) {}
         try { unregisterReceiver(bluetoothReceiver) } catch (e: Exception) {}
         try { unregisterReceiver(headsetReceiver) } catch (e: Exception) {}
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && networkCallback != null) {
+                connectivityManager?.unregisterNetworkCallback(networkCallback!!)
+            }
+        } catch (e: Exception) {}
         try { dialogBluetooth?.dismiss() } catch (e: Exception) {}
         try { dialogHeadset?.dismiss() } catch (e: Exception) {}
     }

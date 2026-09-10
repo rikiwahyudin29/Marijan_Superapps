@@ -29,7 +29,8 @@
             android:layout_height="38dp"
             android:clickable="true"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
+            android:clipToOutline="true"
+            android:foreground="@drawable/ripple_rounded_pill"
             app:cardBackgroundColor="#F1F5F9"
             app:cardCornerRadius="19dp"
             app:cardElevation="0dp">
@@ -735,10 +736,11 @@
             android:id="@+id/btnBatal"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:background="@drawable/bg_btn_batal_outline"
+            android:background="@drawable/bg_capsule_gray"
+            android:clipToOutline="true"
             android:clickable="true"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
+            android:foreground="@drawable/ripple_rounded_pill"
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingHorizontal="18dp">
@@ -767,9 +769,10 @@
             android:layout_marginStart="12dp"
             android:layout_weight="1"
             android:background="@drawable/bg_btn_mulai_primary"
+            android:clipToOutline="true"
             android:clickable="true"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground">
+            android:foreground="@drawable/ripple_rounded_pill">
 
             <LinearLayout
                 android:id="@+id/layoutBtnMulaiContent"

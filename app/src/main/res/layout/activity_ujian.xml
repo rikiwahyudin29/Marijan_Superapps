@@ -12,91 +12,40 @@
         android:id="@+id/rootUjianLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F8FAFC"
+        android:background="#FFFFFF"
         android:filterTouchesWhenObscured="true"
         android:fitsSystemWindows="true">
 
-        <!-- ========================================== -->
-        <!-- 1. MINI DEVICE STATUS BAR (JAM, SINYAL, BAT) -->
-        <!-- ========================================== -->
+        <!-- ==================================================== -->
+        <!-- 1. MAIN HEADER BAR (LOGO, TITLES, CAPSULE TIMER)     -->
+        <!-- ==================================================== -->
         <LinearLayout
-            android:id="@+id/topStatusBar"
+            android:id="@+id/headerUjianBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:background="#FFFFFF"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="4dp">
+            android:paddingHorizontal="14dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
 
-            <TextClock
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:format12Hour="hh:mm a"
-                android:format24Hour="HH:mm"
-                android:textColor="#0F172A"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <TextView
-                android:id="@+id/tvSignalInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
-                android:text="📶 Baik"
-                android:textColor="#16A34A"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvBatteryInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="🔋 100%"
-                android:textColor="#0F172A"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!-- ========================================== -->
-        <!-- 2. MAIN HEADER BAR (LOGO, MAPEL, TIMER)    -->
-        <!-- ========================================== -->
-        <LinearLayout
-            android:id="@+id/headerUjianBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/topStatusBar"
-            android:background="#FFFFFF"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="12dp">
-
-            <!-- Logo SMK RJ -->
-            <androidx.cardview.widget.CardView
+            <!-- Logo SMK RJ with Squircle Border -->
+            <FrameLayout
                 android:layout_width="44dp"
                 android:layout_height="44dp"
-                app:cardBackgroundColor="#F8FAFC"
-                app:cardCornerRadius="22dp"
-                app:cardElevation="0dp">
+                android:background="@drawable/bg_logo_squircle"
+                android:padding="3dp">
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:padding="3dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/logo_marj" />
-            </androidx.cardview.widget.CardView>
+            </FrameLayout>
 
-            <!-- Title & Mapel -->
+            <!-- Titles: School name, Exam title, Mapel -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -104,43 +53,27 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/tvInstansiHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_pill_cyan_badge"
-                        android:paddingHorizontal="8dp"
-                        android:paddingVertical="2dp"
-                        android:text="CBT ONLINE"
-                        android:textColor="#0369A1"
-                        android:textSize="9.5sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvInstansiHeader"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:text="SMK Riyadhul Jannah"
-                        android:textColor="#64748B"
-                        android:textSize="11sp" />
-                </LinearLayout>
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="SMK Riyadhul Jannah"
+                    android:textColor="#0D9488"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvJudulUjianHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="1dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:text="Ujian Berlangsung"
-                    android:textColor="#0F172A"
-                    android:textSize="16sp"
+                    android:textColor="#1E1B4B"
+                    android:textSize="15.5sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -149,80 +82,254 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="Mata Pelajaran Ujian"
+                    android:text="Konfigurasi Perangkat Jaringan..."
                     android:textColor="#64748B"
-                    android:textSize="11.5sp" />
+                    android:textSize="11sp" />
             </LinearLayout>
 
-            <!-- Card Sisa Waktu (Timer) -->
+            <!-- Capsule Timer (Pill) on Top Right -->
             <LinearLayout
+                android:id="@+id/layoutTopTimerPill"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/bg_timer_card"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="7dp">
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_timer_pill"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="6dp">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:src="@drawable/ic_timer_stopwatch"
-                        app:tint="#4F46E5" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:text="SISA WAKTU"
-                        android:textColor="#4F46E5"
-                        android:textSize="9.5sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/ic_clock_circle_24"
+                    app:tint="#1E1B4B" />
 
                 <TextView
                     android:id="@+id/tvTimer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:text="00:00:00"
+                    android:layout_marginStart="6dp"
+                    android:text="01:27:24"
                     android:textColor="#1E1B4B"
-                    android:textSize="16sp"
+                    android:textSize="13sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Garis Progress Tipis -->
+        <!-- Garis Aksen Biru Tipis -->
         <View
             android:id="@+id/lineHeaderDivider"
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:layout_below="@id/headerUjianBar"
-            android:background="#2563EB" />
+            android:background="#0284C7" />
 
-        <!-- ========================================== -->
-        <!-- 3. SUB-HEADER BAR (NOMOR SOAL, ZOOM, DAFTAR)-->
-        <!-- ========================================== -->
+        <!-- ==================================================== -->
+        <!-- 2. STATUS DASHBOARD (JAM, KONEKSI, BATERAI, SISA)    -->
+        <!-- ==================================================== -->
+        <LinearLayout
+            android:id="@+id/layoutStatusDashboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lineHeaderDivider"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/bg_cbt_status_container"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="6dp">
+
+            <!-- Card 1: JAM -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_cbt_status_mini_card"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="5dp">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_clock_circle_24"
+                    app:tint="#4F46E5" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="JAM"
+                        android:textColor="#64748B"
+                        android:textSize="8sp"
+                        android:textStyle="bold" />
+
+                    <TextClock
+                        android:id="@+id/tvClockStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:format12Hour="hh:mm"
+                        android:format24Hour="HH:mm"
+                        android:textColor="#0F172A"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Card 2: KONEKSI -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_cbt_status_mini_card"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="5dp">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_wifi_24"
+                    app:tint="#0284C7" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="KONEKSI"
+                        android:textColor="#64748B"
+                        android:textSize="8sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvSignalStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Stabil"
+                        android:textColor="#0D9488"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Card 3: BATERAI -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_cbt_status_mini_card"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="5dp">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_battery_std_24"
+                    app:tint="#0D9488" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="BATERAI"
+                        android:textColor="#64748B"
+                        android:textSize="8sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvBatteryInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="100%"
+                        android:textColor="#0F172A"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Card 4: SISA WAKTU (Soft Blue Card) -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_cbt_status_sisa_card"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="5dp">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_hourglass_24"
+                    app:tint="#1E1B4B" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SISA"
+                        android:textColor="#1E1B4B"
+                        android:textSize="8sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvSisaMenit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="88 Menit"
+                        android:textColor="#1E1B4B"
+                        android:textSize="10.5sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ==================================================== -->
+        <!-- 3. SUB-HEADER BAR (NOMOR SOAL, ZOOM, DAFTAR)         -->
+        <!-- ==================================================== -->
         <LinearLayout
             android:id="@+id/subHeaderBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/lineHeaderDivider"
+            android:layout_below="@id/layoutStatusDashboard"
             android:background="#FFFFFF"
-            android:elevation="2dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="10dp">
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="6dp">
 
-            <!-- Nomor Soal Badge -->
+            <!-- Nomor Soal Badge (Stacked: SOAL KE / - 1) -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -230,11 +337,11 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="12dp"
-                android:paddingVertical="7dp">
+                android:paddingVertical="6dp">
 
                 <ImageView
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
                     android:src="@drawable/ic_document_bill"
                     app:tint="#FFFFFF" />
 
@@ -242,10 +349,11 @@
                     android:id="@+id/tvNomorSoal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:text="SOAL KE - 1"
+                    android:layout_marginStart="8dp"
+                    android:lineSpacingExtra="0dp"
+                    android:text="SOAL KE\n- 1"
                     android:textColor="#FFFFFF"
-                    android:textSize="13sp"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -254,9 +362,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="dari 40 Soal"
+                android:lineSpacingExtra="0dp"
+                android:text="dari 40\nSoal"
                 android:textColor="#64748B"
-                android:textSize="12sp" />
+                android:textSize="11.5sp" />
 
             <View
                 android:layout_width="0dp"
@@ -266,8 +375,9 @@
             <!-- Font Size Controls (A- / A+) -->
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_height="34dp"
                 android:background="@drawable/bg_capsule_gray"
+                android:clipToOutline="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="4dp">
@@ -278,7 +388,8 @@
                     android:layout_height="match_parent"
                     android:clickable="true"
                     android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
+                    android:clipToOutline="true"
+                    android:foreground="@drawable/ripple_rounded_14dp"
                     android:gravity="center"
                     android:text="A-"
                     android:textColor="#334155"
@@ -296,7 +407,8 @@
                     android:layout_height="match_parent"
                     android:clickable="true"
                     android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
+                    android:clipToOutline="true"
+                    android:foreground="@drawable/ripple_rounded_14dp"
                     android:gravity="center"
                     android:text="A+"
                     android:textColor="#334155"
@@ -308,19 +420,20 @@
             <LinearLayout
                 android:id="@+id/btnGridNavigasi"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_height="34dp"
                 android:layout_marginStart="8dp"
                 android:background="@drawable/bg_capsule_gray"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?attr/selectableItemBackground"
+                android:clipToOutline="true"
+                android:foreground="@drawable/ripple_rounded_pill"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="10dp">
 
                 <ImageView
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
                     android:src="@drawable/ic_grid_view_24"
                     app:tint="#334155" />
 
@@ -330,24 +443,24 @@
                     android:layout_marginStart="6dp"
                     android:text="Daftar"
                     android:textColor="#334155"
-                    android:textSize="12.5sp"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- ========================================== -->
-        <!-- 4. FOOTER STATUS BAR (AUTOSAVE & ID SESI)  -->
-        <!-- ========================================== -->
+        <!-- ==================================================== -->
+        <!-- 4. FOOTER STATUS (AUTOSAVE JAWABAN TERSIMPAN)        -->
+        <!-- ==================================================== -->
         <LinearLayout
             android:id="@+id/layoutAutosaveStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@id/footerUjian"
-            android:background="#F8FAFC"
+            android:background="#FFFFFF"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp">
+            android:paddingVertical="6dp">
 
             <View
                 android:layout_width="7dp"
@@ -374,12 +487,13 @@
                 android:layout_height="wrap_content"
                 android:text="ID Sesi: CBT-ONLINE"
                 android:textColor="#94A3B8"
-                android:textSize="11sp" />
+                android:textSize="10sp"
+                android:visibility="gone" />
         </LinearLayout>
 
-        <!-- ========================================== -->
-        <!-- 5. BOTTOM ACTION NAVIGATION BAR            -->
-        <!-- ========================================== -->
+        <!-- ==================================================== -->
+        <!-- 5. BOTTOM ACTION NAVIGATION BAR                      -->
+        <!-- ==================================================== -->
         <LinearLayout
             android:id="@+id/footerUjian"
             android:layout_width="match_parent"
@@ -390,7 +504,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingHorizontal="16dp"
-            android:paddingTop="10dp"
+            android:paddingTop="8dp"
             android:paddingBottom="14dp">
 
             <!-- Tombol Sebelumnya -->
@@ -399,16 +513,17 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@drawable/bg_capsule_gray"
+                android:clipToOutline="true"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?attr/selectableItemBackground">
+                android:foreground="@drawable/ripple_rounded_pill">
 
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_skip_previous_24"
-                    app:tint="#64748B" />
+                    app:tint="#94A3B8" />
             </FrameLayout>
 
             <!-- Tombol Ragu-ragu -->
@@ -420,6 +535,10 @@
                 android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_btn_ragu_amber"
+                android:clipToOutline="true"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="@drawable/ripple_rounded_pill"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -440,9 +559,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:background="@drawable/bg_btn_lanjut_navy"
+                android:clipToOutline="true"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?attr/selectableItemBackground"
+                android:foreground="@drawable/ripple_rounded_white_pill"
                 android:minWidth="110dp"
                 android:paddingHorizontal="18dp">
 
@@ -476,9 +596,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:background="@drawable/bg_btn_success"
+                android:clipToOutline="true"
                 android:clickable="true"
                 android:focusable="true"
-                android:foreground="?attr/selectableItemBackground"
+                android:foreground="@drawable/ripple_rounded_white_pill"
                 android:minWidth="120dp"
                 android:paddingHorizontal="18dp"
                 android:visibility="gone">
@@ -509,22 +630,22 @@
             </FrameLayout>
         </LinearLayout>
 
-        <!-- ========================================== -->
-        <!-- 6. SCROLLABLE SOAL AREA DENGAN WATERMARK   -->
-        <!-- ========================================== -->
+        <!-- ==================================================== -->
+        <!-- 6. SCROLLABLE SOAL AREA DENGAN WATERMARK             -->
+        <!-- ==================================================== -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/layoutAutosaveStatus"
             android:layout_below="@id/subHeaderBar">
 
-            <!-- WATERMARK KEAMANAN TRANSARAN NAMA & NISN -->
+            <!-- WATERMARK KEAMANAN TRANSPARAN -->
             <TextView
                 android:id="@+id/tvSecurityWatermark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:alpha="0.07"
+                android:alpha="0.06"
                 android:gravity="center"
                 android:rotation="-25"
                 android:text="SMK RIYADHUL JANNAH • CBT SECURITY"
@@ -538,59 +659,17 @@
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:fillViewport="true"
-                android:paddingHorizontal="16dp"
-                android:paddingTop="14dp"
+                android:paddingHorizontal="14dp"
+                android:paddingTop="10dp"
                 android:paddingBottom="20dp">
 
+                <!-- Outer Card Rounded Container for Question & Options -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <!-- Card Petunjuk Soal (Opsional jika ada) -->
-                    <LinearLayout
-                        android:id="@+id/layoutPetunjukSoal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="14dp"
-                        android:background="@drawable/bg_card_petunjuk_soal"
-                        android:orientation="vertical"
-                        android:padding="12dp"
-                        android:visibility="gone">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="14dp"
-                                android:layout_height="14dp"
-                                android:src="@drawable/ic_info_circle_20"
-                                app:tint="#0369A1" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="6dp"
-                                android:text="Petunjuk Format Soal:"
-                                android:textColor="#0369A1"
-                                android:textSize="11.5sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:id="@+id/tvPetunjukSoal"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="6dp"
-                            android:fontFamily="monospace"
-                            android:lineSpacingExtra="3dp"
-                            android:text="Petunjuk teknis..."
-                            android:textColor="#1E293B"
-                            android:textSize="11.5sp" />
-                    </LinearLayout>
+                    android:background="@drawable/bg_cbt_status_container"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <!-- Gambar Soal Atas (Jika ada) -->
                     <ImageView
@@ -606,12 +685,12 @@
                         android:id="@+id/tvTeksSoal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="18dp"
                         android:lineSpacingExtra="5dp"
                         android:text="Memuat butir pertanyaan..."
                         android:textColor="#0F172A"
                         android:textIsSelectable="false"
-                        android:textSize="16sp" />
+                        android:textSize="15sp" />
 
                     <!-- Wadah Opsi Jawaban (PG, PGK, Esai, Menjodohkan) -->
                     <LinearLayout
@@ -624,9 +703,9 @@
         </FrameLayout>
     </RelativeLayout>
 
-    <!-- ========================================== -->
-    <!-- 7. DRAWER PANEL NAVIGASI SOAL              -->
-    <!-- ========================================== -->
+    <!-- ==================================================== -->
+    <!-- 7. DRAWER PANEL NAVIGASI SOAL                        -->
+    <!-- ==================================================== -->
     <LinearLayout
         android:layout_width="320dp"
         android:layout_height="match_parent"
