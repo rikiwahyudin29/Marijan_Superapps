@@ -39,9 +39,9 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_hero_jadwal_vibrant"
                     android:orientation="vertical"
-                    android:padding="20dp">
+                    android:padding="18dp">
 
-                    <!-- Top Pills: Badge & Security Info -->
+                    <!-- Top Row Pills: CBT Tag & Security Info -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -52,12 +52,12 @@
                             android:id="@+id/tvHeroCbtTag"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/bg_badge_ta_pill"
+                            android:background="@drawable/bg_pill_dark_trans"
                             android:paddingHorizontal="12dp"
                             android:paddingVertical="5dp"
                             android:text="• COMPUTER BASED TEST • CBT DIGITAL"
                             android:textColor="#FFFFFF"
-                            android:textSize="11sp"
+                            android:textSize="10sp"
                             android:textStyle="bold" />
 
                         <View
@@ -69,7 +69,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
-                            android:background="@drawable/bg_badge_ta_pill"
+                            android:background="@drawable/bg_pill_dark_trans"
                             android:paddingHorizontal="10dp"
                             android:paddingVertical="5dp"
                             android:orientation="horizontal">
@@ -84,7 +84,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
-                                android:text="Aman &amp; Terpantau"
+                                android:text="Aman &amp; Terenkripsi"
                                 android:textColor="#E0E7FF"
                                 android:textSize="10sp"
                                 android:textStyle="bold" />
@@ -96,7 +96,7 @@
                         android:id="@+id/tvHeroTitleCbt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="14dp"
                         android:text="Jadwal Ujian Digital"
                         android:textColor="#FFFFFF"
                         android:textSize="22sp"
@@ -106,27 +106,91 @@
                         android:id="@+id/tvHeroSubTitleCbt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginTop="3dp"
                         android:text="SMKS Riyadhul Jannah Jalancagak • Evaluasi Terpusat"
                         android:textColor="#CBD5E1"
                         android:textSize="12sp" />
 
-                    <!-- Stats Row -->
+                    <!-- Student Profile Strip Box (Mockup Item) -->
+                    <LinearLayout
+                        android:id="@+id/layoutStudentStrip"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:background="@drawable/bg_cbt_student_strip"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="12dp">
+
+                        <FrameLayout
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:background="@drawable/bg_rounded_border"
+                            android:backgroundTint="#1E3A8A">
+
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_id_badge"
+                                app:tint="#38BDF8" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvHeroStudentName"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Siswa"
+                                android:textColor="#FFFFFF"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvHeroStudentClassNis"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="1dp"
+                                android:text="Kelas • NIS: -"
+                                android:textColor="#94A3B8"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvHeroStudentSemester"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_pill_dark_trans"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="5dp"
+                            android:text="Semester Ganjil"
+                            android:textColor="#E0E7FF"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- 3 Metric Boxes -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="14dp"
                         android:orientation="horizontal">
 
-                        <!-- Stat 1: Total -->
+                        <!-- Box 1: Total Jadwal -->
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_box_metric_trans"
+                            android:background="@drawable/bg_cbt_metric_box"
+                            android:gravity="center"
                             android:orientation="vertical"
-                            android:padding="10dp"
-                            android:gravity="center">
+                            android:padding="10dp">
 
                             <TextView
                                 android:id="@+id/tvStatTotalUjian"
@@ -134,74 +198,98 @@
                                 android:layout_height="wrap_content"
                                 android:text="0"
                                 android:textColor="#FFFFFF"
-                                android:textSize="18sp"
+                                android:textSize="22sp"
                                 android:textStyle="bold" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
                                 android:text="Total Jadwal"
-                                android:textColor="#94A3B8"
-                                android:textSize="10sp"
-                                android:layout_marginTop="2dp" />
+                                android:textColor="#FFFFFF"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Terdaftar"
+                                android:textColor="#38BDF8"
+                                android:textSize="10sp" />
                         </LinearLayout>
 
-                        <!-- Stat 2: Aktif -->
+                        <!-- Box 2: Bisa Ujian -->
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
                             android:layout_marginStart="8dp"
-                            android:background="@drawable/bg_box_metric_trans"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_cbt_metric_box_active"
+                            android:gravity="center"
                             android:orientation="vertical"
-                            android:padding="10dp"
-                            android:gravity="center">
+                            android:padding="10dp">
 
                             <TextView
                                 android:id="@+id/tvStatAktifUjian"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0"
-                                android:textColor="#60A5FA"
-                                android:textSize="18sp"
+                                android:textColor="#38BDF8"
+                                android:textSize="22sp"
                                 android:textStyle="bold" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
                                 android:text="Bisa Ujian"
-                                android:textColor="#94A3B8"
-                                android:textSize="10sp"
-                                android:layout_marginTop="2dp" />
+                                android:textColor="#FFFFFF"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Siap Dikerjakan"
+                                android:textColor="#34D399"
+                                android:textSize="10sp" />
                         </LinearLayout>
 
-                        <!-- Stat 3: Selesai -->
+                        <!-- Box 3: Sudah Ujian -->
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
                             android:layout_marginStart="8dp"
-                            android:background="@drawable/bg_box_metric_trans"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_cbt_metric_box"
+                            android:gravity="center"
                             android:orientation="vertical"
-                            android:padding="10dp"
-                            android:gravity="center">
+                            android:padding="10dp">
 
                             <TextView
                                 android:id="@+id/tvStatSelesaiUjian"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0"
-                                android:textColor="#34D399"
-                                android:textSize="18sp"
+                                android:textColor="#FFFFFF"
+                                android:textSize="22sp"
                                 android:textStyle="bold" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
                                 android:text="Sudah Ujian"
+                                android:textColor="#FFFFFF"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Selesai"
                                 android:textColor="#94A3B8"
-                                android:textSize="10sp"
-                                android:layout_marginTop="2dp" />
+                                android:textSize="10sp" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -215,8 +303,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:scrollbars="none"
-                android:clipToPadding="false">
+                android:clipToPadding="false"
+                android:scrollbars="none">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -224,89 +312,120 @@
                     android:orientation="horizontal"
                     android:paddingVertical="4dp">
 
+                    <!-- Filter: Semua -->
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cvFilterSemua"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
-                        app:cardCornerRadius="16dp"
+                        app:cardCornerRadius="20dp"
                         app:cardElevation="1dp"
                         app:cardBackgroundColor="#1E1B4B"
                         android:clickable="true"
                         android:foreground="?attr/selectableItemBackground">
-                        <TextView
-                            android:id="@+id/tvFilterSemua"
+
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingHorizontal="16dp"
-                            android:paddingVertical="8dp"
-                            android:text="Semua"
-                            android:textColor="#FFFFFF"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="14dp"
+                            android:paddingVertical="8dp">
+
+                            <TextView
+                                android:id="@+id/tvFilterSemua"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Semua"
+                                android:textColor="#FFFFFF"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvFilterSemuaCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:background="@drawable/bg_pill_filter_badge"
+                                android:paddingHorizontal="7dp"
+                                android:paddingVertical="1dp"
+                                android:text="0"
+                                android:textColor="#FFFFFF"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
+                    <!-- Filter: Waktu Ujian -->
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cvFilterAktif"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="1dp"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="0dp"
                         app:cardBackgroundColor="#FFFFFF"
                         android:clickable="true"
                         android:foreground="?attr/selectableItemBackground">
+
                         <TextView
                             android:id="@+id/tvFilterAktif"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:background="@drawable/bg_chip_filter_inactive"
                             android:paddingHorizontal="16dp"
                             android:paddingVertical="8dp"
                             android:text="Waktu Ujian"
-                            android:textColor="#64748B"
+                            android:textColor="#334155"
                             android:textSize="13sp"
                             android:textStyle="bold" />
                     </androidx.cardview.widget.CardView>
 
+                    <!-- Filter: Belum Mulai -->
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cvFilterMendatang"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="1dp"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="0dp"
                         app:cardBackgroundColor="#FFFFFF"
                         android:clickable="true"
                         android:foreground="?attr/selectableItemBackground">
+
                         <TextView
                             android:id="@+id/tvFilterMendatang"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:background="@drawable/bg_chip_filter_inactive"
                             android:paddingHorizontal="16dp"
                             android:paddingVertical="8dp"
                             android:text="Belum Mulai"
-                            android:textColor="#64748B"
+                            android:textColor="#334155"
                             android:textSize="13sp"
                             android:textStyle="bold" />
                     </androidx.cardview.widget.CardView>
 
+                    <!-- Filter: Sudah Ujian -->
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cvFilterSelesai"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="1dp"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="0dp"
                         app:cardBackgroundColor="#FFFFFF"
                         android:clickable="true"
                         android:foreground="?attr/selectableItemBackground">
+
                         <TextView
                             android:id="@+id/tvFilterSelesai"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:background="@drawable/bg_chip_filter_inactive"
                             android:paddingHorizontal="16dp"
                             android:paddingVertical="8dp"
                             android:text="Sudah Ujian"
-                            android:textColor="#64748B"
+                            android:textColor="#334155"
                             android:textSize="13sp"
                             android:textStyle="bold" />
                     </androidx.cardview.widget.CardView>
@@ -314,45 +433,67 @@
             </HorizontalScrollView>
 
             <!-- ========================================== -->
-            <!-- 3. INFO BAR & REFRESH BUTTON               -->
+            <!-- 3. STATUS BAR & REFRESH                    -->
             <!-- ========================================== -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:layout_marginBottom="12dp">
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="10dp">
 
-                <TextView
-                    android:id="@+id/tvInfoJadwal"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:text="Memuat jadwal ujian..."
-                    android:textColor="#64748B"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <androidx.cardview.widget.CardView
+                    <View
+                        android:id="@+id/viewStatusDot"
+                        android:layout_width="7dp"
+                        android:layout_height="7dp"
+                        android:background="@drawable/bg_circle_green" />
+
+                    <TextView
+                        android:id="@+id/tvInfoJadwal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="Menampilkan 1 jadwal ujian aktif"
+                        android:textColor="#334155"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/btnRefreshJadwal"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    app:cardCornerRadius="17dp"
-                    app:cardElevation="1dp"
-                    app:cardBackgroundColor="#FFFFFF"
                     android:clickable="true"
-                    android:foreground="?attr/selectableItemBackground">
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="4dp">
 
                     <ImageView
                         android:id="@+id/ivRefreshJadwal"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="8dp"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
                         android:src="@drawable/ic_refresh_cw"
-                        app:tint="#4F46E5" />
-                </androidx.cardview.widget.CardView>
+                        app:tint="#1E1B4B" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="Perbarui"
+                        android:textColor="#1E1B4B"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
             </RelativeLayout>
 
             <!-- ========================================== -->
@@ -362,21 +503,21 @@
                 android:id="@+id/pbLoading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:gravity="center"
+                android:orientation="vertical"
                 android:padding="32dp"
                 android:visibility="gone">
 
                 <ProgressBar
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:indeterminateTint="#4F46E5" />
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:indeterminateTint="#1E1B4B" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:text="Mengambil jadwal CBT..."
+                    android:layout_marginTop="10dp"
+                    android:text="Menyinkronkan jadwal ujian..."
                     android:textColor="#64748B"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -388,31 +529,31 @@
                 android:id="@+id/layoutEmptyState"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="24dp"
+                android:layout_marginVertical="16dp"
+                app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="1dp"
-                app:cardBackgroundColor="#FFFFFF"
                 android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:gravity="center"
-                    android:padding="32dp">
+                    android:orientation="vertical"
+                    android:padding="28dp">
 
                     <FrameLayout
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:background="@drawable/bg_badge_cbt_blue"
-                        android:layout_marginBottom="12dp">
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/bg_pill_cyan_badge">
 
                         <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_modern_cbt"
-                            app:tint="#4F46E5" />
+                            app:tint="#0284C7" />
                     </FrameLayout>
 
                     <TextView
@@ -420,7 +561,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Belum Ada Jadwal Ujian"
-                        android:textColor="#1E293B"
+                        android:textColor="#0F172A"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
@@ -428,8 +569,8 @@
                         android:id="@+id/tvEmptySubtitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="Tidak ada jadwal ujian yang sesuai dengan kategori yang dipilih."
+                        android:layout_marginTop="4dp"
+                        android:text="Tidak ada jadwal ujian pada kategori ini."
                         android:textAlignment="center"
                         android:textColor="#64748B"
                         android:textSize="12sp" />
@@ -437,13 +578,179 @@
             </androidx.cardview.widget.CardView>
 
             <!-- ========================================== -->
-            <!-- 6. DAFTAR JADWAL UJIAN CONTAINER           -->
+            <!-- 6. DAFTAR JADWAL UJIAN AKTIF               -->
             <!-- ========================================== -->
             <LinearLayout
                 android:id="@+id/containerJadwal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
+
+            <!-- ========================================== -->
+            <!-- 7. SECTION: RIWAYAT & NILAI UJIAN CBT       -->
+            <!-- ========================================== -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_document_bill"
+                        app:tint="#1E1B4B" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Riwayat &amp; Nilai Ujian CBT"
+                        android:textColor="#0F172A"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/bg_pill_teal_badge"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    android:text="Hasil Terverifikasi"
+                    android:textColor="#0F766E"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="12dp"
+                android:text="Pantau hasil evaluasi dan nilai ujian digital yang telah selesai dikoreksi oleh dewan guru."
+                android:textColor="#64748B"
+                android:textSize="12sp" />
+
+            <!-- Container Riwayat Ujian Cards -->
+            <LinearLayout
+                android:id="@+id/containerRiwayat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <!-- Button: Lihat Transkrip Lengkap Nilai CBT -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/btnLihatTranskrip"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="4dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#FFFFFF"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_cbt_button_outline"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_document_bill"
+                        app:tint="#0D9488" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Lihat Transkrip Lengkap Nilai CBT"
+                        android:textColor="#0D9488"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- ========================================== -->
+            <!-- 8. SECTION: PROTOKOL KEAMANAN UJIAN        -->
+            <!-- ========================================== -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#F8FAFC">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_rounded_border"
+                    android:backgroundTint="#F8FAFC"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_shield_check"
+                            app:tint="#1E1B4B" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Protokol Keamanan Ujian"
+                            android:textColor="#1E293B"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="• Aplikasi mendeteksi perpindahan tab atau tangkapan layar otomatis."
+                        android:textColor="#475569"
+                        android:textSize="11.5sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="• Pastikan daya baterai minimal 50% dan sinyal internet stabil."
+                        android:textColor="#475569"
+                        android:textSize="11.5sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="• Kamera pengawas (proctoring) aktif selama sesi ujian berlangsung."
+                        android:textColor="#475569"
+                        android:textSize="11.5sp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
     </ScrollView>

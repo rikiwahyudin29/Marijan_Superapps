@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -18,6 +17,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.rtekmidev.smkrjsuperapps.api.ApiClient
 import com.rtekmidev.smkrjsuperapps.api.JadwalUjian
+import com.rtekmidev.smkrjsuperapps.api.RiwayatUjianItem
+import com.rtekmidev.smkrjsuperapps.api.StudentCbtInfo
 import com.rtekmidev.smkrjsuperapps.util.RefreshableFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,29 +32,36 @@ class CbtFragment : Fragment(), RefreshableFragment {
 
     private var nisnSiswa: String = ""
     private var fullJadwalList: List<JadwalUjian> = emptyList()
+    private var riwayatList: List<RiwayatUjianItem> = emptyList()
     private var currentFilter: String = "SEMUA"
 
-    // Views
-    private var pbLoading: View? = null
-    private var layoutEmptyState: View? = null
-    private var containerJadwal: LinearLayout? = null
-    private var tvInfoJadwal: TextView? = null
-    private var ivRefreshJadwal: ImageView? = null
-
-    // Stats Views
+    // Views - Hero
+    private var tvHeroStudentName: TextView? = null
+    private var tvHeroStudentClassNis: TextView? = null
+    private var tvHeroStudentSemester: TextView? = null
     private var tvStatTotalUjian: TextView? = null
     private var tvStatAktifUjian: TextView? = null
     private var tvStatSelesaiUjian: TextView? = null
 
-    // Filter Views
+    // Views - Filters
     private var cvFilterSemua: CardView? = null
     private var tvFilterSemua: TextView? = null
+    private var tvFilterSemuaCount: TextView? = null
     private var cvFilterAktif: CardView? = null
     private var tvFilterAktif: TextView? = null
     private var cvFilterMendatang: CardView? = null
     private var tvFilterMendatang: TextView? = null
     private var cvFilterSelesai: CardView? = null
     private var tvFilterSelesai: TextView? = null
+
+    // Views - Status & Content
+    private var tvInfoJadwal: TextView? = null
+    private var ivRefreshJadwal: ImageView? = null
+    private var pbLoading: View? = null
+    private var layoutEmptyState: View? = null
+    private var containerJadwal: LinearLayout? = null
+    private var containerRiwayat: LinearLayout? = null
+    private var btnLihatTranskrip: CardView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,19 +73,28 @@ class CbtFragment : Fragment(), RefreshableFragment {
         val sharedPref = requireContext().getSharedPreferences("SesiUjian", Context.MODE_PRIVATE)
         nisnSiswa = sharedPref.getString("nisn", "") ?: ""
 
-        // Bind Views
-        pbLoading = root.findViewById(R.id.pbLoading)
-        layoutEmptyState = root.findViewById(R.id.layoutEmptyState)
-        containerJadwal = root.findViewById(R.id.containerJadwal)
-        tvInfoJadwal = root.findViewById(R.id.tvInfoJadwal)
-        ivRefreshJadwal = root.findViewById(R.id.ivRefreshJadwal)
-
+        // Bind Hero views
+        tvHeroStudentName = root.findViewById(R.id.tvHeroStudentName)
+        tvHeroStudentClassNis = root.findViewById(R.id.tvHeroStudentClassNis)
+        tvHeroStudentSemester = root.findViewById(R.id.tvHeroStudentSemester)
         tvStatTotalUjian = root.findViewById(R.id.tvStatTotalUjian)
         tvStatAktifUjian = root.findViewById(R.id.tvStatAktifUjian)
         tvStatSelesaiUjian = root.findViewById(R.id.tvStatSelesaiUjian)
 
+        // Seed initial student info from local cache
+        val localNama = sharedPref.getString("nama_siswa", null) ?: sharedPref.getString("nama", "Siswa")
+        val localKelas = sharedPref.getString("kelas", "12 TKJT 1")
+        val localNis = sharedPref.getString("nis", null) ?: nisnSiswa
+        val localSem = sharedPref.getString("semester", "Semester Ganjil")
+
+        tvHeroStudentName?.text = localNama
+        tvHeroStudentClassNis?.text = "$localKelas • NIS: $localNis"
+        tvHeroStudentSemester?.text = if (localSem?.startsWith("Semester") == true) localSem else "Semester $localSem"
+
+        // Bind Filters
         cvFilterSemua = root.findViewById(R.id.cvFilterSemua)
         tvFilterSemua = root.findViewById(R.id.tvFilterSemua)
+        tvFilterSemuaCount = root.findViewById(R.id.tvFilterSemuaCount)
         cvFilterAktif = root.findViewById(R.id.cvFilterAktif)
         tvFilterAktif = root.findViewById(R.id.tvFilterAktif)
         cvFilterMendatang = root.findViewById(R.id.cvFilterMendatang)
@@ -85,19 +102,31 @@ class CbtFragment : Fragment(), RefreshableFragment {
         cvFilterSelesai = root.findViewById(R.id.cvFilterSelesai)
         tvFilterSelesai = root.findViewById(R.id.tvFilterSelesai)
 
-        // Setup Filter Click Listeners
+        // Bind Status & Content
+        tvInfoJadwal = root.findViewById(R.id.tvInfoJadwal)
+        ivRefreshJadwal = root.findViewById(R.id.ivRefreshJadwal)
+        pbLoading = root.findViewById(R.id.pbLoading)
+        layoutEmptyState = root.findViewById(R.id.layoutEmptyState)
+        containerJadwal = root.findViewById(R.id.containerJadwal)
+        containerRiwayat = root.findViewById(R.id.containerRiwayat)
+        btnLihatTranskrip = root.findViewById(R.id.btnLihatTranskrip)
+
+        // Setup Listeners
         cvFilterSemua?.setOnClickListener { setFilter("SEMUA") }
         cvFilterAktif?.setOnClickListener { setFilter("AKTIF") }
         cvFilterMendatang?.setOnClickListener { setFilter("MENDATANG") }
         cvFilterSelesai?.setOnClickListener { setFilter("SELESAI") }
 
-        // Setup Refresh Button
         root.findViewById<View>(R.id.btnRefreshJadwal)?.setOnClickListener {
             ivRefreshJadwal?.animate()?.rotationBy(360f)?.setDuration(500)?.start()
-            fetchJadwal(isSilent = false)
+            fetchCbtDashboard(isSilent = false)
         }
 
-        fetchJadwal(isSilent = false)
+        btnLihatTranskrip?.setOnClickListener {
+            startActivity(Intent(requireContext(), NilaiRaportActivity::class.java))
+        }
+
+        fetchCbtDashboard(isSilent = false)
 
         return root
     }
@@ -105,15 +134,15 @@ class CbtFragment : Fragment(), RefreshableFragment {
     override fun onResume() {
         super.onResume()
         if (nisnSiswa.isNotEmpty()) {
-            fetchJadwal(isSilent = true)
+            fetchCbtDashboard(isSilent = true)
         }
     }
 
     override fun refreshData() {
-        fetchJadwal(isSilent = false)
+        fetchCbtDashboard(isSilent = false)
     }
 
-    private fun fetchJadwal(isSilent: Boolean = false) {
+    private fun fetchCbtDashboard(isSilent: Boolean = false) {
         if (!isAdded) return
 
         if (!isSilent) {
@@ -130,14 +159,36 @@ class CbtFragment : Fragment(), RefreshableFragment {
                     pbLoading?.visibility = View.GONE
 
                     if (response.isSuccessful && response.body()?.status == true) {
-                        fullJadwalList = response.body()?.data ?: emptyList()
-                        updateStats()
+                        val body = response.body()!!
+                        fullJadwalList = body.data
+
+                        // 1. Update Student Profile Strip
+                        body.student_info?.let { info ->
+                            updateStudentInfo(info)
+                        }
+
+                        // 2. Update Metrics & Badges
+                        if (body.summary != null) {
+                            tvStatTotalUjian?.text = body.summary.total_jadwal.toString()
+                            tvStatAktifUjian?.text = body.summary.bisa_ujian.toString()
+                            tvStatSelesaiUjian?.text = body.summary.sudah_ujian.toString()
+                            tvFilterSemuaCount?.text = body.summary.total_jadwal.toString()
+                        } else {
+                            calculateLocalStats()
+                        }
+
+                        // 3. Render Active Exam Cards
                         applyCurrentFilter()
+
+                        // 4. Render Riwayat & Nilai Ujian CBT
+                        riwayatList = body.riwayat_ujian ?: emptyList()
+                        renderRiwayat(riwayatList)
+
                     } else {
                         if (!isSilent) {
                             Toast.makeText(
                                 requireContext(),
-                                response.body()?.message ?: "Gagal memuat jadwal ujian.",
+                                response.body()?.message ?: "Gagal memuat jadwal CBT.",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -154,7 +205,7 @@ class CbtFragment : Fragment(), RefreshableFragment {
                     if (!isSilent) {
                         Toast.makeText(
                             requireContext(),
-                            "Koneksi bermasalah: ${e.localizedMessage ?: "Cek sinyal internet"}",
+                            "Koneksi CBT terganggu: ${e.localizedMessage ?: "Cek jaringan internet"}",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -167,61 +218,58 @@ class CbtFragment : Fragment(), RefreshableFragment {
         }
     }
 
-    private fun parseDate(dateStr: String?): Date? {
-        if (dateStr.isNullOrBlank() || dateStr == "-") return null
-        val formats = arrayOf(
-            "yyyy-MM-dd HH:mm:ss",
-            "yyyy-MM-dd HH:mm",
-            "yyyy-MM-dd'T'HH:mm:ss"
-        )
-        for (fmt in formats) {
-            try {
-                val sdf = SimpleDateFormat(fmt, Locale.getDefault())
-                return sdf.parse(dateStr)
-            } catch (_: Exception) {}
+    private fun updateStudentInfo(info: StudentCbtInfo) {
+        if (!info.nama.isNullOrBlank()) {
+            tvHeroStudentName?.text = info.nama
         }
-        return null
+        val kelas = info.kelas ?: "12 TKJT 1"
+        val nis = info.nis ?: "202412089"
+        tvHeroStudentClassNis?.text = "$kelas • NIS: $nis"
+
+        if (!info.semester.isNullOrBlank()) {
+            tvHeroStudentSemester?.text = info.semester
+        }
     }
 
-    private fun updateStats() {
+    private fun calculateLocalStats() {
         val sekarang = Calendar.getInstance().time
-
-        val totalCount = fullJadwalList.size
-        var aktifCount = 0
-        var selesaiCount = 0
+        val total = fullJadwalList.size
+        var bisaUjian = 0
+        var selesai = 0
 
         for (item in fullJadwalList) {
             if (item.status_pengerjaan == "2") {
-                selesaiCount++
+                selesai++
             } else {
                 val waktuSelesai = parseDate(item.waktu_selesai ?: item.waktu_berakhir)
                 val isExpired = (waktuSelesai != null && sekarang.after(waktuSelesai))
                 if (!isExpired) {
-                    aktifCount++
+                    bisaUjian++
                 }
             }
         }
 
-        tvStatTotalUjian?.text = "$totalCount"
-        tvStatAktifUjian?.text = "$aktifCount"
-        tvStatSelesaiUjian?.text = "$selesaiCount"
+        tvStatTotalUjian?.text = "$total"
+        tvStatAktifUjian?.text = "$bisaUjian"
+        tvStatSelesaiUjian?.text = "$selesai"
+        tvFilterSemuaCount?.text = "$total"
     }
 
     private fun setFilter(tipe: String) {
         currentFilter = tipe
 
-        val filterCards = listOf(cvFilterSemua, cvFilterAktif, cvFilterMendatang, cvFilterSelesai)
-        val filterTexts = listOf(tvFilterSemua, tvFilterAktif, tvFilterMendatang, tvFilterSelesai)
-        val filterKeys = listOf("SEMUA", "AKTIF", "MENDATANG", "SELESAI")
+        val cards = listOf(cvFilterSemua, cvFilterAktif, cvFilterMendatang, cvFilterSelesai)
+        val texts = listOf(tvFilterSemua, tvFilterAktif, tvFilterMendatang, tvFilterSelesai)
+        val keys = listOf("SEMUA", "AKTIF", "MENDATANG", "SELESAI")
 
-        for (i in filterKeys.indices) {
-            val isCurrent = (filterKeys[i] == tipe)
+        for (i in keys.indices) {
+            val isCurrent = (keys[i] == tipe)
             if (isCurrent) {
-                filterCards[i]?.setCardBackgroundColor(Color.parseColor("#1E1B4B"))
-                filterTexts[i]?.setTextColor(Color.WHITE)
+                cards[i]?.setCardBackgroundColor(Color.parseColor("#1E1B4B"))
+                texts[i]?.setTextColor(Color.WHITE)
             } else {
-                filterCards[i]?.setCardBackgroundColor(Color.WHITE)
-                filterTexts[i]?.setTextColor(Color.parseColor("#64748B"))
+                cards[i]?.setCardBackgroundColor(Color.WHITE)
+                texts[i]?.setTextColor(Color.parseColor("#334155"))
             }
         }
 
@@ -247,7 +295,9 @@ class CbtFragment : Fragment(), RefreshableFragment {
         }
 
         renderJadwal(filteredList)
-        tvInfoJadwal?.text = "Menampilkan ${filteredList.size} jadwal ujian"
+
+        val countText = if (currentFilter == "AKTIF") "aktif" else if (currentFilter == "SELESAI") "selesai" else ""
+        tvInfoJadwal?.text = "Menampilkan ${filteredList.size} jadwal ujian $countText".trim()
     }
 
     private fun renderJadwal(jadwalList: List<JadwalUjian>) {
@@ -264,30 +314,50 @@ class CbtFragment : Fragment(), RefreshableFragment {
         val sekarang = Calendar.getInstance().time
 
         for (jadwal in jadwalList) {
-            val itemView = inflater.inflate(R.layout.item_jadwal, container, false)
+            val itemView = inflater.inflate(R.layout.item_cbt_jadwal, container, false)
 
-            val viewAksen = itemView.findViewById<View>(R.id.viewAksen)
-            val tvMapel = itemView.findViewById<TextView>(R.id.tvMapel)
-            val tvJudulUjian = itemView.findViewById<TextView>(R.id.tvJudulUjian)
-            val tvRentangWaktu = itemView.findViewById<TextView>(R.id.tvRentangWaktu)
-            val tvDurasi = itemView.findViewById<TextView>(R.id.tvDurasi)
+            val tvKategoriUjian = itemView.findViewById<TextView>(R.id.tvKategoriUjian)
             val tvStatusBadge = itemView.findViewById<TextView>(R.id.tvStatusBadge)
-            val btnKerjakan = itemView.findViewById<Button>(R.id.btnKerjakan)
+            val tvMapelJudul = itemView.findViewById<TextView>(R.id.tvMapelJudul)
+            val tvDeskripsiUjian = itemView.findViewById<TextView>(R.id.tvDeskripsiUjian)
 
-            // Set Informasi
-            tvMapel.text = jadwal.nama_mapel ?: "Mata Pelajaran"
-            tvJudulUjian.text = jadwal.judul_ujian.ifEmpty { "Ujian Sekolah Digital" }
+            val tvRentangWaktu = itemView.findViewById<TextView>(R.id.tvRentangWaktu)
+            val tvSubRentangWaktu = itemView.findViewById<TextView>(R.id.tvSubRentangWaktu)
+            val tvDurasiSoal = itemView.findViewById<TextView>(R.id.tvDurasiSoal)
+            val tvTipeSoal = itemView.findViewById<TextView>(R.id.tvTipeSoal)
+            val tvServerNode = itemView.findViewById<TextView>(R.id.tvServerNode)
 
+            val btnMulaiUjianCard = itemView.findViewById<CardView>(R.id.btnMulaiUjianCard)
+            val tvBtnMulaiText = itemView.findViewById<TextView>(R.id.tvBtnMulaiText)
+            val ivBtnIconStart = itemView.findViewById<ImageView>(R.id.ivBtnIconStart)
+            val ivBtnIconEnd = itemView.findViewById<ImageView>(R.id.ivBtnIconEnd)
+
+            // Category & Titles
+            tvKategoriUjian.text = jadwal.kategori_ujian ?: "UJIAN SEKOLAH"
+            tvMapelJudul.text = jadwal.nama_mapel ?: jadwal.judul_ujian
+
+            val deskripsiStr = jadwal.deskripsi ?: "Penilaian Sumatif Akhir Semester • ${jadwal.nama_mapel ?: "Mata Pelajaran"}"
+            tvDeskripsiUjian.text = deskripsiStr
+
+            // Timing
             val waktuMulaiStr = jadwal.waktu_mulai ?: "-"
             val waktuSelesaiStr = jadwal.waktu_selesai ?: jadwal.waktu_berakhir ?: "-"
+            val mulaiFmt = if (waktuMulaiStr != "-") waktuMulaiStr.take(16) else "-"
+            val selesaiFmt = if (waktuSelesaiStr != "-") {
+                if (waktuSelesaiStr.length >= 16) waktuSelesaiStr.substring(11, 16) else waktuSelesaiStr
+            } else "-"
+            tvRentangWaktu.text = "$mulaiFmt s/d $selesaiFmt WIB"
 
-            val mulaiFormat = if (waktuMulaiStr != "-") waktuMulaiStr.take(16) else "-"
-            val akhirFormat = if (waktuSelesaiStr != "-") waktuSelesaiStr.takeLast(8).take(5) else "-"
-            tvRentangWaktu.text = "$mulaiFormat s/d $akhirFormat WIB"
+            // Durasi & Soal
+            val durasiStr = jadwal.durasi.ifEmpty { "90" }
+            val totalSoalStr = (jadwal.total_soal ?: 40).toString()
+            tvDurasiSoal.text = "Durasi: $durasiStr Menit • $totalSoalStr Butir Soal"
+            tvTipeSoal.text = jadwal.tipe_soal ?: "Pilihan Ganda, PG Kompleks & Uraian"
 
-            tvDurasi.text = "Durasi: ${jadwal.durasi.ifEmpty { "90" }} Menit"
+            // Node Server
+            tvServerNode.text = jadwal.server_node ?: "CBT Node 01 • TKJT High-Speed Dedicated Server"
 
-            // Status & Timing Check
+            // Status Logic
             var isKedaluwarsa = false
             var isBelumMulai = false
 
@@ -304,70 +374,142 @@ class CbtFragment : Fragment(), RefreshableFragment {
             val status = jadwal.status_pengerjaan
 
             if (status == "2") {
-                // SUDAH SELESAI
-                tvStatusBadge.text = "Selesai"
-                tvStatusBadge.setTextColor(Color.parseColor("#10B981"))
-                viewAksen.setBackgroundColor(Color.parseColor("#94A3AF"))
-
-                btnKerjakan.isEnabled = false
-                btnKerjakan.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#E2E8F0"))
-                btnKerjakan.setTextColor(Color.parseColor("#64748B"))
+                // Selesai
+                tvStatusBadge.text = "● Selesai"
+                tvStatusBadge.setBackgroundResource(R.drawable.bg_pill_green_badge)
+                tvStatusBadge.setTextColor(Color.parseColor("#15803D"))
+                tvSubRentangWaktu.text = "Ujian telah selesai dikerjakan"
 
                 val nilaiPg = jadwal.nilai_pg?.toDoubleOrNull() ?: 0.0
                 val nilaiEsai = jadwal.nilai_esai?.toDoubleOrNull() ?: 0.0
                 val totalNilai = nilaiPg + nilaiEsai
                 val formattedNilai = if (totalNilai % 1.0 == 0.0) totalNilai.toInt().toString() else totalNilai.toString()
-                btnKerjakan.text = "NILAI ANDA: $formattedNilai"
+
+                tvBtnMulaiText.text = "NILAI ANDA: $formattedNilai"
+                btnMulaiUjianCard.setCardBackgroundColor(Color.parseColor("#E2E8F0"))
+                tvBtnMulaiText.setTextColor(Color.parseColor("#64748B"))
+                ivBtnIconStart.visibility = View.GONE
+                ivBtnIconEnd.visibility = View.GONE
+                btnMulaiUjianCard.isEnabled = false
 
             } else if (isKedaluwarsa) {
-                // JADWAL SUDAH KEDALUWARSA / LEWAT
-                tvStatusBadge.text = "Terlewat"
-                tvStatusBadge.setTextColor(Color.parseColor("#EF4444"))
-                viewAksen.setBackgroundColor(Color.parseColor("#EF4444"))
+                // Terlewat / Waktu Habis
+                tvStatusBadge.text = "● Terlewat"
+                tvStatusBadge.setBackgroundResource(R.drawable.bg_tag_status_red)
+                tvStatusBadge.setTextColor(Color.parseColor("#DC2626"))
+                tvSubRentangWaktu.text = "Waktu pengerjaan telah berakhir"
 
-                btnKerjakan.text = "WAKTU HABIS"
-                btnKerjakan.isEnabled = false
-                btnKerjakan.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FEE2E2"))
-                btnKerjakan.setTextColor(Color.parseColor("#DC2626"))
+                tvBtnMulaiText.text = "WAKTU HABIS"
+                btnMulaiUjianCard.setCardBackgroundColor(Color.parseColor("#FEE2E2"))
+                tvBtnMulaiText.setTextColor(Color.parseColor("#DC2626"))
+                ivBtnIconStart.visibility = View.GONE
+                ivBtnIconEnd.visibility = View.GONE
+                btnMulaiUjianCard.isEnabled = false
 
             } else if (isBelumMulai) {
-                // JADWAL BELUM MULAI
-                tvStatusBadge.text = "Belum Mulai"
-                tvStatusBadge.setTextColor(Color.parseColor("#3B82F6"))
-                viewAksen.setBackgroundColor(Color.parseColor("#3B82F6"))
+                // Belum Mulai
+                tvStatusBadge.text = "● Belum Mulai"
+                tvStatusBadge.setBackgroundResource(R.drawable.bg_pill_cyan_badge)
+                tvStatusBadge.setTextColor(Color.parseColor("#0284C7"))
+                tvSubRentangWaktu.text = "Menunggu jadwal ujian dimulai"
 
-                btnKerjakan.text = "BELUM WAKTUNYA"
-                btnKerjakan.isEnabled = false
-                btnKerjakan.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#DBEAFE"))
-                btnKerjakan.setTextColor(Color.parseColor("#1D4ED8"))
+                tvBtnMulaiText.text = "BELUM WAKTUNYA"
+                btnMulaiUjianCard.setCardBackgroundColor(Color.parseColor("#DBEAFE"))
+                tvBtnMulaiText.setTextColor(Color.parseColor("#1D4ED8"))
+                ivBtnIconStart.visibility = View.GONE
+                ivBtnIconEnd.visibility = View.GONE
+                btnMulaiUjianCard.isEnabled = false
 
             } else if (status == "1") {
-                // SEDANG DIKERJAKAN
-                tvStatusBadge.text = "Sedang Dikerjakan"
-                tvStatusBadge.setTextColor(Color.parseColor("#F59E0B"))
-                viewAksen.setBackgroundColor(Color.parseColor("#F59E0B"))
+                // Sedang Dikerjakan
+                tvStatusBadge.text = "● Sedang Dikerjakan"
+                tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_amber_soft)
+                tvStatusBadge.setTextColor(Color.parseColor("#D97706"))
+                tvSubRentangWaktu.text = "Sesi ujian Anda masih aktif"
 
-                btnKerjakan.text = "LANJUTKAN UJIAN"
-                btnKerjakan.isEnabled = true
-                btnKerjakan.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#F59E0B"))
-                btnKerjakan.setTextColor(Color.WHITE)
-                btnKerjakan.setOnClickListener { bukaKonfirmasi(jadwal) }
+                tvBtnMulaiText.text = "LANJUTKAN UJIAN SEKARANG"
+                btnMulaiUjianCard.setCardBackgroundColor(Color.parseColor("#D97706"))
+                tvBtnMulaiText.setTextColor(Color.WHITE)
+                ivBtnIconStart.visibility = View.VISIBLE
+                ivBtnIconEnd.visibility = View.VISIBLE
+                btnMulaiUjianCard.isEnabled = true
+                btnMulaiUjianCard.setOnClickListener { bukaKonfirmasi(jadwal) }
 
             } else {
-                // TERSEDIA UNTUK DIKERJAKAN
-                tvStatusBadge.text = "Tersedia"
-                tvStatusBadge.setTextColor(Color.parseColor("#10B981"))
-                viewAksen.setBackgroundColor(Color.parseColor("#4F46E5"))
+                // Tersedia
+                tvStatusBadge.text = "● Tersedia"
+                tvStatusBadge.setBackgroundResource(R.drawable.bg_pill_green_badge)
+                tvStatusBadge.setTextColor(Color.parseColor("#15803D"))
+                tvSubRentangWaktu.text = "Sisa waktu pengerjaan hari ini"
 
-                btnKerjakan.text = "MULAI UJIAN"
-                btnKerjakan.isEnabled = true
-                btnKerjakan.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#4F46E5"))
-                btnKerjakan.setTextColor(Color.WHITE)
-                btnKerjakan.setOnClickListener { bukaKonfirmasi(jadwal) }
+                tvBtnMulaiText.text = "MULAI UJIAN SEKARANG"
+                btnMulaiUjianCard.setCardBackgroundColor(Color.parseColor("#1E1B4B"))
+                tvBtnMulaiText.setTextColor(Color.WHITE)
+                ivBtnIconStart.visibility = View.VISIBLE
+                ivBtnIconEnd.visibility = View.VISIBLE
+                btnMulaiUjianCard.isEnabled = true
+                btnMulaiUjianCard.setOnClickListener { bukaKonfirmasi(jadwal) }
             }
 
             container.addView(itemView)
         }
+    }
+
+    private fun renderRiwayat(items: List<RiwayatUjianItem>) {
+        val container = containerRiwayat ?: return
+        container.removeAllViews()
+
+        if (items.isEmpty()) return
+
+        val inflater = LayoutInflater.from(requireContext())
+        for (item in items) {
+            val itemView = inflater.inflate(R.layout.item_cbt_riwayat, container, false)
+
+            val tvKategoriRiwayat = itemView.findViewById<TextView>(R.id.tvKategoriRiwayat)
+            val tvMapelRiwayat = itemView.findViewById<TextView>(R.id.tvMapelRiwayat)
+            val tvKkmTanggal = itemView.findViewById<TextView>(R.id.tvKkmTanggal)
+            val tvNilaiRiwayat = itemView.findViewById<TextView>(R.id.tvNilaiRiwayat)
+            val tvPredikatBadge = itemView.findViewById<TextView>(R.id.tvPredikatBadge)
+
+            tvKategoriRiwayat.text = item.kategori ?: "SIMULASI CBT"
+            tvMapelRiwayat.text = item.nama_mapel ?: "Mata Pelajaran"
+            tvKkmTanggal.text = "KKM: ${item.kkm}  •  ${item.tanggal ?: "-"}"
+
+            val nilaiVal = item.nilai ?: 0.0
+            val formattedNilai = if (nilaiVal % 1.0 == 0.0) nilaiVal.toInt().toString() else String.format(Locale.US, "%.1f", nilaiVal)
+            tvNilaiRiwayat.text = formattedNilai
+
+            val pred = item.predikat ?: if (nilaiVal >= 75.0) "LULUS" else "REMEDIAL"
+            tvPredikatBadge.text = pred
+
+            if (nilaiVal < 75.0) {
+                tvNilaiRiwayat.setTextColor(Color.parseColor("#E11D48"))
+                tvPredikatBadge.setBackgroundResource(R.drawable.bg_badge_red_soft)
+                tvPredikatBadge.setTextColor(Color.parseColor("#DC2626"))
+            } else {
+                tvNilaiRiwayat.setTextColor(Color.parseColor("#0F766E"))
+                tvPredikatBadge.setBackgroundResource(R.drawable.bg_pill_green_badge)
+                tvPredikatBadge.setTextColor(Color.parseColor("#16A34A"))
+            }
+
+            container.addView(itemView)
+        }
+    }
+
+    private fun parseDate(dateStr: String?): Date? {
+        if (dateStr.isNullOrBlank() || dateStr == "-") return null
+        val formats = arrayOf(
+            "yyyy-MM-dd HH:mm:ss",
+            "yyyy-MM-dd HH:mm",
+            "yyyy-MM-dd'T'HH:mm:ss"
+        )
+        for (fmt in formats) {
+            try {
+                val sdf = SimpleDateFormat(fmt, Locale.getDefault())
+                return sdf.parse(dateStr)
+            } catch (_: Exception) {}
+        }
+        return null
     }
 
     private fun bukaKonfirmasi(jadwal: JadwalUjian) {

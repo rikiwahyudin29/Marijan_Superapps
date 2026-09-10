@@ -34,8 +34,34 @@ data class DetailGuru(
 // --- MODEL UNTUK JADWAL UJIAN ---
 data class JadwalResponse(
     val status: Boolean,
-    val message: String,
-    val data: List<JadwalUjian>
+    val message: String? = null,
+    val data: List<JadwalUjian> = emptyList(),
+    val student_info: StudentCbtInfo? = null,
+    val summary: CbtSummary? = null,
+    val riwayat_ujian: List<RiwayatUjianItem>? = null
+)
+
+data class StudentCbtInfo(
+    val nama: String? = null,
+    val kelas: String? = null,
+    val nis: String? = null,
+    val semester: String? = null
+)
+
+data class CbtSummary(
+    val total_jadwal: Int = 0,
+    val bisa_ujian: Int = 0,
+    val sudah_ujian: Int = 0
+)
+
+data class RiwayatUjianItem(
+    val id: String? = null,
+    val nama_mapel: String? = null,
+    val kategori: String? = null,
+    val kkm: Int = 75,
+    val tanggal: String? = null,
+    val nilai: Double? = null,
+    val predikat: String? = null
 )
 
 data class JadwalUjian(
@@ -44,7 +70,7 @@ data class JadwalUjian(
     val nilai_pg: String?,
     val nilai_esai: String?,
     val id_jadwal: String,
-    val waktu_mulai: String,
+    val waktu_mulai: String?,
     val waktu_berakhir: String?,
     val waktu_selesai: String?,
     val durasi: String,
@@ -52,7 +78,12 @@ data class JadwalUjian(
     val setting_token: String,
     val judul_ujian: String,
     val nama_mapel: String?,
-    val pengawas: String?
+    val pengawas: String?,
+    val deskripsi: String? = null,
+    val kategori_ujian: String? = null,
+    val total_soal: Int? = null,
+    val tipe_soal: String? = null,
+    val server_node: String? = null
 )
 
 // --- MODEL UNTUK DOWNLOAD SOAL ---
