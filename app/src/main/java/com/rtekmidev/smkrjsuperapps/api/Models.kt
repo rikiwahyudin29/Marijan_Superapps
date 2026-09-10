@@ -346,8 +346,30 @@ data class SettingData(
 data class TagihanResponse(
     val status: Boolean,
     val message: String?,
+    val tahun_ajaran: String? = null,
+    val tanggal_hari_ini: String? = null,
+    val wa_keuangan: String? = null,
+    val siswa: SiswaKeuanganInfo? = null,
+    val ringkasan: RingkasanKeuangan? = null,
+    val kategori_list: List<String>? = null,
     val tagihan: List<DataTagihan>?,
-    val riwayat: List<DataRiwayat>? // Ã°Å¸â€Â¥ Tambahkan Penangkap Riwayat
+    val riwayat: List<DataRiwayat>?
+)
+
+data class SiswaKeuanganInfo(
+    val id: Long?,
+    val nama_lengkap: String?,
+    val nis: String?,
+    val nisn: String?,
+    val nama_kelas: String?
+)
+
+data class RingkasanKeuangan(
+    val total_tagihan: Double?,
+    val total_dibayar: Double?,
+    val sisa_tagihan: Double?,
+    val item_aktif_count: Int?,
+    val persen_lunas: Int?
 )
 
 data class DataTagihan(
@@ -355,10 +377,13 @@ data class DataTagihan(
     val nama_pos: String?,
     val nominal_tagihan: String?,
     val nominal_terbayar: String?,
-    val status_bayar: String?
+    val status_bayar: String?,
+    val keterangan: String? = null,
+    val bulan_ke: String? = null,
+    val tipe_bayar: String? = null
 )
 
-// Ã°Å¸â€Â¥ Data Class Baru Untuk Riwayat (Sesuai output KeuanganApi.php)
+// Data Class Baru Untuk Riwayat
 data class DataRiwayat(
     val id: String?,
     val nama_pos: String?,
@@ -373,7 +398,13 @@ data class DataRiwayat(
 data class TripayCheckoutResponse(
     val status: Boolean,
     val checkout_url: String?,
-    val message: String
+    val message: String,
+    val merchant_ref: String? = null,
+    val reference: String? = null,
+    val nominal: Long? = null,
+    val nama_pos: String? = null,
+    val qr_string: String? = null,
+    val qr_url: String? = null
 )
 
 // --- MODUL MATERI & TUGAS ---

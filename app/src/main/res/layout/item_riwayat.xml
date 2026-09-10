@@ -4,11 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
-    app:cardCornerRadius="12dp"
+    app:cardCornerRadius="16dp"
     app:cardElevation="0dp"
     app:cardBackgroundColor="#FFFFFF"
     app:strokeWidth="1dp"
-    app:strokeColor="#E5E7EB">
+    app:strokeColor="#E2E8F0">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,77 +19,84 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="6dp">
 
             <TextView
                 android:id="@+id/tvTanggalRiwayat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="10 May 2026"
-                android:textSize="12sp"
-                android:textColor="#6B7280"/>
+                android:text="10 Sep 2026"
+                android:textSize="11sp"
+                android:textColor="#64748B"/>
 
             <TextView
                 android:id="@+id/tvBadgeRiwayat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:text="MENUNGGU"
+                android:text="LUNAS"
                 android:textSize="10sp"
-                android:textColor="#D97706"
+                android:textColor="#059669"
                 android:textStyle="bold"
                 android:paddingHorizontal="8dp"
-                android:paddingVertical="4dp"
-                android:background="#FEF3C7" />
+                android:paddingVertical="3dp"
+                android:background="@drawable/bg_badge_green_soft" />
         </RelativeLayout>
-
-        <TextView
-            android:id="@+id/tvNamaRiwayat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pembayaran PKL"
-            android:textSize="15sp"
-            android:textColor="#111827"
-            android:textStyle="bold"/>
-        <TextView
-            android:id="@+id/tvMetodeRiwayat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="QRIS BY SHOPEEPAY"
-            android:textSize="12sp"
-            android:textColor="#6B7280"
-            android:textAllCaps="true"
-            android:layout_marginTop="2dp"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp">
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@id/tvNominalRiwayat"
+                android:layout_marginEnd="8dp"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tvNamaRiwayat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pembayaran SPP"
+                    android:textSize="14sp"
+                    android:textColor="#0F172A"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/tvMetodeRiwayat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="QRIS"
+                    android:textSize="11sp"
+                    android:textColor="#64748B"
+                    android:layout_marginTop="2dp"/>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tvNominalRiwayat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="Rp 500.000"
-                android:textSize="16sp"
-                android:textColor="#111827"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/btnLanjutBayar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:text="Lanjut Bayar"
-                android:textSize="13sp"
-                android:textColor="#3B82F6"
+                android:text="+ Rp 0"
+                android:textSize="14sp"
+                android:textColor="#059669"
                 android:textStyle="bold"
-                android:clickable="true"
-                android:foreground="?attr/selectableItemBackground"
-                android:visibility="gone"
-                android:padding="8dp"/>
+                android:background="@drawable/bg_badge_green_soft"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"/>
         </RelativeLayout>
+
+        <TextView
+            android:id="@+id/btnLanjutBayar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lanjut Bayar →"
+            android:textSize="12sp"
+            android:textColor="#2563EB"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"/>
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>

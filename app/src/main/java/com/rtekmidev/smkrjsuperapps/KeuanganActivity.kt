@@ -31,8 +31,7 @@ class KeuanganActivity : AppCompatActivity() {
         nisnSiswa = sharedPref.getString("nisn", "") ?: ""
         namaSiswa = sharedPref.getString("nama", "Siswa") ?: "Siswa"
 
-        findViewById<TextView>(R.id.tvNamaSiswaKeuangan).text = namaSiswa
-        findViewById<ImageView>(R.id.btnBackKeuangan).setOnClickListener { finish() }
+        findViewById<TextView>(R.id.tvNamaSiswaKeuangan)?.text = namaSiswa
 
         muatTagihan()
     }
@@ -40,7 +39,7 @@ class KeuanganActivity : AppCompatActivity() {
     private fun muatTagihan() {
         val wadah = findViewById<LinearLayout>(R.id.wadahTagihan)
         val loading = findViewById<LinearLayout>(R.id.loadingKeuangan)
-        val tvTotalTunggakan = findViewById<TextView>(R.id.tvTotalTunggakanBesar)
+        val tvTotalTunggakan = findViewById<TextView>(R.id.tvStatSisaTunggakan)
 
         loading.visibility = View.VISIBLE
 
@@ -133,11 +132,10 @@ class KeuanganActivity : AppCompatActivity() {
 
                             val card = layoutInflater.inflate(R.layout.item_tagihan, null) as CardView
 
-                            card.findViewById<TextView>(R.id.tvKategoriTagihan).text = item.nama_pos ?: "TAGIHAN"
-                            card.findViewById<TextView>(R.id.tvNamaTagihan).text = item.nama_pos ?: "Tagihan"
-                            card.findViewById<TextView>(R.id.tvNominalTagihan).text = formatRupiah.format(nominalInt).replace(",00", "")
+                            card.findViewById<TextView>(R.id.tvNamaTagihan)?.text = item.nama_pos ?: "Tagihan"
+                            card.findViewById<TextView>(R.id.tvNominalTagihan)?.text = formatRupiah.format(nominalInt).replace(",00", "")
 
-                            val btnBayar = card.findViewById<Button>(R.id.btnBayarTagihan)
+                            val btnBayar = card.findViewById<View>(R.id.btnBayarTagihan)
                             val badge = card.findViewById<TextView>(R.id.tvBadgeStatus)
 
                             if (statusBayar.equals("LUNAS", true)) {

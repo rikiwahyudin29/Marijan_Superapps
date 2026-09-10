@@ -115,11 +115,12 @@ interface ApiService {
     suspend fun getTagihan(@Query("nisn") nisn: String): Response<TagihanResponse>
 
     @FormUrlEncoded
-    @POST("api/keuangan/bayarTripay") // Sesuaikan dengan route CodeIgniter bos!
+    @POST("api/keuangan/bayarTripay")
     suspend fun bayarTagihan(
         @Field("nisn") nisn: String,
         @Field("id_tagihan") idTagihan: String,
-        @Field("method") method: String // WAJIB ADA SESUAI KEINGINAN API BOS
+        @Field("method") method: String,
+        @Field("nominal_bayar") nominalBayar: Long? = null
     ): Response<TripayCheckoutResponse>
 
     @GET("api/akademik/materi")

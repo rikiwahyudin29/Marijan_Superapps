@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_bottom_sheet"
+    android:paddingHorizontal="24dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="28dp">
+
+    <!-- Drag Handle -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:background="#CBD5E1"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Header: Title & Close Button -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/tvModalTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nominal Pembayaran"
+            android:textColor="#0F172A"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-black"
+            android:layout_centerVertical="true"/>
+
+        <ImageView
+            android:id="@+id/btnTutupModalBayar"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_close_24"
+            android:background="@drawable/bg_circle_gray"
+            android:padding="6dp"
+            app:tint="#64748B"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tvModalDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Anda dapat mencicil pembayaran ini. Silakan tentukan nominal yang ingin dibayarkan. Minimal pembayaran adalah Rp 10.000."
+        android:textColor="#64748B"
+        android:textSize="12sp"
+        android:lineSpacingExtra="2dp"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Box Sisa Tagihan -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_stat_card_keuangan"
+        android:orientation="horizontal"
+        android:padding="14dp"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="16dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SISA TAGIHAN SAAT INI"
+                android:textSize="10sp"
+                android:textColor="#64748B"
+                android:textStyle="bold"
+                android:letterSpacing="0.05"/>
+            <TextView
+                android:id="@+id/tvItemModalNama"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tagihan Lainnya"
+                android:textColor="#0F172A"
+                android:textSize="12sp"
+                android:layout_marginTop="2dp"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvModalSisaTagihan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rp 0"
+            android:textColor="#DC2626"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-black"/>
+    </LinearLayout>
+
+    <!-- Input Nominal -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NOMINAL YANG DIBAYARKAN (RP)"
+        android:textColor="#334155"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.05"
+        android:layout_marginBottom="6dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="@drawable/bg_input_rounded"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="14dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rp "
+            android:textColor="#64748B"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:id="@+id/etNominalBayar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:hint="10000"
+            android:textColor="#0F172A"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:inputType="number"
+            android:maxLines="1"/>
+    </LinearLayout>
+
+    <!-- Error / Helper text -->
+    <TextView
+        android:id="@+id/tvErrorNominal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Batas minimal Rp 10.000. Ketikkan angka tanpa titik."
+        android:textColor="#94A3B8"
+        android:textSize="10sp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- Quick Preset Chips -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:layout_marginBottom="20dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/btnPresetFull"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bayar Penuh"
+                android:textColor="#059669"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_badge_green_soft"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="7dp"
+                android:layout_marginEnd="8dp"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <TextView
+                android:id="@+id/btnPreset50k"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp 50.000"
+                android:textColor="#475569"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_chip_filter_inactive"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="7dp"
+                android:layout_marginEnd="8dp"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <TextView
+                android:id="@+id/btnPreset100k"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp 100.000"
+                android:textColor="#475569"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_chip_filter_inactive"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="7dp"
+                android:layout_marginEnd="8dp"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <TextView
+                android:id="@+id/btnPreset200k"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp 200.000"
+                android:textColor="#475569"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_chip_filter_inactive"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="7dp"
+                android:clickable="true"
+                android:focusable="true"/>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <!-- Action Buttons: Batal & Lanjutkan ke QRIS -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/btnBatalModalBayar"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="Batal"
+            android:textColor="#475569"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:backgroundTint="#FFFFFF"
+            android:layout_marginEnd="10dp"
+            app:strokeColor="#E2E8F0"
+            app:strokeWidth="1dp"
+            app:cornerRadius="14dp"/>
+
+        <Button
+            android:id="@+id/btnSubmitModalQris"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="2"
+            android:text="Lanjutkan ke QRIS"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:backgroundTint="#059669"
+            app:icon="@drawable/ic_modern_scan"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp"
+            app:iconTint="#FFFFFF"
+            app:cornerRadius="14dp"/>
+    </LinearLayout>
+
+</LinearLayout>

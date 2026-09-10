@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="20dp"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="12dp"
+    app:cardBackgroundColor="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="22dp">
+
+        <!-- Top Header: Logo / School name & Close Button -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@id/btnTutupQrisDialog"
+                android:layout_marginEnd="8dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SMK RIYADLUL JANNAH"
+                    android:textColor="#1E3A8A"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pembayaran Resmi QRIS"
+                    android:textColor="#0F172A"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-black"/>
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/btnTutupQrisDialog"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_close_24"
+                android:background="@drawable/bg_circle_gray"
+                android:padding="6dp"
+                app:tint="#64748B"/>
+        </RelativeLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#F1F5F9"
+            android:layout_marginBottom="14dp"/>
+
+        <!-- Item Name & Nominal -->
+        <TextView
+            android:id="@+id/tvQrisItemNama"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tagihan PSAT Ganjil"
+            android:textColor="#64748B"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+
+        <TextView
+            android:id="@+id/tvQrisNominalBesar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rp 330.000"
+            android:textColor="#059669"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-black"
+            android:gravity="center"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="6dp"/>
+
+        <!-- Invoice Ref with copy action -->
+        <LinearLayout
+            android:id="@+id/btnSalinRef"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/bg_pill_grey_solid"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="16dp">
+            <TextView
+                android:id="@+id/tvQrisMerchantRef"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="INV-20260910-123"
+                android:textColor="#475569"
+                android:textSize="10sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" 📋 Salin"
+                android:textColor="#2563EB"
+                android:textSize="10sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <!-- QR Code Container -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="230dp"
+            android:layout_height="230dp"
+            android:layout_gravity="center_horizontal"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:strokeWidth="1.5dp"
+            app:strokeColor="#E2E8F0"
+            android:layout_marginBottom="12dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="12dp">
+
+                <ImageView
+                    android:id="@+id/ivQrCodeImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter"/>
+
+                <ProgressBar
+                    android:id="@+id/pbQrLoading"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"/>
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- QRIS Info / Accepted Methods -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Scan via M-Banking (BCA, BRI, Mandiri, BNI, BSI) atau E-Wallet (GoPay, OVO, DANA, ShopeePay)"
+            android:textColor="#64748B"
+            android:textSize="10.5sp"
+            android:gravity="center"
+            android:lineSpacingExtra="2dp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <Button
+                android:id="@+id/btnSimpanQr"
+                android:layout_width="0dp"
+                android:layout_height="46dp"
+                android:layout_weight="1"
+                android:text="Simpan QR"
+                android:textColor="#334155"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:backgroundTint="#F8FAFC"
+                android:layout_marginEnd="10dp"
+                app:icon="@drawable/ic_download_alt"
+                app:iconGravity="textStart"
+                app:iconTint="#475569"
+                app:iconPadding="6dp"
+                app:strokeColor="#E2E8F0"
+                app:strokeWidth="1dp"
+                app:cornerRadius="14dp"/>
+
+            <Button
+                android:id="@+id/btnSelesaiBayar"
+                android:layout_width="0dp"
+                android:layout_height="46dp"
+                android:layout_weight="1.2"
+                android:text="Sudah Bayar"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:backgroundTint="#059669"
+                app:icon="@drawable/ic_check_circle_24"
+                app:iconGravity="textStart"
+                app:iconTint="#FFFFFF"
+                app:iconPadding="6dp"
+                app:cornerRadius="14dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
