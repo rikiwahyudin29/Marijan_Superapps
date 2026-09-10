@@ -27,9 +27,11 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
@@ -68,13 +70,14 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
     private var selectedKategori = "Semua"
     private var currentRingkasan: RingkasanKeuangan? = null
     private var loadingDialog: Dialog? = null
-    private var selectedImageBase64: String? = null
-    private var pendingImageCallback: ((Uri) -> Unit)? = null
+    private var pendingMultipleImageCallback: ((List<Uri>) -> Unit)? = null
 
-    private val pickImageLauncher = registerForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        uri?.let { pendingImageCallback?.invoke(it) }
+    private val pickMultipleImagesLauncher = registerForActivityResult(
+        ActivityResultContracts.GetMultipleContents()
+    ) { uris: List<Uri> ->
+        if (uris.isNotEmpty()) {
+            pendingMultipleImageCallback?.invoke(uris)
+        }
     }
 
     override fun onDestroyView() {
@@ -808,14 +811,60 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
             card.findViewById<TextView>(R.id.tvNominalSanggahan)?.text =
                 sanggahan.nominal_formatted ?: formatRupiah(nominal)
 
-            // Thumbnail Bukti Transfer
+            // Thumbnail & Multi-foto Bukti Transfer
+            val buktiUrls = sanggahan.bukti_urls?.filter { it.isNotBlank() }
+                ?: listOfNotNull(sanggahan.bukti_pembayaran_url).filter { it.isNotBlank() }
+
             val ivThumb = card.findViewById<ImageView>(R.id.ivThumbnailBukti)
-            val buktiUrl = sanggahan.bukti_pembayaran_url
-            if (!buktiUrl.isNullOrEmpty() && ivThumb != null) {
-                Glide.with(this).load(buktiUrl).centerCrop().into(ivThumb)
-                card.findViewById<View>(R.id.boxThumbnailBukti)?.setOnClickListener {
-                    showPhotoPreviewDialog(buktiUrl)
+            val tvCount = card.findViewById<TextView>(R.id.tvCountFotoBukti)
+            val scrollMulti = card.findViewById<HorizontalScrollView>(R.id.scrollItemBuktiMulti)
+            val llMulti = card.findViewById<LinearLayout>(R.id.llItemBuktiMultiContainer)
+
+            if (buktiUrls.isNotEmpty()) {
+                if (ivThumb != null) {
+                    Glide.with(this).load(buktiUrls[0]).centerCrop().into(ivThumb)
+                    card.findViewById<View>(R.id.boxThumbnailBukti)?.setOnClickListener {
+                        showPhotoPreviewDialog(buktiUrls[0])
+                    }
                 }
+
+                if (buktiUrls.size > 1) {
+                    tvCount?.visibility = View.VISIBLE
+                    tvCount?.text = "${buktiUrls.size} foto"
+
+                    scrollMulti?.visibility = View.VISIBLE
+                    llMulti?.removeAllViews()
+
+                    buktiUrls.forEachIndexed { idx, url ->
+                        val thumbCard = CardView(requireContext()).apply {
+                            radius = dpToPx(8).toFloat()
+                            cardElevation = 0f
+                            setCardBackgroundColor(Color.parseColor("#F1F5F9"))
+                            val params = LinearLayout.LayoutParams(dpToPx(46), dpToPx(46)).apply {
+                                marginEnd = dpToPx(6)
+                            }
+                            layoutParams = params
+                        }
+
+                        val img = ImageView(requireContext()).apply {
+                            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                            scaleType = ImageView.ScaleType.CENTER_CROP
+                        }
+                        Glide.with(this).load(url).centerCrop().into(img)
+                        thumbCard.addView(img)
+
+                        thumbCard.setOnClickListener {
+                            showPhotoPreviewDialog(url)
+                        }
+                        llMulti?.addView(thumbCard)
+                    }
+                } else {
+                    tvCount?.visibility = View.GONE
+                    scrollMulti?.visibility = View.GONE
+                }
+            } else {
+                tvCount?.visibility = View.GONE
+                scrollMulti?.visibility = View.GONE
             }
 
             // Catatan Petugas (jika ditolak/disetujui)
@@ -849,15 +898,16 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
         val sheetView = layoutInflater.inflate(R.layout.bottom_sheet_sanggahan, null)
         bottomSheet.setContentView(sheetView)
 
-        selectedImageBase64 = null
+        val selectedImages = mutableListOf<Pair<String, Bitmap>>()
 
         val spTagihan = sheetView.findViewById<Spinner>(R.id.spTagihanSanggahan)
         val etNominal = sheetView.findViewById<EditText>(R.id.etNominalSanggahan)
         val etCatatan = sheetView.findViewById<EditText>(R.id.etCatatanSanggahan)
         val boxPilihFoto = sheetView.findViewById<CardView>(R.id.boxPilihFotoBukti)
-        val layoutPlaceholder = sheetView.findViewById<LinearLayout>(R.id.layoutUploadPlaceholder)
-        val layoutPreview = sheetView.findViewById<View>(R.id.layoutUploadPreview)
-        val ivPreview = sheetView.findViewById<ImageView>(R.id.ivPreviewFotoSanggahan)
+        val tvUploadPrompt = sheetView.findViewById<TextView>(R.id.tvUploadPrompt)
+        val tvCountFotoTerpilih = sheetView.findViewById<TextView>(R.id.tvCountFotoTerpilih)
+        val scrollPreview = sheetView.findViewById<HorizontalScrollView>(R.id.scrollPreviewSanggahan)
+        val llPreviewContainer = sheetView.findViewById<LinearLayout>(R.id.llPreviewContainerSanggahan)
         val btnClose = sheetView.findViewById<ImageView>(R.id.btnCloseSheetSanggahan)
         val btnBatal = sheetView.findViewById<Button>(R.id.btnBatalSanggahan)
         val btnKirim = sheetView.findViewById<Button>(R.id.btnKirimSanggahan)
@@ -867,8 +917,8 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
             !it.status_bayar.equals("LUNAS", ignoreCase = true)
         }
         val tagihanLabels = activeTagihan.map { tag ->
-            val sisa = ((tag.nominal_tagihan?.toDoubleOrNull() ?: 0.0) - (tag.nominal_terbayar?.toDoubleOrNull() ?: 0.0)).coerceAtLeast(0.0)
-            "${tag.nama_pos ?: "Tagihan"} — Sisa: ${formatRupiah(sisa)}"
+            val terbayar = tag.nominal_terbayar?.toDoubleOrNull() ?: 0.0
+            "${tag.nama_pos ?: "Tagihan"} — Terbayar: ${formatRupiah(terbayar)}"
         }
 
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, tagihanLabels)
@@ -885,12 +935,12 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
             }
         }
 
-        // Auto-fill nominal based on selected tagihan
+        // Auto-fill nominal based on selected tagihan (default to nominal_terbayar)
         fun updateNominalForIndex(index: Int) {
             if (index < 0 || index >= activeTagihan.size) return
             val tag = activeTagihan[index]
-            val sisa = ((tag.nominal_tagihan?.toDoubleOrNull() ?: 0.0) - (tag.nominal_terbayar?.toDoubleOrNull() ?: 0.0)).coerceAtLeast(0.0)
-            etNominal.setText(sisa.toLong().toString())
+            val terbayar = tag.nominal_terbayar?.toDoubleOrNull() ?: 0.0
+            etNominal.setText(terbayar.toLong().toString())
             etNominal.setSelection(etNominal.text.length)
         }
 
@@ -903,13 +953,42 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
-        // Photo picker
-        pendingImageCallback = { uri ->
-            handleSelectedImage(uri, ivPreview, layoutPlaceholder, layoutPreview)
+        // Helper to update thumbnail previews in bottom sheet
+        fun refreshPhotoPreviews() {
+            if (selectedImages.isEmpty()) {
+                scrollPreview?.visibility = View.GONE
+                tvCountFotoTerpilih?.text = "Bisa > 1 Foto"
+                tvUploadPrompt?.text = "Ketuk untuk memilih foto bukti (bisa lebih dari 1)"
+            } else {
+                scrollPreview?.visibility = View.VISIBLE
+                tvCountFotoTerpilih?.text = "${selectedImages.size} Foto Terpilih"
+                tvUploadPrompt?.text = "+ Tambah Foto Bukti Lainnya"
+
+                llPreviewContainer?.removeAllViews()
+                selectedImages.forEachIndexed { idx, pair ->
+                    val thumbView = createThumbnailView(pair.second, idx) { removeIdx ->
+                        if (removeIdx in selectedImages.indices) {
+                            selectedImages.removeAt(removeIdx)
+                            refreshPhotoPreviews()
+                        }
+                    }
+                    llPreviewContainer?.addView(thumbView)
+                }
+            }
         }
 
-        boxPilihFoto.setOnClickListener {
-            pickImageLauncher.launch("image/*")
+        // Photo picker (supports selecting multiple photos at once or incrementally)
+        pendingMultipleImageCallback = { uris ->
+            uris.forEach { uri ->
+                processImageUri(uri)?.let { pair ->
+                    selectedImages.add(pair)
+                }
+            }
+            refreshPhotoPreviews()
+        }
+
+        boxPilihFoto?.setOnClickListener {
+            pickMultipleImagesLauncher.launch("image/*")
         }
 
         btnClose.setOnClickListener { bottomSheet.dismiss() }
@@ -924,39 +1003,37 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
 
             val nominalStr = etNominal.text.toString().trim()
             val nominalVal = nominalStr.toLongOrNull() ?: 0L
-            if (nominalVal <= 0) {
-                Toast.makeText(requireContext(), "Nominal pembayaran harus lebih dari 0", Toast.LENGTH_SHORT).show()
+            if (nominalVal < 0) {
+                Toast.makeText(requireContext(), "Nominal yang sudah dibayar tidak boleh negatif", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            if (selectedImageBase64.isNullOrEmpty()) {
-                Toast.makeText(requireContext(), "Foto bukti pembayaran wajib dilampirkan", Toast.LENGTH_SHORT).show()
+            if (selectedImages.isEmpty()) {
+                Toast.makeText(requireContext(), "Foto bukti pembayaran wajib dilampirkan (minimal 1 foto)", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             val tagTerpilih = activeTagihan[posisiTagihan]
             val keterangan = etCatatan.text.toString().trim().ifEmpty { null }
 
+            val b64List = selectedImages.map { it.first }
+            val jsonBukti = com.google.gson.Gson().toJson(b64List)
+
             bottomSheet.dismiss()
             submitSanggahan(
                 idTagihan = tagTerpilih.id ?: "",
                 nominal = nominalVal,
                 keterangan = keterangan,
-                buktiBase64 = selectedImageBase64!!
+                buktiBase64 = jsonBukti
             )
         }
 
         bottomSheet.show()
     }
 
-    private fun handleSelectedImage(
-        uri: Uri,
-        ivPreview: ImageView?,
-        layoutPlaceholder: View?,
-        layoutPreview: View?
-    ) {
-        try {
-            val inputStream = requireContext().contentResolver.openInputStream(uri) ?: return
+    private fun processImageUri(uri: Uri): Pair<String, Bitmap>? {
+        return try {
+            val inputStream = requireContext().contentResolver.openInputStream(uri) ?: return null
             val originalBitmap = BitmapFactory.decodeStream(inputStream)
             inputStream.close()
 
@@ -973,15 +1050,68 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
             val baos = ByteArrayOutputStream()
             scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 75, baos)
             val imageBytes = baos.toByteArray()
-            selectedImageBase64 = "data:image/jpeg;base64," + Base64.encodeToString(imageBytes, Base64.NO_WRAP)
-
-            // Show preview
-            ivPreview?.setImageBitmap(scaledBitmap)
-            layoutPlaceholder?.visibility = View.GONE
-            layoutPreview?.visibility = View.VISIBLE
+            val base64 = "data:image/jpeg;base64," + Base64.encodeToString(imageBytes, Base64.NO_WRAP)
+            Pair(base64, scaledBitmap)
         } catch (e: Exception) {
-            Toast.makeText(requireContext(), "Gagal memuat foto: ${e.message}", Toast.LENGTH_SHORT).show()
+            null
         }
+    }
+
+    private fun createThumbnailView(
+        bitmap: Bitmap,
+        index: Int,
+        onDelete: (Int) -> Unit
+    ): View {
+        val root = RelativeLayout(requireContext()).apply {
+            layoutParams = LinearLayout.LayoutParams(dpToPx(76), dpToPx(76)).apply {
+                marginEnd = dpToPx(8)
+            }
+        }
+
+        val card = CardView(requireContext()).apply {
+            radius = dpToPx(10).toFloat()
+            cardElevation = 0f
+            setCardBackgroundColor(Color.parseColor("#F1F5F9"))
+            val lp = RelativeLayout.LayoutParams(dpToPx(66), dpToPx(66)).apply {
+                addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+                addRule(RelativeLayout.ALIGN_PARENT_START)
+            }
+            layoutParams = lp
+        }
+
+        val img = ImageView(requireContext()).apply {
+            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            scaleType = ImageView.ScaleType.CENTER_CROP
+            setImageBitmap(bitmap)
+        }
+        card.addView(img)
+        root.addView(card)
+
+        // Delete badge button
+        val btnDelete = CardView(requireContext()).apply {
+            radius = dpToPx(10).toFloat()
+            cardElevation = dpToPx(2).toFloat()
+            setCardBackgroundColor(Color.parseColor("#EF4444"))
+            val lp = RelativeLayout.LayoutParams(dpToPx(20), dpToPx(20)).apply {
+                addRule(RelativeLayout.ALIGN_PARENT_TOP)
+                addRule(RelativeLayout.ALIGN_PARENT_END)
+            }
+            layoutParams = lp
+        }
+
+        val iconX = ImageView(requireContext()).apply {
+            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            setImageResource(R.drawable.ic_close_24)
+            setColorFilter(Color.WHITE)
+            setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
+        }
+        btnDelete.addView(iconX)
+        btnDelete.setOnClickListener {
+            onDelete(index)
+        }
+        root.addView(btnDelete)
+
+        return root
     }
 
     private fun submitSanggahan(
@@ -1009,7 +1139,6 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
                         Toast.makeText(requireContext(),
                             resp.body()?.message ?: "Sanggahan berhasil dikirim! Menunggu review keuangan.",
                             Toast.LENGTH_LONG).show()
-                        selectedImageBase64 = null
                         refreshData()
                     } else {
                         Toast.makeText(requireContext(),

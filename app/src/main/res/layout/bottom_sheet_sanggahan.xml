@@ -87,7 +87,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="NOMINAL PEMBAYARAN (RP) *"
+        android:text="NOMINAL YANG SUDAH DIBAYAR (RP) *"
         android:textSize="10.5sp"
         android:textColor="#475569"
         android:textStyle="bold"
@@ -128,23 +128,40 @@
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/tvHelperNominalSanggahan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Otomatis terisi sisa tagihan. Dapat disesuaikan jika menyicil."
+        android:text="Terisi nominal yang telah tercatat dibayar. Sesuaikan jika nominal sebenarnya berbeda."
         android:textSize="10.5sp"
         android:textColor="#94A3B8"
         android:layout_marginBottom="14dp"/>
 
-    <!-- 3. Foto Bukti Transfer -->
-    <TextView
-        android:layout_width="wrap_content"
+    <!-- 3. Foto Bukti Transfer (Bisa Lebih dari 1 Foto) -->
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="FOTO BUKTI PEMBAYARAN / STRUK *"
-        android:textSize="10.5sp"
-        android:textColor="#475569"
-        android:textStyle="bold"
-        android:letterSpacing="0.05"
-        android:layout_marginBottom="6dp"/>
+        android:layout_marginBottom="6dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:text="FOTO BUKTI PEMBAYARAN *"
+            android:textSize="10.5sp"
+            android:textColor="#475569"
+            android:textStyle="bold"
+            android:letterSpacing="0.05"/>
+
+        <TextView
+            android:id="@+id/tvCountFotoTerpilih"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Bisa > 1 Foto"
+            android:textSize="10.5sp"
+            android:textColor="#6366F1"
+            android:textStyle="bold"/>
+    </RelativeLayout>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/boxPilihFotoBukti"
@@ -155,7 +172,7 @@
         app:cardBackgroundColor="#F8FAFC"
         app:strokeWidth="1dp"
         app:strokeColor="#CBD5E1"
-        android:layout_marginBottom="14dp"
+        android:layout_marginBottom="8dp"
         android:clickable="true"
         android:focusable="true">
 
@@ -163,21 +180,22 @@
             android:id="@+id/layoutUploadPlaceholder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="20dp"
+            android:padding="16dp"
             android:gravity="center"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/ic_upload_cloud"
                 app:tint="#6366F1"
                 android:layout_marginBottom="6dp"/>
 
             <TextView
+                android:id="@+id/tvUploadPrompt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ketuk untuk memilih foto bukti transfer"
+                android:text="Ketuk untuk memilih foto bukti (bisa lebih dari 1)"
                 android:textSize="12sp"
                 android:textColor="#334155"
                 android:textStyle="bold"/>
@@ -185,39 +203,31 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Format JPG / PNG dari Galeri atau Kamera"
+                android:text="Format JPG / PNG • Bisa pilih banyak sekaligus"
                 android:textSize="10sp"
                 android:textColor="#94A3B8"
                 android:layout_marginTop="2dp"/>
         </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/layoutUploadPreview"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/ivPreviewFotoSanggahan"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="8dp"
-                android:background="#99000000"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp"
-                android:text="✓ Foto Terpilih (Ketuk untuk ganti)"
-                android:textColor="#FFFFFF"
-                android:textSize="10.5sp"
-                android:textStyle="bold"/>
-        </RelativeLayout>
     </androidx.cardview.widget.CardView>
+
+    <!-- Horizontal ScrollView untuk Preview Thumbnail Foto-foto yang dipilih -->
+    <HorizontalScrollView
+        android:id="@+id/scrollPreviewSanggahan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="14dp"
+        android:scrollbars="none"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/llPreviewContainerSanggahan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="4dp">
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <!-- 4. Catatan / Keterangan -->
     <TextView
