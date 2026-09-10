@@ -1,95 +1,1250 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollViewProfilSiswa"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_main"
-    android:orientation="vertical"
-    android:padding="24dp">
+    android:background="@android:color/transparent"
+    android:clipToPadding="false"
+    android:paddingBottom="120dp">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Profil Akun"
-        android:textColor="@color/text_primary"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="32dp"
-        android:layout_marginTop="32dp"/>
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="16dp">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
-        app:cardBackgroundColor="@color/card_bg"
-        android:layout_marginBottom="32dp">
+        <!-- 1. HERO PROFILE CARD (DARK INDIGO / ROYAL BLUE) -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="#1E1B4B">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <!-- Top Row: Photo + Information -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <!-- Avatar with Camera / Sync Badge -->
+                    <FrameLayout
+                        android:layout_width="76dp"
+                        android:layout_height="76dp"
+                        android:layout_marginEnd="16dp">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/ivProfilFotoSiswa"
+                            android:layout_width="74dp"
+                            android:layout_height="74dp"
+                            android:layout_gravity="center"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ic_modern_profile"
+                            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+                            app:strokeColor="#4338CA"
+                            app:strokeWidth="2.5dp" />
+
+                        <!-- Camera Badge on bottom right -->
+                        <FrameLayout
+                            android:id="@+id/btnEditFotoSiswa"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="bottom|end"
+                            android:background="@drawable/bg_rounded_border"
+                            android:backgroundTint="#0D9488"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <ImageView
+                                android:layout_width="13dp"
+                                android:layout_height="13dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_camera_edit"
+                                app:tint="#FFFFFF" />
+                        </FrameLayout>
+                    </FrameLayout>
+
+                    <!-- Details Right -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <!-- Top Status Badges Row -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="6dp">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:background="@drawable/bg_rounded_border"
+                                android:backgroundTint="#064E3B"
+                                android:paddingHorizontal="7dp"
+                                android:paddingVertical="3dp"
+                                android:layout_marginEnd="6dp">
+
+                                <ImageView
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp"
+                                    android:src="@drawable/ic_shield_check"
+                                    app:tint="#34D399"
+                                    android:layout_marginEnd="4dp" />
+
+                                <TextView
+                                    android:id="@+id/tvHeroStatusBadge"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Siswa Aktif"
+                                    android:textColor="#34D399"
+                                    android:textSize="9sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tvHeroTaBadge"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="TA 2026/2027"
+                                android:textColor="#E0E7FF"
+                                android:textSize="9sp"
+                                android:textStyle="bold"
+                                android:background="@drawable/bg_rounded_border"
+                                android:backgroundTint="#312E81"
+                                android:paddingHorizontal="7dp"
+                                android:paddingVertical="3dp" />
+                        </LinearLayout>
+
+                        <!-- Student Name -->
+                        <TextView
+                            android:id="@+id/tvHeroNamaSiswa"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Nama Siswa"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16.5sp"
+                            android:textStyle="bold"
+                            android:maxLines="2"
+                            android:ellipsize="end" />
+
+                        <!-- NISN -->
+                        <TextView
+                            android:id="@+id/tvHeroNisn"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="NISN: -"
+                            android:textColor="#CBD5E1"
+                            android:textSize="11sp"
+                            android:layout_marginTop="2dp" />
+
+                        <!-- NIS -->
+                        <TextView
+                            android:id="@+id/tvHeroNis"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="NIS: -"
+                            android:textColor="#94A3B8"
+                            android:textSize="10.5sp"
+                            android:layout_marginTop="1dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#2E2B6B"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Bottom Badges: Kelas/Jurusan & Wali Kelas -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/badgeHeroKelasJurusan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#312E81"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="5dp"
+                        android:layout_marginBottom="6dp">
+
+                        <ImageView
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
+                            android:src="@drawable/ic_graduation_cap"
+                            app:tint="#A5B4FC"
+                            android:layout_marginEnd="6dp" />
+
+                        <TextView
+                            android:id="@+id/tvHeroBadgeKelasJurusan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Kelas &amp; Jurusan"
+                            android:textColor="#E0E7FF"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/badgeHeroWaliSiswa"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#0E7490"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="5dp">
+
+                        <ImageView
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
+                            android:src="@drawable/ic_modern_users"
+                            app:tint="#A5F3FC"
+                            android:layout_marginEnd="6dp" />
+
+                        <TextView
+                            android:id="@+id/tvHeroBadgeWaliSiswa"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Wali Kelas: -"
+                            android:textColor="#FFFFFF"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <!-- 2. METRIC SUMMARY ROW (3 CARDS) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="14dp"
+            android:baselineAligned="false">
+
+            <!-- Card 1: Presensi Bulan Ini -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0.5dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="12dp">
+
+                    <FrameLayout
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#CCFBF1">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_shield_check"
+                            app:tint="#0D9488" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/tvMetricPresensiValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="98%"
+                        android:textColor="#1E1B4B"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Presensi Bln Ini"
+                        android:textColor="#64748B"
+                        android:textSize="9.5sp"
+                        android:layout_marginTop="2dp" />
+
+                    <TextView
+                        android:id="@+id/tvMetricPresensiBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sangat Baik"
+                        android:textColor="#0F766E"
+                        android:textSize="8.5sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#CCFBF1"
+                        android:paddingHorizontal="6dp"
+                        android:paddingVertical="2dp"
+                        android:layout_marginTop="6dp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Card 2: Mata Pelajaran Aktif -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="3dp"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0.5dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="12dp">
+
+                    <FrameLayout
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#EDE9FE">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_modern_briefcase"
+                            app:tint="#6D28D9" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/tvMetricMapelValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="14 Mapel"
+                        android:textColor="#1E1B4B"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mata Pelajaran"
+                        android:textColor="#64748B"
+                        android:textSize="9.5sp"
+                        android:layout_marginTop="2dp" />
+
+                    <TextView
+                        android:id="@+id/tvMetricMapelBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Kurikulum M"
+                        android:textColor="#5B21B6"
+                        android:textSize="8.5sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#EDE9FE"
+                        android:paddingHorizontal="6dp"
+                        android:paddingVertical="2dp"
+                        android:layout_marginTop="6dp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Card 3: Poin Disiplin Siswa -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0.5dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="12dp">
+
+                    <FrameLayout
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#E0F2FE">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_graduation_cap"
+                            app:tint="#0284C7" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/tvMetricDisiplinValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="100 Poin"
+                        android:textColor="#1E1B4B"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Poin Disiplin"
+                        android:textColor="#64748B"
+                        android:textSize="9.5sp"
+                        android:layout_marginTop="2dp" />
+
+                    <TextView
+                        android:id="@+id/tvMetricDisiplinBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sangat Baik"
+                        android:textColor="#0369A1"
+                        android:textSize="8.5sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#E0F2FE"
+                        android:paddingHorizontal="6dp"
+                        android:paddingVertical="2dp"
+                        android:layout_marginTop="6dp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+
+        <!-- 3. INFORMASI PERSONAL SISWA -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0.5dp"
+            app:cardBackgroundColor="#FFFFFF">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Header Info Personal -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <FrameLayout
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#EEF2FF"
+                        android:layout_marginEnd="10dp">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_modern_profile"
+                            app:tint="#4F46E5" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Informasi Personal Siswa"
+                            android:textColor="#0F172A"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Data pribadi &amp; kontak kesiswaan"
+                            android:textColor="#64748B"
+                            android:textSize="10.5sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/btnEditProfilSiswa"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="✏ Edit Profil"
+                        android:textColor="#4338CA"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#EEF2FF"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="5dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground" />
+                </LinearLayout>
+
+                <!-- Item 1: No WhatsApp -->
+                <LinearLayout
+                    android:id="@+id/btnOpenWhatsAppSiswa"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_rounded_border"
+                    android:backgroundTint="#F8FAFC"
+                    android:padding="12dp"
+                    android:layout_marginTop="12dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <FrameLayout
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#DCFCE7"
+                        android:layout_marginEnd="12dp">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_whatsapp"
+                            app:tint="#16A34A" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="No. WhatsApp / HP"
+                            android:textColor="#64748B"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/tvInfoNoWaSiswa"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-"
+                            android:textColor="#0F172A"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_send_nav"
+                        app:tint="#16A34A" />
+                </LinearLayout>
+
+                <!-- Item 2: Email Terdaftar -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_rounded_border"
+                    android:backgroundTint="#F8FAFC"
+                    android:padding="12dp"
+                    android:layout_marginTop="8dp">
+
+                    <FrameLayout
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#EDE9FE"
+                        android:layout_marginEnd="12dp">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_modern_mail"
+                            app:tint="#7C3AED" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Email Terdaftar"
+                            android:textColor="#64748B"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/tvInfoEmailSiswa"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-"
+                            android:textColor="#0F172A"
+                            android:textSize="12.5sp"
+                            android:textStyle="bold"
+                            android:ellipsize="end"
+                            android:maxLines="1" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_check_circle_24"
+                        app:tint="#10B981" />
+                </LinearLayout>
+
+                <!-- Item 3: 2 Column Box (Tempat/Tgl Lahir & Jenis Kelamin) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/bg_rounded_border"
+                    android:backgroundTint="#F8FAFC"
+                    android:padding="12dp"
+                    android:layout_marginTop="8dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.2"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tempat, Tgl Lahir"
+                            android:textColor="#64748B"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/tvInfoTglLahirSiswa"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-"
+                            android:textColor="#0F172A"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="#E2E8F0"
+                        android:layout_marginHorizontal="10dp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.8"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Jenis Kelamin"
+                            android:textColor="#64748B"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/tvInfoJkSiswa"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-"
+                            android:textColor="#0F172A"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Item 4: Alamat Lengkap -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_rounded_border"
+                    android:backgroundTint="#F8FAFC"
+                    android:padding="12dp"
+                    android:layout_marginTop="8dp">
+
+                    <FrameLayout
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#EEF2FF"
+                        android:layout_marginEnd="12dp">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_location_pin_16"
+                            app:tint="#6366F1" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Alamat Domisili"
+                            android:textColor="#64748B"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/tvInfoAlamatSiswa"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-"
+                            android:textColor="#0F172A"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <!-- 4. DATA AKADEMIK & KESISWAAN -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0.5dp"
+            app:cardBackgroundColor="#FFFFFF">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Header Akademik -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <FrameLayout
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#CCFBF1"
+                        android:layout_marginEnd="10dp">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_graduation_cap"
+                            app:tint="#0D9488" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Data Akademik &amp; Kesiswaan"
+                            android:textColor="#0F172A"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Identitas resmi kesiswaan SMK Riyadhul Jannah"
+                            android:textColor="#64748B"
+                            android:textSize="10.5sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Row 1: Rombel & Jurusan -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="14dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Rombel &amp; Jurusan"
+                        android:textColor="#64748B"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tvAkademikKelasJurusan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:textColor="#4F46E5"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#EEF2FF"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="4dp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#F1F5F9"
+                    android:layout_marginVertical="10dp" />
+
+                <!-- Row 2: Wali Kelas Pendamping -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Wali Kelas Pendamping"
+                        android:textColor="#64748B"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tvAkademikWaliKelas"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:textColor="#0F172A"
+                        android:textSize="11.5sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Sub-card: Kartu Pelajar Digital -->
+                <LinearLayout
+                    android:id="@+id/cardKartuPelajarDigital"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_rounded_border"
+                    android:backgroundTint="#F8FAFC"
+                    android:padding="12dp"
+                    android:layout_marginTop="12dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <FrameLayout
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#1E1B4B"
+                        android:layout_marginEnd="12dp">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_pdf_document"
+                            app:tint="#FFFFFF" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvKartuPelajarJudul"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Kartu Pelajar Digital 2026/2027"
+                            android:textColor="#0F172A"
+                            android:textSize="12.5sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvKartuPelajarKet"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Format Digital • QR Code Resmi • Aktif"
+                            android:textColor="#64748B"
+                            android:textSize="10.5sp"
+                            android:layout_marginTop="1dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/btnLihatKartuPelajar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🔍 Lihat"
+                        android:textColor="#0F172A"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#FFFFFF"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="5dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <!-- 5. KEAMANAN & PENGATURAN AKUN -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0.5dp"
+            app:cardBackgroundColor="#FFFFFF">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Header Keamanan -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <FrameLayout
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#EEF2FF"
+                        android:layout_marginEnd="10dp">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_shield_check"
+                            app:tint="#4F46E5" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Keamanan &amp; Pengaturan Akun"
+                            android:textColor="#0F172A"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Kredensial dan sesi login siswa"
+                            android:textColor="#64748B"
+                            android:textSize="10.5sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Item 1: Ganti Password -->
+                <LinearLayout
+                    android:id="@+id/cardGantiPasswordSiswa"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_rounded_border"
+                    android:backgroundTint="#F8FAFC"
+                    android:padding="12dp"
+                    android:layout_marginTop="12dp">
+
+                    <FrameLayout
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#EDE9FE"
+                        android:layout_marginEnd="12dp">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_lock_key"
+                            app:tint="#7C3AED" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Ganti Password"
+                            android:textColor="#0F172A"
+                            android:textSize="12.5sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvTerakhirGantiPwSiswa"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Terakhir diperbarui beberapa waktu lalu"
+                            android:textColor="#64748B"
+                            android:textSize="10.5sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/btnGantiPasswordSiswa"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ubah"
+                        android:textColor="#4338CA"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#FFFFFF"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="5dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground" />
+                </LinearLayout>
+
+                <!-- Item 2: Status Autentikasi / 2FA -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_rounded_border"
+                    android:backgroundTint="#F8FAFC"
+                    android:padding="12dp"
+                    android:layout_marginTop="8dp">
+
+                    <FrameLayout
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#DCFCE7"
+                        android:layout_marginEnd="12dp">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_shield_check"
+                            app:tint="#16A34A" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Status Keamanan Akun"
+                            android:textColor="#0F172A"
+                            android:textSize="12.5sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvTwoFactorStatusSiswa"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Autentikasi Akun Terverifikasi"
+                            android:textColor="#059669"
+                            android:textSize="10.5sp" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_check_circle_24"
+                        app:tint="#10B981" />
+                </LinearLayout>
+
+                <!-- Item 3: Perangkat Ini -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_rounded_border"
+                    android:backgroundTint="#F8FAFC"
+                    android:padding="12dp"
+                    android:layout_marginTop="8dp">
+
+                    <FrameLayout
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/bg_rounded_border"
+                        android:backgroundTint="#F1F5F9"
+                        android:layout_marginEnd="12dp">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_smartphone"
+                            app:tint="#475569" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvDeviceNameSiswa"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Perangkat Android"
+                            android:textColor="#0F172A"
+                            android:textSize="12.5sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvDeviceStatusSiswa"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Perangkat Ini • Aktif Sekarang"
+                            android:textColor="#059669"
+                            android:textSize="10.5sp" />
+                    </LinearLayout>
+
+                    <!-- Active Green Dot -->
+                    <View
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:background="@drawable/bg_circle_green" />
+                </LinearLayout>
+
+                <!-- Item 4: Tombol Keluar Akun -->
+                <LinearLayout
+                    android:id="@+id/btnKeluarAkunSiswa"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@drawable/bg_rounded_border"
+                    android:backgroundTint="#FEF2F2"
+                    android:layout_marginTop="14dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_modern_logout"
+                        app:tint="#DC2626"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Keluar Akun (Logout)"
+                        android:textColor="#DC2626"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <!-- 6. FOOTER APP INFO -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp"
-            android:gravity="center">
-
-            <!-- Avatar Placeholder -->
-            <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@android:drawable/ic_menu_myplaces"
-                app:tint="@color/text_blue"
-                android:background="@drawable/bg_input_light_rounded"
-                android:padding="16dp"
-                android:layout_marginBottom="16dp"/>
+            android:gravity="center"
+            android:layout_marginTop="24dp">
 
             <TextView
-                android:id="@+id/tvProfilNama"
+                android:id="@+id/tvFooterAppNameSiswa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nama Siswa"
-                android:textColor="@color/text_primary"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textAlignment="center"
-                android:layout_marginBottom="8dp"/>
+                android:text="SMK Riyadhul Jannah SuperApps v2.4.1"
+                android:textColor="#94A3B8"
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tvProfilNisn"
+                android:id="@+id/tvFooterPortalDescSiswa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="NISN: 1234567890"
-                android:textColor="@color/text_secondary"
-                android:textSize="14sp"
-                android:textAlignment="center"
-                android:layout_marginBottom="8dp"/>
-                
-            <TextView
-                android:id="@+id/tvProfilRole"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Role: SISWA"
-                android:textColor="@color/text_hint"
-                android:textSize="14sp"
-                android:textAlignment="center"/>
-                
+                android:text="Portal Kesiswaan &amp; Manajemen Akademik Digital"
+                android:textColor="#94A3B8"
+                android:textSize="10sp"
+                android:layout_marginTop="2dp" />
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="@drawable/bg_button_dark_rounded">
-
-        <Button
-            android:id="@+id/btnLogout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:text="Keluar (Logout)"
-            android:textAllCaps="false"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF" />
-    </FrameLayout>
-
-</LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

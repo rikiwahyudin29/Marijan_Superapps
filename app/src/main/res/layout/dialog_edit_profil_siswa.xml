@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_bottom_sheet"
+    android:backgroundTint="#FFFFFF"
+    android:padding="20dp">
+
+    <!-- Handle Bar -->
+    <View
+        android:layout_width="36dp"
+        android:layout_height="4dp"
+        android:background="@drawable/bg_rounded_border"
+        android:backgroundTint="#CBD5E1"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Edit Informasi Personal Siswa"
+        android:textColor="#0F172A"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Perbarui nomor kontak WhatsApp, email, dan alamat domisili Anda"
+        android:textColor="#64748B"
+        android:textSize="11.5sp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- No WhatsApp -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No. WhatsApp / HP Siswa"
+        android:textColor="#475569"
+        android:textSize="11.5sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/etEditNoWaSiswa"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:background="@drawable/bg_input_rounded"
+        android:hint="Contoh: 08123456789"
+        android:inputType="phone"
+        android:paddingHorizontal="14dp"
+        android:textColor="#0F172A"
+        android:textSize="13sp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Email -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email Terdaftar"
+        android:textColor="#475569"
+        android:textSize="11.5sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/etEditEmailSiswa"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:background="@drawable/bg_input_rounded"
+        android:hint="Contoh: siswa@smkrj.sch.id"
+        android:inputType="textEmailAddress"
+        android:paddingHorizontal="14dp"
+        android:textColor="#0F172A"
+        android:textSize="13sp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Alamat -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Alamat Domisili Siswa"
+        android:textColor="#475569"
+        android:textSize="11.5sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/etEditAlamatSiswa"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="@drawable/bg_input_rounded"
+        android:gravity="top|start"
+        android:hint="Alamat tempat tinggal / domisili siswa saat ini"
+        android:inputType="textMultiLine"
+        android:padding="12dp"
+        android:textColor="#0F172A"
+        android:textSize="13sp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="20dp" />
+
+    <!-- Action Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/btnBatalEditSiswa"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="6dp"
+            android:text="Batal"
+            android:textColor="#64748B"
+            android:textSize="12.5sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:background="@drawable/bg_rounded_border"
+            android:backgroundTint="#F1F5F9"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground" />
+
+        <TextView
+            android:id="@+id/btnSimpanEditSiswa"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:layout_marginStart="6dp"
+            android:text="Simpan"
+            android:textColor="#FFFFFF"
+            android:textSize="12.5sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:background="@drawable/bg_rounded_border"
+            android:backgroundTint="#1E1B4B"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground" />
+    </LinearLayout>
+</LinearLayout>

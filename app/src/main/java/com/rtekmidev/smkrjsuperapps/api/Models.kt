@@ -1084,4 +1084,56 @@ data class ProfilAppInfo(
     val portal_desc: String? = null
 )
 
+// --- PROFIL SISWA MODELS ---
+data class ProfilSiswaResponse(
+    val status: Boolean,
+    val message: String? = null,
+    val data: ProfilSiswaData? = null
+)
+
+data class ProfilSiswaData(
+    val hero: ProfilSiswaHero? = null,
+    val metrics: ProfilSiswaMetrics? = null,
+    val informasi_personal: ProfilInformasiPersonal? = null,
+    val akademik_kesiswaan: ProfilAkademikKesiswaan? = null,
+    val keamanan: ProfilKeamanan? = null,
+    val app_info: ProfilAppInfo? = null
+)
+
+data class ProfilSiswaHero(
+    val nama: String? = null,
+    val nisn: String? = null,
+    val nis: String? = null,
+    val foto_url: String? = null,
+    val status_badge: String? = null,
+    val kelas_badge: String? = null,
+    val jurusan_badge: String? = null,
+    val wali_kelas_badge: String? = null
+)
+
+data class ProfilSiswaMetrics(
+    val presensi: MetricItem? = null,
+    val mapel: MetricItem? = null,
+    val poin_disiplin: MetricItem? = null
+)
+
+data class ProfilAkademikKesiswaan(
+    val nisn: String? = null,
+    val nis: String? = null,
+    val nama_kelas: String? = null,
+    val jurusan: String? = null,
+    val wali_kelas: String? = null,
+    val sekolah_asal: String? = null,
+    val tahun_angkatan: String? = null,
+    val status_siswa: String? = null,
+    val kartu_pelajar: ProfilKartuPelajar? = null
+)
+
+data class ProfilKartuPelajar(
+    val judul: String? = null,
+    val keterangan: String? = null,
+    val qr_code: String? = null
+)
+
+
 

@@ -158,6 +158,26 @@ interface ApiService {
         @Part file: MultipartBody.Part
     ): Response<SubmitTugasResponse>
 
+    @GET("api/akademik/profil")
+    suspend fun getProfilSiswa(@Query("nisn") nisn: String): Response<ProfilSiswaResponse>
+
+    @FormUrlEncoded
+    @POST("api/akademik/update-profil")
+    suspend fun updateProfilSiswa(
+        @Field("nisn") nisn: String,
+        @Field("no_whatsapp") noWhatsapp: String?,
+        @Field("email") email: String?,
+        @Field("alamat") alamat: String?
+    ): Response<BaseApiResponse>
+
+    @FormUrlEncoded
+    @POST("api/akademik/ganti-password")
+    suspend fun gantiPasswordSiswa(
+        @Field("nisn") nisn: String,
+        @Field("password_lama") passwordLama: String,
+        @Field("password_baru") passwordBaru: String
+    ): Response<BaseApiResponse>
+
     // --- AKADEMIK GURU JURNAL & WALI KELAS ---
     @GET("api/akademik-guru/get-jurnal-info")
     suspend fun getJurnalInfo(
