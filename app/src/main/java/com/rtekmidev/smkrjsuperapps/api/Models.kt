@@ -353,7 +353,8 @@ data class TagihanResponse(
     val ringkasan: RingkasanKeuangan? = null,
     val kategori_list: List<String>? = null,
     val tagihan: List<DataTagihan>?,
-    val riwayat: List<DataRiwayat>?
+    val riwayat: List<DataRiwayat>?,
+    val sanggahan: List<DataSanggahan>? = null
 )
 
 data class SiswaKeuanganInfo(
@@ -416,6 +417,31 @@ data class TripayCheckoutResponse(
     val nama_pos: String? = null,
     val qr_string: String? = null,
     val qr_url: String? = null
+)
+
+// Data Class Untuk Sanggahan / Konfirmasi Pembayaran Siswa
+data class DataSanggahan(
+    val id: Long? = null,
+    val kode_sanggahan: String? = null,
+    val id_tagihan: Long? = null,
+    val nama_pos: String? = null,
+    val keterangan_tagihan: String? = null,
+    val tahun_ajaran: String? = null,
+    val nominal: Double? = null,
+    val nominal_formatted: String? = null,
+    val bukti_pembayaran: String? = null,
+    val bukti_pembayaran_url: String? = null,
+    val keterangan: String? = null,
+    val status: String? = null,
+    val catatan_petugas: String? = null,
+    val tanggal_pengajuan: String? = null,
+    val tanggal_pengajuan_formatted: String? = null
+)
+
+data class SubmitSanggahanResponse(
+    val status: Boolean,
+    val message: String?,
+    val data: DataSanggahan? = null
 )
 
 // --- MODUL MATERI & TUGAS ---

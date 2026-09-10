@@ -8,6 +8,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -17,17 +18,22 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -35,6 +41,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.rtekmidev.smkrjsuperapps.api.ApiClient
 import com.rtekmidev.smkrjsuperapps.api.DataRiwayat
+import com.rtekmidev.smkrjsuperapps.api.DataSanggahan
 import com.rtekmidev.smkrjsuperapps.api.DataTagihan
 import com.rtekmidev.smkrjsuperapps.api.RingkasanKeuangan
 import com.rtekmidev.smkrjsuperapps.util.LoadingDialogHelper
@@ -43,6 +50,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 import java.net.URLEncoder
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -56,9 +64,18 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
     private var waKeuanganSekolah = "+6283101457709"
     private val allTagihanList = mutableListOf<DataTagihan>()
     private val allRiwayatList = mutableListOf<DataRiwayat>()
+    private val allSanggahanList = mutableListOf<DataSanggahan>()
     private var selectedKategori = "Semua"
     private var currentRingkasan: RingkasanKeuangan? = null
     private var loadingDialog: Dialog? = null
+    private var selectedImageBase64: String? = null
+    private var pendingImageCallback: ((Uri) -> Unit)? = null
+
+    private val pickImageLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let { pendingImageCallback?.invoke(it) }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -128,6 +145,11 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
 
         view.findViewById<View>(R.id.btnLihatSemuaRiwayat)?.setOnClickListener {
             Toast.makeText(requireContext(), "Total ${allRiwayatList.size} transaksi pembayaran tercatat", Toast.LENGTH_SHORT).show()
+        }
+
+        // Ajukan Sanggahan Baru Button
+        view.findViewById<View>(R.id.btnAjukanSanggahanBaru)?.setOnClickListener {
+            showModalSanggahan(null)
         }
 
         muatTagihan(view)
@@ -224,6 +246,11 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
                         allRiwayatList.clear()
                         data.riwayat?.let { allRiwayatList.addAll(it) }
                         renderDaftarRiwayat(view)
+
+                        // 6. Update Sanggahan / Bukti Transfer
+                        allSanggahanList.clear()
+                        data.sanggahan?.let { allSanggahanList.addAll(it) }
+                        renderDaftarSanggahan(view)
 
                     } else {
                         Toast.makeText(requireContext(), "Gagal memuat data keuangan.", Toast.LENGTH_SHORT).show()
@@ -368,6 +395,17 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
                     sisaNominal = sisaNominal,
                     idTagihan = tagihan.id ?: ""
                 )
+            }
+
+            // Sanggah Button
+            val btnSanggah = card.findViewById<View>(R.id.btnSanggahTagihan)
+            if (isLunas) {
+                btnSanggah?.visibility = View.GONE
+            } else {
+                btnSanggah?.visibility = View.VISIBLE
+                btnSanggah?.setOnClickListener {
+                    showModalSanggahan(tagihan)
+                }
             }
 
             wadah.addView(card)
@@ -709,5 +747,310 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
     private fun dpToPx(dp: Int): Int {
         val density = resources.displayMetrics.density
         return (dp * density).toInt()
+    }
+
+    // =========================================================================
+    // SECTION SANGGAHAN & BUKTI TRANSFER
+    // =========================================================================
+
+    private fun renderDaftarSanggahan(view: View) {
+        val wadah = view.findViewById<LinearLayout>(R.id.wadahSanggahan) ?: return
+        val layoutKosong = view.findViewById<View>(R.id.layoutSanggahanKosong)
+        val tvBadgeCount = view.findViewById<TextView>(R.id.tvCountSanggahanBadge)
+        wadah.removeAllViews()
+
+        tvBadgeCount?.text = "${allSanggahanList.size} Item"
+
+        if (allSanggahanList.isEmpty()) {
+            layoutKosong?.visibility = View.VISIBLE
+            return
+        }
+        layoutKosong?.visibility = View.GONE
+
+        allSanggahanList.forEach { sanggahan ->
+            val card = layoutInflater.inflate(R.layout.item_sanggahan, wadah, false) as CardView
+
+            // Tanggal & Kode
+            card.findViewById<TextView>(R.id.tvTanggalSanggahan)?.text =
+                sanggahan.tanggal_pengajuan_formatted ?: sanggahan.tanggal_pengajuan ?: "-"
+            card.findViewById<TextView>(R.id.tvKodeSanggahan)?.text =
+                sanggahan.kode_sanggahan ?: "SGH-${sanggahan.id ?: 0}"
+
+            // Badge Status
+            val tvBadge = card.findViewById<TextView>(R.id.tvBadgeStatusSanggahan)
+            val status = sanggahan.status ?: "PENDING"
+            when {
+                status.equals("DISETUJUI", true) || status.equals("APPROVED", true) -> {
+                    tvBadge?.text = "DISETUJUI"
+                    tvBadge?.setTextColor(Color.parseColor("#059669"))
+                    tvBadge?.setBackgroundResource(R.drawable.bg_badge_green_soft)
+                }
+                status.equals("DITOLAK", true) || status.equals("REJECTED", true) -> {
+                    tvBadge?.text = "DITOLAK"
+                    tvBadge?.setTextColor(Color.parseColor("#DC2626"))
+                    tvBadge?.setBackgroundResource(R.drawable.bg_badge_red_soft)
+                }
+                else -> {
+                    tvBadge?.text = "MENUNGGU REVIEW"
+                    tvBadge?.setTextColor(Color.parseColor("#D97706"))
+                    tvBadge?.setBackgroundResource(R.drawable.bg_badge_amber_soft)
+                }
+            }
+
+            // Nama Tagihan & Keterangan
+            card.findViewById<TextView>(R.id.tvNamaTagihanSanggahan)?.text =
+                sanggahan.nama_pos ?: "Tagihan"
+            card.findViewById<TextView>(R.id.tvKeteranganSiswa)?.text =
+                sanggahan.keterangan ?: "-"
+
+            // Nominal
+            val nominal = sanggahan.nominal ?: 0.0
+            card.findViewById<TextView>(R.id.tvNominalSanggahan)?.text =
+                sanggahan.nominal_formatted ?: formatRupiah(nominal)
+
+            // Thumbnail Bukti Transfer
+            val ivThumb = card.findViewById<ImageView>(R.id.ivThumbnailBukti)
+            val buktiUrl = sanggahan.bukti_pembayaran_url
+            if (!buktiUrl.isNullOrEmpty() && ivThumb != null) {
+                Glide.with(this).load(buktiUrl).centerCrop().into(ivThumb)
+                card.findViewById<View>(R.id.boxThumbnailBukti)?.setOnClickListener {
+                    showPhotoPreviewDialog(buktiUrl)
+                }
+            }
+
+            // Catatan Petugas (jika ditolak/disetujui)
+            val layoutCatatan = card.findViewById<LinearLayout>(R.id.layoutCatatanPetugas)
+            val tvCatatan = card.findViewById<TextView>(R.id.tvCatatanPetugas)
+            val ivIconCatatan = card.findViewById<ImageView>(R.id.ivIconCatatan)
+            val catatanPetugas = sanggahan.catatan_petugas
+            if (!catatanPetugas.isNullOrEmpty()) {
+                layoutCatatan?.visibility = View.VISIBLE
+                tvCatatan?.text = catatanPetugas
+                if (status.equals("DITOLAK", true) || status.equals("REJECTED", true)) {
+                    layoutCatatan?.setBackgroundColor(Color.parseColor("#FEF2F2"))
+                    tvCatatan?.setTextColor(Color.parseColor("#991B1B"))
+                    ivIconCatatan?.setColorFilter(Color.parseColor("#DC2626"))
+                } else {
+                    layoutCatatan?.setBackgroundColor(Color.parseColor("#F0FDF4"))
+                    tvCatatan?.setTextColor(Color.parseColor("#166534"))
+                    ivIconCatatan?.setColorFilter(Color.parseColor("#059669"))
+                }
+            } else {
+                layoutCatatan?.visibility = View.GONE
+            }
+
+            wadah.addView(card)
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun showModalSanggahan(tagihanAwal: DataTagihan? = null) {
+        val bottomSheet = BottomSheetDialog(requireContext())
+        val sheetView = layoutInflater.inflate(R.layout.bottom_sheet_sanggahan, null)
+        bottomSheet.setContentView(sheetView)
+
+        selectedImageBase64 = null
+
+        val spTagihan = sheetView.findViewById<Spinner>(R.id.spTagihanSanggahan)
+        val etNominal = sheetView.findViewById<EditText>(R.id.etNominalSanggahan)
+        val etCatatan = sheetView.findViewById<EditText>(R.id.etCatatanSanggahan)
+        val boxPilihFoto = sheetView.findViewById<CardView>(R.id.boxPilihFotoBukti)
+        val layoutPlaceholder = sheetView.findViewById<LinearLayout>(R.id.layoutUploadPlaceholder)
+        val layoutPreview = sheetView.findViewById<View>(R.id.layoutUploadPreview)
+        val ivPreview = sheetView.findViewById<ImageView>(R.id.ivPreviewFotoSanggahan)
+        val btnClose = sheetView.findViewById<ImageView>(R.id.btnCloseSheetSanggahan)
+        val btnBatal = sheetView.findViewById<Button>(R.id.btnBatalSanggahan)
+        val btnKirim = sheetView.findViewById<Button>(R.id.btnKirimSanggahan)
+
+        // Populate spinner with active tagihan (belum lunas)
+        val activeTagihan = allTagihanList.filter {
+            !it.status_bayar.equals("LUNAS", ignoreCase = true)
+        }
+        val tagihanLabels = activeTagihan.map { tag ->
+            val sisa = ((tag.nominal_tagihan?.toDoubleOrNull() ?: 0.0) - (tag.nominal_terbayar?.toDoubleOrNull() ?: 0.0)).coerceAtLeast(0.0)
+            "${tag.nama_pos ?: "Tagihan"} — Sisa: ${formatRupiah(sisa)}"
+        }
+
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, tagihanLabels)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spTagihan.adapter = adapter
+
+        // Pre-select tagihan if opened from a specific card
+        var selectedIdx = 0
+        if (tagihanAwal != null) {
+            val idx = activeTagihan.indexOfFirst { it.id == tagihanAwal.id }
+            if (idx >= 0) {
+                selectedIdx = idx
+                spTagihan.setSelection(idx)
+            }
+        }
+
+        // Auto-fill nominal based on selected tagihan
+        fun updateNominalForIndex(index: Int) {
+            if (index < 0 || index >= activeTagihan.size) return
+            val tag = activeTagihan[index]
+            val sisa = ((tag.nominal_tagihan?.toDoubleOrNull() ?: 0.0) - (tag.nominal_terbayar?.toDoubleOrNull() ?: 0.0)).coerceAtLeast(0.0)
+            etNominal.setText(sisa.toLong().toString())
+            etNominal.setSelection(etNominal.text.length)
+        }
+
+        updateNominalForIndex(selectedIdx)
+
+        spTagihan.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, v: View?, position: Int, id: Long) {
+                updateNominalForIndex(position)
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        // Photo picker
+        pendingImageCallback = { uri ->
+            handleSelectedImage(uri, ivPreview, layoutPlaceholder, layoutPreview)
+        }
+
+        boxPilihFoto.setOnClickListener {
+            pickImageLauncher.launch("image/*")
+        }
+
+        btnClose.setOnClickListener { bottomSheet.dismiss() }
+        btnBatal.setOnClickListener { bottomSheet.dismiss() }
+
+        btnKirim.setOnClickListener {
+            val posisiTagihan = spTagihan.selectedItemPosition
+            if (posisiTagihan < 0 || posisiTagihan >= activeTagihan.size) {
+                Toast.makeText(requireContext(), "Pilih tagihan terlebih dahulu", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val nominalStr = etNominal.text.toString().trim()
+            val nominalVal = nominalStr.toLongOrNull() ?: 0L
+            if (nominalVal <= 0) {
+                Toast.makeText(requireContext(), "Nominal pembayaran harus lebih dari 0", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (selectedImageBase64.isNullOrEmpty()) {
+                Toast.makeText(requireContext(), "Foto bukti pembayaran wajib dilampirkan", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val tagTerpilih = activeTagihan[posisiTagihan]
+            val keterangan = etCatatan.text.toString().trim().ifEmpty { null }
+
+            bottomSheet.dismiss()
+            submitSanggahan(
+                idTagihan = tagTerpilih.id ?: "",
+                nominal = nominalVal,
+                keterangan = keterangan,
+                buktiBase64 = selectedImageBase64!!
+            )
+        }
+
+        bottomSheet.show()
+    }
+
+    private fun handleSelectedImage(
+        uri: Uri,
+        ivPreview: ImageView?,
+        layoutPlaceholder: View?,
+        layoutPreview: View?
+    ) {
+        try {
+            val inputStream = requireContext().contentResolver.openInputStream(uri) ?: return
+            val originalBitmap = BitmapFactory.decodeStream(inputStream)
+            inputStream.close()
+
+            // Compress & resize to max 800px width
+            val maxWidth = 800
+            val scaledBitmap = if (originalBitmap.width > maxWidth) {
+                val ratio = maxWidth.toFloat() / originalBitmap.width.toFloat()
+                val newHeight = (originalBitmap.height * ratio).toInt()
+                Bitmap.createScaledBitmap(originalBitmap, maxWidth, newHeight, true)
+            } else {
+                originalBitmap
+            }
+
+            val baos = ByteArrayOutputStream()
+            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 75, baos)
+            val imageBytes = baos.toByteArray()
+            selectedImageBase64 = "data:image/jpeg;base64," + Base64.encodeToString(imageBytes, Base64.NO_WRAP)
+
+            // Show preview
+            ivPreview?.setImageBitmap(scaledBitmap)
+            layoutPlaceholder?.visibility = View.GONE
+            layoutPreview?.visibility = View.VISIBLE
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Gagal memuat foto: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun submitSanggahan(
+        idTagihan: String,
+        nominal: Long,
+        keterangan: String?,
+        buktiBase64: String
+    ) {
+        LoadingDialogHelper.dismiss(loadingDialog)
+        loadingDialog = LoadingDialogHelper.show(context, "Mengirim sanggahan...")
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val resp = ApiClient.instance.submitSanggahan(
+                    nisn = nisnSiswa,
+                    idTagihan = idTagihan,
+                    nominal = nominal,
+                    keterangan = keterangan,
+                    buktiBase64 = buktiBase64
+                )
+                withContext(Dispatchers.Main) {
+                    LoadingDialogHelper.dismiss(loadingDialog)
+                    loadingDialog = null
+                    if (resp.isSuccessful && resp.body()?.status == true) {
+                        Toast.makeText(requireContext(),
+                            resp.body()?.message ?: "Sanggahan berhasil dikirim! Menunggu review keuangan.",
+                            Toast.LENGTH_LONG).show()
+                        selectedImageBase64 = null
+                        refreshData()
+                    } else {
+                        Toast.makeText(requireContext(),
+                            resp.body()?.message ?: "Gagal mengirim sanggahan",
+                            Toast.LENGTH_LONG).show()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    LoadingDialogHelper.dismiss(loadingDialog)
+                    loadingDialog = null
+                    Toast.makeText(requireContext(), "Koneksi terganggu: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun showPhotoPreviewDialog(imageUrl: String) {
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_preview_foto, null)
+        dialog.setContentView(dialogView)
+
+        dialog.window?.apply {
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        }
+
+        val ivPreviewFull = dialogView.findViewById<ImageView>(R.id.ivDialogPreviewFull)
+        Glide.with(this).load(imageUrl).into(ivPreviewFull)
+
+        dialogView.findViewById<View>(R.id.btnDialogTutupPreview)?.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialogView.findViewById<View>(R.id.btnDialogTutupBawah)?.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 }

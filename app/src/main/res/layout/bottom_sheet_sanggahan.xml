@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_bottom_sheet"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <!-- Drag Handle Indicator -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#CBD5E1"
+        android:layout_marginBottom="18dp"/>
+
+    <!-- Header Section -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/btnCloseSheetSanggahan"
+            android:layout_marginEnd="12dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sanggahan &amp; Bukti Transfer"
+                android:textSize="18sp"
+                android:textColor="#0F172A"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-black"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lampirkan foto bukti pembayaran untuk verifikasi bagian keuangan."
+                android:textSize="11.5sp"
+                android:textColor="#64748B"
+                android:layout_marginTop="2dp"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/btnCloseSheetSanggahan"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_close_24"
+            app:tint="#94A3B8"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+    </RelativeLayout>
+
+    <!-- 1. Pilih Tagihan -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PILIH TAGIHAN *"
+        android:textSize="10.5sp"
+        android:textColor="#475569"
+        android:textStyle="bold"
+        android:letterSpacing="0.05"
+        android:layout_marginBottom="6dp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_spinner_rounded"
+        android:layout_marginBottom="14dp">
+
+        <Spinner
+            android:id="@+id/spTagihanSanggahan"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="12dp"
+            android:spinnerMode="dropdown"/>
+    </RelativeLayout>
+
+    <!-- 2. Nominal Pembayaran -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NOMINAL PEMBAYARAN (RP) *"
+        android:textSize="10.5sp"
+        android:textColor="#475569"
+        android:textStyle="bold"
+        android:letterSpacing="0.05"
+        android:layout_marginBottom="6dp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/bg_input_rounded"
+        android:layout_marginBottom="4dp">
+
+        <TextView
+            android:id="@+id/tvPrefixRpSanggahan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="14dp"
+            android:text="Rp"
+            android:textColor="#64748B"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:id="@+id/etNominalSanggahan"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/tvPrefixRpSanggahan"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="14dp"
+            android:background="@null"
+            android:inputType="number"
+            android:hint="0"
+            android:textColor="#0F172A"
+            android:textSize="15sp"
+            android:textStyle="bold"/>
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Otomatis terisi sisa tagihan. Dapat disesuaikan jika menyicil."
+        android:textSize="10.5sp"
+        android:textColor="#94A3B8"
+        android:layout_marginBottom="14dp"/>
+
+    <!-- 3. Foto Bukti Transfer -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="FOTO BUKTI PEMBAYARAN / STRUK *"
+        android:textSize="10.5sp"
+        android:textColor="#475569"
+        android:textStyle="bold"
+        android:letterSpacing="0.05"
+        android:layout_marginBottom="6dp"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/boxPilihFotoBukti"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="14dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="#F8FAFC"
+        app:strokeWidth="1dp"
+        app:strokeColor="#CBD5E1"
+        android:layout_marginBottom="14dp"
+        android:clickable="true"
+        android:focusable="true">
+
+        <LinearLayout
+            android:id="@+id/layoutUploadPlaceholder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_upload_cloud"
+                app:tint="#6366F1"
+                android:layout_marginBottom="6dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ketuk untuk memilih foto bukti transfer"
+                android:textSize="12sp"
+                android:textColor="#334155"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Format JPG / PNG dari Galeri atau Kamera"
+                android:textSize="10sp"
+                android:textColor="#94A3B8"
+                android:layout_marginTop="2dp"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/layoutUploadPreview"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/ivPreviewFotoSanggahan"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="8dp"
+                android:background="#99000000"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
+                android:text="✓ Foto Terpilih (Ketuk untuk ganti)"
+                android:textColor="#FFFFFF"
+                android:textSize="10.5sp"
+                android:textStyle="bold"/>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- 4. Catatan / Keterangan -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CATATAN / KETERANGAN (OPSIONAL)"
+        android:textSize="10.5sp"
+        android:textColor="#475569"
+        android:textStyle="bold"
+        android:letterSpacing="0.05"
+        android:layout_marginBottom="6dp"/>
+
+    <EditText
+        android:id="@+id/etCatatanSanggahan"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_input_rounded"
+        android:paddingHorizontal="14dp"
+        android:hint="Contoh: Transfer BRI an. Ayah / tunai di loket"
+        android:textSize="12.5sp"
+        android:textColor="#0F172A"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Action Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/btnBatalSanggahan"
+            android:layout_width="0dp"
+            android:layout_height="46dp"
+            android:layout_weight="1"
+            android:text="Batal"
+            android:textColor="#64748B"
+            android:textSize="12.5sp"
+            android:textStyle="bold"
+            android:background="@drawable/bg_button_light_rounded"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/btnKirimSanggahan"
+            android:layout_width="0dp"
+            android:layout_height="46dp"
+            android:layout_weight="1.8"
+            android:text="Kirim Sanggahan"
+            android:textColor="#FFFFFF"
+            android:textSize="12.5sp"
+            android:textStyle="bold"
+            android:background="@drawable/bg_btn_primary"/>
+    </LinearLayout>
+</LinearLayout>

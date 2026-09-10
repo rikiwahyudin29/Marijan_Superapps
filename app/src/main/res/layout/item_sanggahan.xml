@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="#FFFFFF"
+    app:strokeWidth="1dp"
+    app:strokeColor="#E2E8F0">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header Row: Tanggal & Badge Status -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tvTanggalSanggahan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="10 Sep 2026, 20:00"
+                    android:textSize="11sp"
+                    android:textColor="#64748B"/>
+
+                <TextView
+                    android:id="@+id/tvKodeSanggahan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SGH-123"
+                    android:textSize="10sp"
+                    android:textColor="#475569"
+                    android:background="@drawable/bg_badge_blue_soft"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="2dp"
+                    android:layout_marginStart="8dp"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvBadgeStatusSanggahan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:text="MENUNGGU REVIEW"
+                android:textSize="10sp"
+                android:textColor="#D97706"
+                android:textStyle="bold"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="3dp"
+                android:background="@drawable/bg_badge_amber_soft" />
+        </RelativeLayout>
+
+        <!-- Body Row: Info Tagihan, Nominal & Thumbnail Bukti -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Thumbnail Bukti Transfer -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/boxThumbnailBukti"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#F1F5F9"
+                app:strokeWidth="1dp"
+                app:strokeColor="#CBD5E1">
+
+                <ImageView
+                    android:id="@+id/ivThumbnailBukti"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_document_bill"/>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Nama Tagihan & Keterangan Siswa -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/boxThumbnailBukti"
+                android:layout_toStartOf="@id/layoutNominalSanggahanRight"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvNamaTagihanSanggahan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tagihan SPP"
+                    android:textSize="13.5sp"
+                    android:textColor="#0F172A"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:ellipsize="end"/>
+
+                <TextView
+                    android:id="@+id/tvKeteranganSiswa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Transfer via BRI an. Siswa"
+                    android:textSize="11sp"
+                    android:textColor="#64748B"
+                    android:layout_marginTop="2dp"
+                    android:maxLines="2"
+                    android:ellipsize="end"/>
+            </LinearLayout>
+
+            <!-- Nominal Diajukan / Disetujui -->
+            <LinearLayout
+                android:id="@+id/layoutNominalSanggahanRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:gravity="end"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NOMINAL"
+                    android:textSize="9sp"
+                    android:textColor="#94A3B8"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.05"/>
+
+                <TextView
+                    android:id="@+id/tvNominalSanggahan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rp 0"
+                    android:textSize="14sp"
+                    android:textColor="#0F172A"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-black"
+                    android:layout_marginTop="1dp"/>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <!-- Catatan Petugas (Jika Ada / Ditolak / Di-ACC) -->
+        <LinearLayout
+            android:id="@+id/layoutCatatanPetugas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FEF2F2"
+            android:padding="8dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/ivIconCatatan"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_info_circle_20"
+                app:tint="#DC2626"
+                android:layout_marginEnd="6dp"/>
+
+            <TextView
+                android:id="@+id/tvCatatanPetugas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alasan penolakan: Foto bukti buram."
+                android:textColor="#991B1B"
+                android:textSize="11sp"
+                android:lineSpacingExtra="1dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

@@ -123,6 +123,16 @@ interface ApiService {
         @Field("nominal_bayar") nominalBayar: Long? = null
     ): Response<TripayCheckoutResponse>
 
+    @FormUrlEncoded
+    @POST("api/keuangan/sanggahan")
+    suspend fun submitSanggahan(
+        @Field("nisn") nisn: String,
+        @Field("id_tagihan") idTagihan: String,
+        @Field("nominal") nominal: Long,
+        @Field("keterangan") keterangan: String?,
+        @Field("bukti_pembayaran") buktiBase64: String
+    ): Response<SubmitSanggahanResponse>
+
     @GET("api/akademik/materi")
     suspend fun getMateri(@Query("nisn") nisn: String): Response<MateriResponse>
 
