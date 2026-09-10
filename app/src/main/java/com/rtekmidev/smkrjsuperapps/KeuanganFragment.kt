@@ -393,13 +393,22 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
             val taStr = if (!riwayat.tahun_ajaran.isNullOrEmpty()) "TA ${riwayat.tahun_ajaran} • " else ""
             card.findViewById<TextView>(R.id.tvMetodeRiwayat)?.text = "$taStr${riwayat.payment_type ?: "QRIS"}"
 
-            val nom = riwayat.total_bayar?.toDoubleOrNull() ?: 0.0
+            val nom = riwayat.jumlah_bayar?.toDoubleOrNull()
+                ?: riwayat.total_bayar?.toDoubleOrNull()
+                ?: 0.0
             card.findViewById<TextView>(R.id.tvNominalRiwayat)?.text = "+ " + formatRupiah(nom)
 
             val tvBadge = card.findViewById<TextView>(R.id.tvBadgeRiwayat)
-            tvBadge?.text = "LUNAS"
-            tvBadge?.setTextColor(Color.parseColor("#059669"))
-            tvBadge?.setBackgroundResource(R.drawable.bg_badge_green_soft)
+            val st = riwayat.status_tagihan ?: riwayat.status_bayar ?: "LUNAS"
+            if (st.equals("CICIL", ignoreCase = true)) {
+                tvBadge?.text = "CICIL"
+                tvBadge?.setTextColor(Color.parseColor("#D97706"))
+                tvBadge?.setBackgroundResource(R.drawable.bg_badge_amber_soft)
+            } else {
+                tvBadge?.text = "LUNAS"
+                tvBadge?.setTextColor(Color.parseColor("#059669"))
+                tvBadge?.setBackgroundResource(R.drawable.bg_badge_green_soft)
+            }
 
             val tvKodeTrx = card.findViewById<TextView>(R.id.tvKodeTrx)
             tvKodeTrx?.text = riwayat.id?.let { "TRX-$it" } ?: (riwayat.created_at ?: "-")

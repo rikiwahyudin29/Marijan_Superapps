@@ -83,18 +83,26 @@ class KeuanganActivity : AppCompatActivity() {
                                     cardHist.findViewById<TextView>(R.id.tvNamaRiwayat).text = riwayat.nama_pos ?: "Pembayaran"
                                     cardHist.findViewById<TextView>(R.id.tvMetodeRiwayat).text = riwayat.payment_type ?: "TRIPAY"
 
-                                    val nomRiwayat = riwayat.total_bayar?.toDoubleOrNull() ?: 0.0
+                                    val nomRiwayat = riwayat.jumlah_bayar?.toDoubleOrNull()
+                                        ?: riwayat.total_bayar?.toDoubleOrNull()
+                                        ?: 0.0
                                     cardHist.findViewById<TextView>(R.id.tvNominalRiwayat).text = formatRupiah.format(nomRiwayat).replace(",00", "")
 
                                     val badge = cardHist.findViewById<TextView>(R.id.tvBadgeRiwayat)
-                                    val statusTrans = riwayat.status_transaksi ?: "LUNAS"
+                                    val statusTagihan = riwayat.status_tagihan ?: riwayat.status_bayar ?: "LUNAS"
                                     val tvKodeTrx = cardHist.findViewById<TextView>(R.id.tvKodeTrx)
                                     val btnKwitansi = cardHist.findViewById<View>(R.id.btnDownloadKwitansi)
 
                                     tvKodeTrx?.text = riwayat.kode_transaksi ?: "-"
-                                    badge?.text = "LUNAS"
-                                    badge?.setTextColor(Color.parseColor("#059669"))
-                                    badge?.setBackgroundColor(Color.parseColor("#D1FAE5"))
+                                    if (statusTagihan.equals("CICIL", true)) {
+                                        badge?.text = "CICIL"
+                                        badge?.setTextColor(Color.parseColor("#D97706"))
+                                        badge?.setBackgroundColor(Color.parseColor("#FEF3C7"))
+                                    } else {
+                                        badge?.text = "LUNAS"
+                                        badge?.setTextColor(Color.parseColor("#059669"))
+                                        badge?.setBackgroundColor(Color.parseColor("#D1FAE5"))
+                                    }
 
                                     btnKwitansi?.setOnClickListener {
                                         val url = riwayat.kwitansi_url
