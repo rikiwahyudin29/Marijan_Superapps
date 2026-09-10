@@ -43,8 +43,9 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import com.rtekmidev.smkrjsuperapps.util.RefreshableFragment
 
-class PresensiGuruFragment : Fragment(), LocationListener {
+class PresensiGuruFragment : Fragment(), LocationListener, RefreshableFragment {
 
     // Hero Banner
     private lateinit var tvPortalTahunAjaran: TextView
@@ -153,6 +154,21 @@ class PresensiGuruFragment : Fragment(), LocationListener {
         startRealtimeClock()
         checkLocationPermissionAndStart()
         fetchPortalData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val sharedPref = requireActivity().getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
+        val idUser = sharedPref.getString("id_user", "") ?: ""
+        if (idUser.isNotEmpty()) {
+            fetchPortalData()
+        }
+    }
+
+    override fun refreshData() {
+        loadLocalProfile()
+        fetchPortalData()
+        checkLocationPermissionAndStart()
     }
 
     override fun onDestroyView() {

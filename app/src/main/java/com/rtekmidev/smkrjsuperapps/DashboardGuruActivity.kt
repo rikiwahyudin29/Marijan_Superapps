@@ -131,9 +131,31 @@ class DashboardGuruActivity : AppCompatActivity() {
         val headerTitleColor = if (isNightMode) android.graphics.Color.parseColor("#FFFFFF") else android.graphics.Color.parseColor("#1A1B41")
         val headerSubtextColor = if (isNightMode) android.graphics.Color.parseColor("#D1D5DB") else android.graphics.Color.parseColor("#6B7280")
         
-        findViewById<TextView>(R.id.tvAppTitle)?.setTextColor(headerTitleColor)
-        findViewById<View>(R.id.btnNotifikasi)?.setOnClickListener {
-            Toast.makeText(this, "Tidak ada notifikasi baru.", Toast.LENGTH_SHORT).show()
+        val btnRefreshTop = findViewById<View>(R.id.btnRefreshTop)
+        val ivRefreshTop = findViewById<ImageView>(R.id.ivRefreshTop)
+
+        btnRefreshTop?.setOnClickListener {
+            ivRefreshTop?.animate()?.rotationBy(360f)?.setDuration(600)?.start()
+            Toast.makeText(this, "Memperbarui data...", Toast.LENGTH_SHORT).show()
+
+            val currentFrag = (viewPager.adapter as? DashboardGuruPagerAdapter)?.getFragment(viewPager.currentItem)
+                ?: supportFragmentManager.findFragmentByTag("f" + viewPager.currentItem)
+
+            if (currentFrag is com.rtekmidev.smkrjsuperapps.util.RefreshableFragment) {
+                currentFrag.refreshData()
+            }
+
+            // Perbarui avatar / inisial header guru
+            val ivProfil = findViewById<ImageView>(R.id.ivProfilPhoto)
+            val tvInisial = findViewById<TextView>(R.id.tvProfilInisial)
+            val cvProfil = findViewById<androidx.cardview.widget.CardView>(R.id.cvProfilPic)
+            val sharedPref = getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
+            val nama = sharedPref.getString("nama", "Guru")
+            val foto = sharedPref.getString("foto_profil", null)
+            val fullUrl = if (!foto.isNullOrEmpty()) {
+                if (foto.startsWith("http")) foto else "https://smkriyadhuljannahjalancagak.sch.id/uploads/guru/$foto"
+            } else null
+            com.rtekmidev.smkrjsuperapps.util.AvatarHelper.setAvatar(this, nama, fullUrl, ivProfil, tvInisial, cvProfil)
         }
 
         findViewById<View>(R.id.cvProfilPic)?.setOnClickListener {
@@ -451,16 +473,24 @@ class DashboardGuruActivity : AppCompatActivity() {
     }
 
     private inner class DashboardGuruPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
+        private val fragmentMap = mutableMapOf<Int, Fragment>()
+
         override fun getItemCount(): Int = 4
 
         override fun createFragment(position: Int): Fragment {
-            return when (position) {
+            val frag = when (position) {
                 0 -> BerandaGuruFragment()
                 1 -> PresensiGuruFragment()
                 2 -> AkademikGuruFragment()
                 3 -> ProfilGuruFragment()
                 else -> BerandaGuruFragment()
             }
+            fragmentMap[position] = frag
+            return frag
+        }
+
+        fun getFragment(position: Int): Fragment? {
+            return fragmentMap[position] ?: supportFragmentManager.findFragmentByTag("f$position")
         }
     }
 

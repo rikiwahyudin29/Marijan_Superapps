@@ -37,8 +37,9 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import com.rtekmidev.smkrjsuperapps.util.RefreshableFragment
 
-class BerandaGuruFragment : Fragment() {
+class BerandaGuruFragment : Fragment(), RefreshableFragment {
 
     // Hero Views
     private lateinit var tvHeroTahunAjaran: TextView
@@ -143,6 +144,16 @@ class BerandaGuruFragment : Fragment() {
         loadLocalProfile()
         setupListeners()
         startRealtimeClock()
+        fetchDashboardData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        fetchDashboardData()
+    }
+
+    override fun refreshData() {
+        loadLocalProfile()
         fetchDashboardData()
     }
 

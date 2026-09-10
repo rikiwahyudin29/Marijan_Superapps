@@ -21,11 +21,12 @@ import com.bumptech.glide.Glide
 import com.rtekmidev.smkrjsuperapps.api.ApiClient
 import com.rtekmidev.smkrjsuperapps.api.DashboardData
 import com.rtekmidev.smkrjsuperapps.util.AvatarHelper
+import com.rtekmidev.smkrjsuperapps.util.RefreshableFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class BerandaFragment : Fragment() {
+class BerandaFragment : Fragment(), RefreshableFragment {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -228,6 +229,10 @@ class BerandaFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        view?.let { fetchBerandaData(it) }
+    }
+
+    override fun refreshData() {
         view?.let { fetchBerandaData(it) }
     }
 

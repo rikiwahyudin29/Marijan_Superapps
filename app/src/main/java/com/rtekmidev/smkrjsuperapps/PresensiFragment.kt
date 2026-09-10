@@ -43,8 +43,9 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import com.rtekmidev.smkrjsuperapps.util.RefreshableFragment
 
-class PresensiFragment : Fragment(), LocationListener {
+class PresensiFragment : Fragment(), LocationListener, RefreshableFragment {
 
     // Hero Banner
     private lateinit var tvPortalTahunAjaran: TextView
@@ -167,6 +168,12 @@ class PresensiFragment : Fragment(), LocationListener {
         if (nisn.isNotEmpty()) {
             fetchPortalData()
         }
+    }
+
+    override fun refreshData() {
+        loadLocalProfile()
+        fetchPortalData()
+        checkLocationPermissionAndStart()
     }
 
     override fun onDestroyView() {

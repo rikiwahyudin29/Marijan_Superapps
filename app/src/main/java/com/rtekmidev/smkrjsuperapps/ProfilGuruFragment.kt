@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @SuppressLint("SetTextI18n")
-class ProfilGuruFragment : Fragment() {
+class ProfilGuruFragment : Fragment(), com.rtekmidev.smkrjsuperapps.util.RefreshableFragment {
 
     private var cachedProfilData: ProfilGuruData? = null
 
@@ -47,6 +47,10 @@ class ProfilGuruFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        view?.let { loadProfilGuru(it) }
+    }
+
+    override fun refreshData() {
         view?.let { loadProfilGuru(it) }
     }
 

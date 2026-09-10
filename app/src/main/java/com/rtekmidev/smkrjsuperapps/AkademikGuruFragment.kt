@@ -28,7 +28,7 @@ import java.text.NumberFormat
 import java.util.Locale
 
 @SuppressLint("SetTextI18n")
-class AkademikGuruFragment : Fragment() {
+class AkademikGuruFragment : Fragment(), com.rtekmidev.smkrjsuperapps.util.RefreshableFragment {
 
     private var cachedData: DashboardGuruData? = null
 
@@ -47,6 +47,10 @@ class AkademikGuruFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        view?.let { loadDashboardData(it) }
+    }
+
+    override fun refreshData() {
         view?.let { loadDashboardData(it) }
     }
 

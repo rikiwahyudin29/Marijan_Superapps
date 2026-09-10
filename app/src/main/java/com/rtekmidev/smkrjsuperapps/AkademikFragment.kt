@@ -22,11 +22,12 @@ import com.rtekmidev.smkrjsuperapps.api.DashboardData
 import com.rtekmidev.smkrjsuperapps.api.MateriPreviewItem
 import com.rtekmidev.smkrjsuperapps.api.TugasPreviewItem
 import com.rtekmidev.smkrjsuperapps.util.AvatarHelper
+import com.rtekmidev.smkrjsuperapps.util.RefreshableFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class AkademikFragment : Fragment() {
+class AkademikFragment : Fragment(), RefreshableFragment {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,6 +75,10 @@ class AkademikFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        view?.let { fetchAkademikData(it) }
+    }
+
+    override fun refreshData() {
         view?.let { fetchAkademikData(it) }
     }
 

@@ -122,8 +122,27 @@ class DashboardActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvNamaDashboard)?.setTextColor(headerTitleColor)
         findViewById<TextView>(R.id.tvKelas)?.setTextColor(headerSubtextColor)
 
-        findViewById<View>(R.id.btnNotifikasi)?.setOnClickListener {
-            Toast.makeText(this, "Belum ada notifikasi baru", Toast.LENGTH_SHORT).show()
+        val btnRefreshTop = findViewById<View>(R.id.btnRefreshTop)
+        val ivRefreshTop = findViewById<ImageView>(R.id.ivRefreshTop)
+
+        btnRefreshTop?.setOnClickListener {
+            ivRefreshTop?.animate()?.rotationBy(360f)?.setDuration(600)?.start()
+            Toast.makeText(this, "Memperbarui data...", Toast.LENGTH_SHORT).show()
+
+            val currentFrag = (viewPager.adapter as? DashboardPagerAdapter)?.getFragment(viewPager.currentItem)
+                ?: supportFragmentManager.findFragmentByTag("f" + viewPager.currentItem)
+
+            if (currentFrag is com.rtekmidev.smkrjsuperapps.util.RefreshableFragment) {
+                currentFrag.refreshData()
+            }
+
+            // Perbarui avatar / inisial header
+            val ivProfil = findViewById<ImageView>(R.id.ivProfilPhoto)
+            val tvInisial = findViewById<TextView>(R.id.tvProfilInisial)
+            val cvProfil = findViewById<CardView>(R.id.cvProfilPic)
+            val nama = sharedPref.getString("nama_siswa", null) ?: sharedPref.getString("nama", null)
+            val foto = sharedPref.getString("foto_profil", null)
+            AvatarHelper.setAvatar(this, nama, foto, ivProfil, tvInisial, cvProfil)
         }
 
         // Initialize Avatar / Initials in Top Bar
@@ -378,10 +397,12 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private inner class DashboardPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
+        private val fragmentMap = mutableMapOf<Int, Fragment>()
+
         override fun getItemCount(): Int = 6 // 6 Nav Items
 
         override fun createFragment(position: Int): Fragment {
-            return when (position) {
+            val frag = when (position) {
                 0 -> BerandaFragment()
                 1 -> AkademikFragment()
                 2 -> CbtFragment()
@@ -390,6 +411,12 @@ class DashboardActivity : AppCompatActivity() {
                 5 -> ProfilFragment()
                 else -> BerandaFragment()
             }
+            fragmentMap[position] = frag
+            return frag
+        }
+
+        fun getFragment(position: Int): Fragment? {
+            return fragmentMap[position] ?: supportFragmentManager.findFragmentByTag("f$position")
         }
     }
 

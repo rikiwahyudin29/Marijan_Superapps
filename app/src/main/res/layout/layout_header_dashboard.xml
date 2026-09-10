@@ -65,9 +65,9 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true">
 
-            <!-- Notification Bell with red dot -->
+            <!-- Tombol Refresh / Update Data -->
             <FrameLayout
-                android:id="@+id/btnNotifikasi"
+                android:id="@+id/btnRefreshTop"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginEnd="10dp"
@@ -77,22 +77,12 @@
                 android:focusable="true">
 
                 <ImageView
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
+                    android:id="@+id/ivRefreshTop"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_notification"
+                    android:src="@drawable/ic_refresh_cw"
                     app:tint="#1E1B4B" />
-
-                <!-- Red Dot Badge -->
-                <View
-                    android:id="@+id/dotNotifikasi"
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
-                    android:layout_gravity="top|end"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/bg_rounded_border"
-                    android:backgroundTint="#EF4444" />
             </FrameLayout>
 
             <!-- Profile Pic with Online Green Indicator -->

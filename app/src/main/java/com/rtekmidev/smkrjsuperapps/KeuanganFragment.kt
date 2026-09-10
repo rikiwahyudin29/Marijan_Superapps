@@ -19,7 +19,7 @@ import kotlinx.coroutines.*
 import java.text.NumberFormat
 import java.util.Locale
 
-class KeuanganFragment : Fragment() {
+class KeuanganFragment : Fragment(), com.rtekmidev.smkrjsuperapps.util.RefreshableFragment {
 
     private var nisnSiswa = ""
     private var namaSiswa = ""
@@ -54,6 +54,10 @@ class KeuanganFragment : Fragment() {
         }
 
         muatTagihan(view)
+    }
+
+    override fun refreshData() {
+        view?.let { muatTagihan(it) }
     }
 
     private fun muatTagihan(view: View) {
