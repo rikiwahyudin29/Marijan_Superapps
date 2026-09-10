@@ -445,6 +445,11 @@ data class SubmitSanggahanResponse(
     val data: DataSanggahan? = null
 )
 
+data class BaseApiResponse(
+    val status: Boolean,
+    val message: String? = null
+)
+
 // --- MODUL MATERI & TUGAS ---
 data class MateriResponse(
     val status: Boolean,

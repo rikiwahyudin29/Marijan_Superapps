@@ -133,6 +133,13 @@ interface ApiService {
         @Field("bukti_pembayaran") buktiBase64: String
     ): Response<SubmitSanggahanResponse>
 
+    @FormUrlEncoded
+    @POST("api/keuangan/sanggahan/delete")
+    suspend fun deleteSanggahan(
+        @Field("nisn") nisn: String,
+        @Field("id") id: String
+    ): Response<BaseApiResponse>
+
     @GET("api/akademik/materi")
     suspend fun getMateri(@Query("nisn") nisn: String): Response<MateriResponse>
 

@@ -888,7 +888,57 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
                 layoutCatatan?.visibility = View.GONE
             }
 
+            // Tombol Batalkan Sanggahan (Hanya muncul jika status PENDING)
+            val layoutAksi = card.findViewById<View>(R.id.layoutAksiSanggahan)
+            val btnBatalItem = card.findViewById<View>(R.id.btnBatalSanggahanItem)
+            if (status.equals("PENDING", true)) {
+                layoutAksi?.visibility = View.VISIBLE
+                btnBatalItem?.setOnClickListener {
+                    konfirmasiHapusSanggahan(sanggahan)
+                }
+            } else {
+                layoutAksi?.visibility = View.GONE
+            }
+
             wadah.addView(card)
+        }
+    }
+
+    private fun konfirmasiHapusSanggahan(sanggahan: DataSanggahan) {
+        val idSanggahan = sanggahan.id ?: return
+        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("Batalkan Sanggahan?")
+            .setMessage("Apakah Anda yakin ingin membatalkan dan menghapus pengajuan sanggahan ${sanggahan.kode_sanggahan ?: ""}?")
+            .setPositiveButton("Ya, Batalkan") { _, _ ->
+                eksekusiHapusSanggahan(idSanggahan.toString())
+            }
+            .setNegativeButton("Kembali", null)
+            .show()
+    }
+
+    private fun eksekusiHapusSanggahan(idSanggahan: String) {
+        LoadingDialogHelper.dismiss(loadingDialog)
+        loadingDialog = LoadingDialogHelper.show(context, "Membatalkan sanggahan...")
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val resp = ApiClient.instance.deleteSanggahan(nisn = nisnSiswa, id = idSanggahan)
+                withContext(Dispatchers.Main) {
+                    LoadingDialogHelper.dismiss(loadingDialog)
+                    loadingDialog = null
+                    if (resp.isSuccessful && resp.body()?.status == true) {
+                        Toast.makeText(requireContext(), resp.body()?.message ?: "Sanggahan berhasil dibatalkan", Toast.LENGTH_SHORT).show()
+                        refreshData()
+                    } else {
+                        Toast.makeText(requireContext(), resp.body()?.message ?: "Gagal membatalkan sanggahan", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    LoadingDialogHelper.dismiss(loadingDialog)
+                    loadingDialog = null
+                    Toast.makeText(requireContext(), "Koneksi terganggu: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
