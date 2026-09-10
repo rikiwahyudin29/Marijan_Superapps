@@ -21,7 +21,7 @@
             android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="8dp"
-            android:src="@drawable/ic_arrow_back_white"
+            android:src="@drawable/ic_baseline_arrow_back_24"
             app:tint="#FFFFFF" />
 
         <LinearLayout
@@ -57,7 +57,7 @@
             android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="8dp"
-            android:src="@drawable/ic_refresh_modern"
+            android:src="@drawable/ic_refresh_cw"
             app:tint="#FFFFFF" />
     </RelativeLayout>
 
@@ -69,7 +69,7 @@
         android:layout_height="3dp"
         android:indeterminate="false"
         android:max="100"
-        android:progressDrawable="@drawable/bg_progress_horizontal_accent"
+        android:progressDrawable="@drawable/bg_progress_blue"
         android:visibility="visible" />
 
     <!-- Web View Container -->
@@ -97,7 +97,7 @@
             <ImageView
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:src="@drawable/ic_warning_shield"
+                android:src="@drawable/ic_cancel_circle_24"
                 app:tint="#DC2626" />
 
             <TextView
