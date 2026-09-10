@@ -56,6 +56,14 @@ interface ApiService {
         @Query("nisn") nisn: String
     ): Response<JadwalResponse>
 
+    // 2B. Endpoint Ambil Transkrip Nilai CBT Lengkap dengan Filter Real
+    @GET("api/ujian/transkrip")
+    suspend fun getTranskripCbt(
+        @Query("nisn") nisn: String,
+        @Query("id_tahun_ajaran") idTahunAjaran: String? = null,
+        @Query("id_jenis_ujian") idJenisUjian: String? = null
+    ): Response<TranskripCbtResponse>
+
     // 3. Endpoint Download Soal (Kirim Raw JSON)
     @POST("api/ujian/download")
     suspend fun downloadSoal(

@@ -64,6 +64,80 @@ data class RiwayatUjianItem(
     val predikat: String? = null
 )
 
+// --- MODEL UNTUK TRANSKRIP NILAI CBT ---
+data class TranskripCbtResponse(
+    val status: Boolean,
+    val message: String? = null,
+    val student_info: TranskripStudentInfo? = null,
+    val filter_options: TranskripFilterOptions? = null,
+    val active_filter: TranskripActiveFilter? = null,
+    val ringkasan: RingkasanCbt? = null,
+    val daftar_nilai: List<NilaiCbtItem> = emptyList()
+)
+
+data class TranskripStudentInfo(
+    val id: String? = null,
+    val nama: String? = null,
+    val nisn: String? = null,
+    val nis: String? = null,
+    val kelas: String? = null,
+    val jurusan: String? = null,
+    val foto: String? = null
+)
+
+data class TranskripFilterOptions(
+    val tahun_ajaran: List<TahunAjaranFilterItem> = emptyList(),
+    val jenis_ujian: List<JenisUjianFilterItem> = emptyList()
+)
+
+data class TahunAjaranFilterItem(
+    val id: String,
+    val tahun_ajaran: String?,
+    val semester: String?,
+    val label: String?,
+    val is_aktif: Boolean = false
+)
+
+data class JenisUjianFilterItem(
+    val id: String,
+    val nama_jenis: String?,
+    val kode_jenis: String?,
+    val label: String?
+)
+
+data class TranskripActiveFilter(
+    val id_tahun_ajaran: String? = null,
+    val id_jenis_ujian: String? = null
+)
+
+data class RingkasanCbt(
+    val total_ujian: Int = 0,
+    val rata_rata: Double = 0.0,
+    val nilai_tertinggi: Double = 0.0,
+    val nilai_terendah: Double = 0.0,
+    val lulus_count: Int = 0,
+    val remedial_count: Int = 0
+)
+
+data class NilaiCbtItem(
+    val id: String? = null,
+    val jadwal_id: String? = null,
+    val nama_mapel: String? = null,
+    val nama_ujian: String? = null,
+    val jenis_ujian: String? = null,
+    val kode_jenis: String? = null,
+    val tahun_ajaran: String? = null,
+    val semester: String? = null,
+    val nilai_pg: Double = 0.0,
+    val nilai_esai: Double = 0.0,
+    val total_nilai: Double = 0.0,
+    val kkm: Int = 75,
+    val predikat: String? = null,
+    val status_kelulusan: String? = null,
+    val tanggal_selesai: String? = null,
+    val durasi_pengerjaan: String? = null
+)
+
 data class JadwalUjian(
     val id_ujian_siswa: String,
     val status_pengerjaan: String,

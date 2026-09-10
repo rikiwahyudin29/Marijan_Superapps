@@ -123,7 +123,10 @@ class CbtFragment : Fragment(), RefreshableFragment {
         }
 
         btnLihatTranskrip?.setOnClickListener {
-            startActivity(Intent(requireContext(), NilaiRaportActivity::class.java))
+            val intent = Intent(requireContext(), TranskripCbtActivity::class.java).apply {
+                putExtra("NISN", nisnSiswa)
+            }
+            startActivity(intent)
         }
 
         fetchCbtDashboard(isSilent = false)
@@ -459,7 +462,11 @@ class CbtFragment : Fragment(), RefreshableFragment {
         val container = containerRiwayat ?: return
         container.removeAllViews()
 
-        if (items.isEmpty()) return
+        if (items.isEmpty()) {
+            val emptyView = LayoutInflater.from(requireContext()).inflate(R.layout.item_cbt_riwayat_empty, container, false)
+            container.addView(emptyView)
+            return
+        }
 
         val inflater = LayoutInflater.from(requireContext())
         for (item in items) {

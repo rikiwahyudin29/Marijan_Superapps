@@ -97,6 +97,7 @@
         <activity android:name=".WaliKelasKeuanganActivity" android:screenOrientation="portrait" tools:ignore="all" />
         <activity android:name=".PresensiKelasActivity" android:screenOrientation="portrait" tools:ignore="all" />
         <activity android:name=".JadwalMengajarActivity" android:screenOrientation="portrait" tools:ignore="all" />
+        <activity android:name=".TranskripCbtActivity" android:screenOrientation="portrait" android:exported="false" tools:ignore="all" />
 
         <!-- Receiver Pengingat Jadwal Mengajar Guru -->
         <receiver
