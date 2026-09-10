@@ -1,6 +1,7 @@
 package com.rtekmidev.smkrjsuperapps
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -21,6 +22,7 @@ import androidx.lifecycle.lifecycleScope
 import com.rtekmidev.smkrjsuperapps.api.ApiClient
 import com.rtekmidev.smkrjsuperapps.api.DashboardGuruData
 import com.rtekmidev.smkrjsuperapps.api.KbmAktifInfo
+import com.rtekmidev.smkrjsuperapps.util.LoadingDialogHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,6 +33,13 @@ import java.util.Locale
 class AkademikGuruFragment : Fragment(), com.rtekmidev.smkrjsuperapps.util.RefreshableFragment {
 
     private var cachedData: DashboardGuruData? = null
+    private var loadingDialog: Dialog? = null
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        LoadingDialogHelper.dismiss(loadingDialog)
+        loadingDialog = null
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -86,10 +95,15 @@ class AkademikGuruFragment : Fragment(), com.rtekmidev.smkrjsuperapps.util.Refre
 
         if (idUser.isNullOrEmpty()) return
 
+        LoadingDialogHelper.dismiss(loadingDialog)
+        loadingDialog = LoadingDialogHelper.show(context, "Memuat data akademik guru...")
+
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val response = ApiClient.instance.getAkademikGuruDashboard(idUser)
                 withContext(Dispatchers.Main) {
+                    LoadingDialogHelper.dismiss(loadingDialog)
+                    loadingDialog = null
                     if (isAdded && response.isSuccessful && response.body()?.status == true) {
                         val data = response.body()?.data
                         if (data != null) {
@@ -106,7 +120,10 @@ class AkademikGuruFragment : Fragment(), com.rtekmidev.smkrjsuperapps.util.Refre
                     }
                 }
             } catch (e: Exception) {
-                // Ignore network errors on background refresh
+                withContext(Dispatchers.Main) {
+                    LoadingDialogHelper.dismiss(loadingDialog)
+                    loadingDialog = null
+                }
             }
         }
     }

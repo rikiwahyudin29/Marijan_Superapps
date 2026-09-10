@@ -380,7 +380,9 @@ data class DataTagihan(
     val status_bayar: String?,
     val keterangan: String? = null,
     val bulan_ke: String? = null,
-    val tipe_bayar: String? = null
+    val tipe_bayar: String? = null,
+    val tahun_ajaran: String? = null,
+    val semester: String? = null
 )
 
 // Data Class Baru Untuk Riwayat
@@ -392,7 +394,11 @@ data class DataRiwayat(
     val payment_type: String?,
     val status_transaksi: String?,
     val created_at: String?,
-    val checkout_url: String?
+    val checkout_url: String?,
+    val kode_transaksi: String? = null,
+    val tahun_ajaran: String? = null,
+    val semester: String? = null,
+    val kwitansi_url: String? = null
 )
 
 data class TripayCheckoutResponse(

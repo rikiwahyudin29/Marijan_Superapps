@@ -1,5 +1,6 @@
 package com.rtekmidev.smkrjsuperapps
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -22,12 +23,21 @@ import com.rtekmidev.smkrjsuperapps.api.DashboardData
 import com.rtekmidev.smkrjsuperapps.api.MateriPreviewItem
 import com.rtekmidev.smkrjsuperapps.api.TugasPreviewItem
 import com.rtekmidev.smkrjsuperapps.util.AvatarHelper
+import com.rtekmidev.smkrjsuperapps.util.LoadingDialogHelper
 import com.rtekmidev.smkrjsuperapps.util.RefreshableFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class AkademikFragment : Fragment(), RefreshableFragment {
+
+    private var loadingDialog: Dialog? = null
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        LoadingDialogHelper.dismiss(loadingDialog)
+        loadingDialog = null
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -128,10 +138,15 @@ class AkademikFragment : Fragment(), RefreshableFragment {
         val llMateriTerkini = view.findViewById<LinearLayout>(R.id.llMateriTerkini)
         val tvEmptyMateri = view.findViewById<TextView>(R.id.tvEmptyMateri)
 
+        LoadingDialogHelper.dismiss(loadingDialog)
+        loadingDialog = LoadingDialogHelper.show(context, "Memuat data akademik...")
+
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val response = ApiClient.instance.getDashboard(nisn)
                 withContext(Dispatchers.Main) {
+                    LoadingDialogHelper.dismiss(loadingDialog)
+                    loadingDialog = null
                     if (!isAdded) return@withContext
                     if (response.isSuccessful && response.body()?.status == true && response.body()?.data != null) {
                         val data = response.body()?.data!!
@@ -240,6 +255,8 @@ class AkademikFragment : Fragment(), RefreshableFragment {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
+                    LoadingDialogHelper.dismiss(loadingDialog)
+                    loadingDialog = null
                     if (isAdded) {
                         Toast.makeText(requireContext(), "Error koneksi akademik", Toast.LENGTH_SHORT).show()
                     }

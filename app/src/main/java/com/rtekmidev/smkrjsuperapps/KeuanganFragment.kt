@@ -37,6 +37,7 @@ import com.rtekmidev.smkrjsuperapps.api.ApiClient
 import com.rtekmidev.smkrjsuperapps.api.DataRiwayat
 import com.rtekmidev.smkrjsuperapps.api.DataTagihan
 import com.rtekmidev.smkrjsuperapps.api.RingkasanKeuangan
+import com.rtekmidev.smkrjsuperapps.util.LoadingDialogHelper
 import com.rtekmidev.smkrjsuperapps.util.RefreshableFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -52,11 +53,24 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
 
     private var nisnSiswa = ""
     private var namaSiswa = ""
-    private var waKeuanganSekolah = "085155232366"
+    private var waKeuanganSekolah = "+6283101457709"
     private val allTagihanList = mutableListOf<DataTagihan>()
     private val allRiwayatList = mutableListOf<DataRiwayat>()
     private var selectedKategori = "Semua"
     private var currentRingkasan: RingkasanKeuangan? = null
+    private var loadingDialog: Dialog? = null
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        LoadingDialogHelper.dismiss(loadingDialog)
+        loadingDialog = null
+    }
+
+    private val paymentLauncher = registerForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()
+    ) {
+        view?.let { muatTagihan(it) }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -126,12 +140,16 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
     private fun muatTagihan(view: View) {
         val loading = view.findViewById<LinearLayout>(R.id.loadingKeuangan)
         loading?.visibility = View.VISIBLE
+        LoadingDialogHelper.dismiss(loadingDialog)
+        loadingDialog = LoadingDialogHelper.show(context, "Memuat data keuangan...")
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val resp = ApiClient.instance.getTagihan(nisnSiswa)
                 withContext(Dispatchers.Main) {
                     loading?.visibility = View.GONE
+                    LoadingDialogHelper.dismiss(loadingDialog)
+                    loadingDialog = null
                     if (resp.isSuccessful && resp.body()?.status == true) {
                         val data = resp.body()!!
 
@@ -214,6 +232,8 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     loading?.visibility = View.GONE
+                    LoadingDialogHelper.dismiss(loadingDialog)
+                    loadingDialog = null
                     Toast.makeText(requireContext(), "Koneksi terganggu: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -292,6 +312,18 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
             val ketInfo = if (!tagihan.keterangan.isNullOrEmpty()) tagihan.keterangan else "-"
             card.findViewById<TextView>(R.id.tvKeteranganTagihan)?.text = "Bulan ke-$bulanInfo | Keterangan: $ketInfo"
 
+            // Bind Tahun Ajaran Badge
+            val taText = if (!tagihan.tahun_ajaran.isNullOrEmpty()) {
+                "TA ${tagihan.tahun_ajaran}" + (if (!tagihan.semester.isNullOrEmpty()) " • ${tagihan.semester}" else "")
+            } else ""
+            val tvBadgeTa = card.findViewById<TextView>(R.id.tvBadgeTahunAjaran)
+            if (taText.isNotEmpty()) {
+                tvBadgeTa?.visibility = View.VISIBLE
+                tvBadgeTa?.text = taText
+            } else {
+                tvBadgeTa?.visibility = View.GONE
+            }
+
             // Nominal
             card.findViewById<TextView>(R.id.tvNominalTagihan)?.text = formatRupiah(nomTagihan)
             card.findViewById<TextView>(R.id.tvDibayarTagihan)?.text = "Dibayar: " + formatRupiah(nomTerbayar)
@@ -357,26 +389,32 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
             val card = layoutInflater.inflate(R.layout.item_riwayat, wadahRiwayat, false) as CardView
             card.findViewById<TextView>(R.id.tvTanggalRiwayat)?.text = riwayat.created_at ?: "-"
             card.findViewById<TextView>(R.id.tvNamaRiwayat)?.text = riwayat.nama_pos ?: "Pembayaran Tagihan"
-            card.findViewById<TextView>(R.id.tvMetodeRiwayat)?.text = riwayat.payment_type ?: "QRIS"
+
+            val taStr = if (!riwayat.tahun_ajaran.isNullOrEmpty()) "TA ${riwayat.tahun_ajaran} • " else ""
+            card.findViewById<TextView>(R.id.tvMetodeRiwayat)?.text = "$taStr${riwayat.payment_type ?: "QRIS"}"
 
             val nom = riwayat.total_bayar?.toDoubleOrNull() ?: 0.0
             card.findViewById<TextView>(R.id.tvNominalRiwayat)?.text = "+ " + formatRupiah(nom)
 
             val tvBadge = card.findViewById<TextView>(R.id.tvBadgeRiwayat)
-            val status = riwayat.status_transaksi ?: "UNPAID"
+            tvBadge?.text = "LUNAS"
+            tvBadge?.setTextColor(Color.parseColor("#059669"))
+            tvBadge?.setBackgroundResource(R.drawable.bg_badge_green_soft)
 
-            if (status.equals("PAID", true) || status.equals("LUNAS", true) || status.equals("SUCCESS", true)) {
-                tvBadge?.text = "LUNAS"
-                tvBadge?.setTextColor(Color.parseColor("#059669"))
-                tvBadge?.setBackgroundResource(R.drawable.bg_badge_green_soft)
-            } else if (status.equals("UNPAID", true)) {
-                tvBadge?.text = "MENUNGGU"
-                tvBadge?.setTextColor(Color.parseColor("#D97706"))
-                tvBadge?.setBackgroundResource(R.drawable.bg_badge_amber_soft)
-            } else {
-                tvBadge?.text = status.uppercase()
-                tvBadge?.setTextColor(Color.parseColor("#DC2626"))
-                tvBadge?.setBackgroundResource(R.drawable.bg_badge_red_soft)
+            val tvKodeTrx = card.findViewById<TextView>(R.id.tvKodeTrx)
+            tvKodeTrx?.text = riwayat.id?.let { "TRX-$it" } ?: (riwayat.created_at ?: "-")
+
+            val btnKwitansi = card.findViewById<View>(R.id.btnDownloadKwitansi)
+            val kwitansiUrl = riwayat.kwitansi_url
+                ?: (ApiClient.BASE_URL.trimEnd('/') + "/api/keuangan/kwitansi/" + (riwayat.id ?: "0"))
+
+            btnKwitansi?.setOnClickListener {
+                try {
+                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(kwitansiUrl))
+                    startActivity(browserIntent)
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "Gagal membuka kwitansi: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
             }
 
             wadahRiwayat.addView(card)
@@ -497,12 +535,25 @@ class KeuanganFragment : Fragment(), RefreshableFragment {
                     loading?.visibility = View.GONE
                     if (resp.isSuccessful && resp.body()?.status == true) {
                         val body = resp.body()!!
-                        val qrData = body.qr_string ?: body.qr_url ?: body.checkout_url ?: "QRIS-${body.merchant_ref}"
-                        val ref = body.merchant_ref ?: body.reference ?: "REF-${System.currentTimeMillis()}"
-                        val finalNominal = body.nominal ?: nominalBayar
-                        val posName = body.nama_pos ?: itemTitle
+                        val checkoutUrl = body.checkout_url
+                        val qrData = body.qr_string ?: body.qr_url
 
-                        showDialogNativeQris(qrData, ref, finalNominal, posName)
+                        if (!checkoutUrl.isNullOrEmpty()) {
+                            // Buka halaman pembayaran resmi iPaymu (QRIS resmi berstandar BI yang dapat discan 100%)
+                            val intent = Intent(requireContext(), PaymentWebViewActivity::class.java).apply {
+                                putExtra("EXTRA_PAYMENT_URL", checkoutUrl)
+                                putExtra("EXTRA_PAYMENT_TITLE", body.nama_pos ?: itemTitle)
+                            }
+                            paymentLauncher.launch(intent)
+                        } else if (!qrData.isNullOrEmpty()) {
+                            val ref = body.merchant_ref ?: body.reference ?: "REF-${System.currentTimeMillis()}"
+                            val finalNominal = body.nominal ?: nominalBayar
+                            val posName = body.nama_pos ?: itemTitle
+                            showDialogNativeQris(qrData, ref, finalNominal, posName)
+                        } else {
+                            Toast.makeText(requireContext(), "Pembayaran berhasil disiapkan", Toast.LENGTH_SHORT).show()
+                            refreshData()
+                        }
                     } else {
                         val msg = resp.body()?.message ?: "Gagal menyiapkan pembayaran QRIS"
                         Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()

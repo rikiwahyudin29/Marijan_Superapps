@@ -1,5 +1,6 @@
 package com.rtekmidev.smkrjsuperapps
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -21,12 +22,21 @@ import com.bumptech.glide.Glide
 import com.rtekmidev.smkrjsuperapps.api.ApiClient
 import com.rtekmidev.smkrjsuperapps.api.DashboardData
 import com.rtekmidev.smkrjsuperapps.util.AvatarHelper
+import com.rtekmidev.smkrjsuperapps.util.LoadingDialogHelper
 import com.rtekmidev.smkrjsuperapps.util.RefreshableFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class BerandaFragment : Fragment(), RefreshableFragment {
+
+    private var loadingDialog: Dialog? = null
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        LoadingDialogHelper.dismiss(loadingDialog)
+        loadingDialog = null
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -330,10 +340,15 @@ class BerandaFragment : Fragment(), RefreshableFragment {
         tvTagihanTotalBesar: TextView?,
         containerTagihanPreview: LinearLayout?
     ) {
+        LoadingDialogHelper.dismiss(loadingDialog)
+        loadingDialog = LoadingDialogHelper.show(context, "Memuat dashboard siswa...")
+
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val response = ApiClient.instance.getDashboard(nisn)
                 withContext(Dispatchers.Main) {
+                    LoadingDialogHelper.dismiss(loadingDialog)
+                    loadingDialog = null
                     if (!isAdded) return@withContext
 
                     if (response.isSuccessful && response.body()?.status == true && response.body()?.data != null) {
@@ -509,6 +524,8 @@ class BerandaFragment : Fragment(), RefreshableFragment {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
+                    LoadingDialogHelper.dismiss(loadingDialog)
+                    loadingDialog = null
                     if (isAdded) {
                         Toast.makeText(requireContext(), "Koneksi Error: ${e.message}", Toast.LENGTH_SHORT).show()
                     }

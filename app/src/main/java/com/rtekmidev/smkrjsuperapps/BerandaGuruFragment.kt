@@ -1,6 +1,7 @@
 package com.rtekmidev.smkrjsuperapps
 
 import android.Manifest
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -37,9 +38,12 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import com.rtekmidev.smkrjsuperapps.util.LoadingDialogHelper
 import com.rtekmidev.smkrjsuperapps.util.RefreshableFragment
 
 class BerandaGuruFragment : Fragment(), RefreshableFragment {
+
+    private var loadingDialog: Dialog? = null
 
     // Hero Views
     private lateinit var tvHeroTahunAjaran: TextView
@@ -160,6 +164,8 @@ class BerandaGuruFragment : Fragment(), RefreshableFragment {
     override fun onDestroyView() {
         super.onDestroyView()
         clockJob?.cancel()
+        LoadingDialogHelper.dismiss(loadingDialog)
+        loadingDialog = null
     }
 
     private fun startRealtimeClock() {
@@ -385,10 +391,15 @@ class BerandaGuruFragment : Fragment(), RefreshableFragment {
         val sharedPref = requireActivity().getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
         val idUser = sharedPref.getString("id_user", null) ?: return
 
+        LoadingDialogHelper.dismiss(loadingDialog)
+        loadingDialog = LoadingDialogHelper.show(context, "Memuat data dashboard guru...")
+
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val response = ApiClient.instance.getAkademikGuruDashboard(idUser)
                 withContext(Dispatchers.Main) {
+                    LoadingDialogHelper.dismiss(loadingDialog)
+                    loadingDialog = null
                     if (response.isSuccessful && response.body()?.status == true) {
                         val data = response.body()?.data
                         if (data != null) {
@@ -404,7 +415,10 @@ class BerandaGuruFragment : Fragment(), RefreshableFragment {
                     }
                 }
             } catch (_: Exception) {
-                // Keep default loaded views
+                withContext(Dispatchers.Main) {
+                    LoadingDialogHelper.dismiss(loadingDialog)
+                    loadingDialog = null
+                }
             }
         }
     }

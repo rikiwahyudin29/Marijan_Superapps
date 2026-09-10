@@ -2,6 +2,7 @@ package com.rtekmidev.smkrjsuperapps
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
@@ -33,6 +34,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.rtekmidev.smkrjsuperapps.api.ApiClient
 import com.rtekmidev.smkrjsuperapps.api.PortalPresensiGuruResponse
 import com.rtekmidev.smkrjsuperapps.api.PortalRiwayatItem
+import com.rtekmidev.smkrjsuperapps.util.LoadingDialogHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -115,6 +117,7 @@ class PresensiGuruFragment : Fragment(), LocationListener, RefreshableFragment {
     private var userLng: Double = 0.0
     private var isMapLoaded: Boolean = false
     private var unduhRekapUrl: String? = null
+    private var loadingDialog: Dialog? = null
 
     private var locationManager: LocationManager? = null
 
@@ -174,6 +177,8 @@ class PresensiGuruFragment : Fragment(), LocationListener, RefreshableFragment {
     override fun onDestroyView() {
         super.onDestroyView()
         clockJob?.cancel()
+        LoadingDialogHelper.dismiss(loadingDialog)
+        loadingDialog = null
         try {
             locationManager?.removeUpdates(this)
         } catch (_: Exception) {}
@@ -454,19 +459,28 @@ class PresensiGuruFragment : Fragment(), LocationListener, RefreshableFragment {
             return
         }
 
+        LoadingDialogHelper.dismiss(loadingDialog)
+        loadingDialog = LoadingDialogHelper.show(context, "Memuat presensi guru...")
+
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val response = ApiClient.instance.getPresensiGuruPortalDashboard(idUser)
-                if (response.isSuccessful && response.body()?.status == true) {
-                    val body = response.body()!!
-                    withContext(Dispatchers.Main) {
+                withContext(Dispatchers.Main) {
+                    LoadingDialogHelper.dismiss(loadingDialog)
+                    loadingDialog = null
+                    if (response.isSuccessful && response.body()?.status == true) {
+                        val body = response.body()!!
                         populatePortalUI(body)
+                    } else {
+                        val err = response.errorBody()?.string() ?: "Response code: ${response.code()}"
+                        android.util.Log.e("PresensiGuruFragment", "Gagal memuat data portal presensi: $err")
                     }
-                } else {
-                    val err = response.errorBody()?.string() ?: "Response code: ${response.code()}"
-                    android.util.Log.e("PresensiGuruFragment", "Gagal memuat data portal presensi: $err")
                 }
             } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    LoadingDialogHelper.dismiss(loadingDialog)
+                    loadingDialog = null
+                }
                 android.util.Log.e("PresensiGuruFragment", "Exception fetchPortalData: ${e.message}", e)
             }
         }

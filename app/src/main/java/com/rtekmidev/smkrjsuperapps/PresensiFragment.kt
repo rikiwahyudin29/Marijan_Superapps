@@ -2,6 +2,7 @@ package com.rtekmidev.smkrjsuperapps
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -33,6 +34,7 @@ import com.journeyapps.barcodescanner.ScanOptions
 import com.rtekmidev.smkrjsuperapps.api.ApiClient
 import com.rtekmidev.smkrjsuperapps.api.PortalPresensiSiswaResponse
 import com.rtekmidev.smkrjsuperapps.api.PortalRiwayatItem
+import com.rtekmidev.smkrjsuperapps.util.LoadingDialogHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -116,6 +118,7 @@ class PresensiFragment : Fragment(), LocationListener, RefreshableFragment {
     private var isMapLoaded: Boolean = false
     private var isSubmitting: Boolean = false
     private var nisn: String = ""
+    private var loadingDialog: Dialog? = null
 
     private var locationManager: LocationManager? = null
 
@@ -179,6 +182,8 @@ class PresensiFragment : Fragment(), LocationListener, RefreshableFragment {
     override fun onDestroyView() {
         super.onDestroyView()
         clockJob?.cancel()
+        LoadingDialogHelper.dismiss(loadingDialog)
+        loadingDialog = null
         try {
             locationManager?.removeUpdates(this)
         } catch (_: Exception) {}
@@ -482,19 +487,28 @@ class PresensiFragment : Fragment(), LocationListener, RefreshableFragment {
             return
         }
 
+        LoadingDialogHelper.dismiss(loadingDialog)
+        loadingDialog = LoadingDialogHelper.show(context, "Memuat presensi siswa...")
+
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val response = ApiClient.instance.getPresensiSiswaPortalDashboard(nisn)
-                if (response.isSuccessful && response.body()?.status == true) {
-                    val body = response.body()!!
-                    withContext(Dispatchers.Main) {
+                withContext(Dispatchers.Main) {
+                    LoadingDialogHelper.dismiss(loadingDialog)
+                    loadingDialog = null
+                    if (response.isSuccessful && response.body()?.status == true) {
+                        val body = response.body()!!
                         populatePortalUI(body)
+                    } else {
+                        val err = response.errorBody()?.string() ?: "Response code: ${response.code()}"
+                        android.util.Log.e("PresensiFragment", "Gagal memuat portal presensi siswa: $err")
                     }
-                } else {
-                    val err = response.errorBody()?.string() ?: "Response code: ${response.code()}"
-                    android.util.Log.e("PresensiFragment", "Gagal memuat portal presensi siswa: $err")
                 }
             } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    LoadingDialogHelper.dismiss(loadingDialog)
+                    loadingDialog = null
+                }
                 android.util.Log.e("PresensiFragment", "Exception fetchPortalData: ${e.message}", e)
             }
         }

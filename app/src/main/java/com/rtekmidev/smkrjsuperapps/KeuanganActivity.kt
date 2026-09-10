@@ -87,32 +87,27 @@ class KeuanganActivity : AppCompatActivity() {
                                     cardHist.findViewById<TextView>(R.id.tvNominalRiwayat).text = formatRupiah.format(nomRiwayat).replace(",00", "")
 
                                     val badge = cardHist.findViewById<TextView>(R.id.tvBadgeRiwayat)
-                                    val statusTrans = riwayat.status_transaksi ?: "UNPAID"
-                                    val btnLanjut = cardHist.findViewById<TextView>(R.id.btnLanjutBayar)
+                                    val statusTrans = riwayat.status_transaksi ?: "LUNAS"
+                                    val tvKodeTrx = cardHist.findViewById<TextView>(R.id.tvKodeTrx)
+                                    val btnKwitansi = cardHist.findViewById<View>(R.id.btnDownloadKwitansi)
 
-                                    // Atur Warna Badge sesuai Web
-                                    if (statusTrans.equals("PAID", true) || statusTrans.equals("LUNAS", true)) {
-                                        badge.text = "LUNAS"
-                                        badge.setTextColor(Color.parseColor("#059669")) // Emerald
-                                        badge.setBackgroundColor(Color.parseColor("#D1FAE5"))
-                                    } else if (statusTrans.equals("UNPAID", true)) {
-                                        badge.text = "MENUNGGU"
-                                        badge.setTextColor(Color.parseColor("#D97706")) // Amber
-                                        badge.setBackgroundColor(Color.parseColor("#FEF3C7"))
+                                    tvKodeTrx?.text = riwayat.kode_transaksi ?: "-"
+                                    badge?.text = "LUNAS"
+                                    badge?.setTextColor(Color.parseColor("#059669"))
+                                    badge?.setBackgroundColor(Color.parseColor("#D1FAE5"))
 
-                                        // Munculkan link lanjut bayar
-                                        if (!riwayat.checkout_url.isNullOrEmpty()) {
-                                            btnLanjut.visibility = View.VISIBLE
-                                            btnLanjut.setOnClickListener {
-                                                val intent = Intent(this@KeuanganActivity, PaymentActivity::class.java)
-                                                intent.putExtra("PAYMENT_URL", riwayat.checkout_url)
-                                                startActivity(intent)
+                                    btnKwitansi?.setOnClickListener {
+                                        val url = riwayat.kwitansi_url
+                                        if (!url.isNullOrEmpty()) {
+                                            try {
+                                                val i = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                                startActivity(i)
+                                            } catch (e: Exception) {
+                                                Toast.makeText(this@KeuanganActivity, "Tidak dapat membuka browser", Toast.LENGTH_SHORT).show()
                                             }
+                                        } else {
+                                            Toast.makeText(this@KeuanganActivity, "Kwitansi belum tersedia", Toast.LENGTH_SHORT).show()
                                         }
-                                    } else {
-                                        badge.text = statusTrans.uppercase()
-                                        badge.setTextColor(Color.parseColor("#DC2626")) // Red
-                                        badge.setBackgroundColor(Color.parseColor("#FEE2E2"))
                                     }
 
                                     wadahRiwayat.addView(cardHist)
