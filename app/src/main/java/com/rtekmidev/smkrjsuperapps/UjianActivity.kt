@@ -5,6 +5,8 @@ import android.app.ActivityManager
 import android.app.NotificationManager
 import android.bluetooth.BluetoothAdapter
 import android.content.BroadcastReceiver
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -12,6 +14,9 @@ import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.view.ActionMode
+import android.view.Menu
+import android.view.MenuItem
 import android.media.AudioManager
 import android.net.ConnectivityManager
 import android.net.Network
@@ -290,6 +295,74 @@ class UjianActivity : AppCompatActivity() {
         } catch (e: Exception) {}
     }
 
+    // 7. MONITOR & BLOKIR CLIPBOARD (ANTI COPY-PASTE SISTEM)
+    private var clipboardManager: ClipboardManager? = null
+    private val clipListener = ClipboardManager.OnPrimaryClipChangedListener {
+        bersihkanClipboard()
+    }
+
+    private fun initClipboardBlocker() {
+        try {
+            clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
+            clipboardManager?.addPrimaryClipChangedListener(clipListener)
+            bersihkanClipboard()
+        } catch (e: Exception) {}
+    }
+
+    private fun bersihkanClipboard() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                clipboardManager?.clearPrimaryClip()
+            } else {
+                val clip = ClipData.newPlainText("", "")
+                clipboardManager?.setPrimaryClip(clip)
+            }
+        } catch (e: Exception) {}
+    }
+
+    // ==============================================================
+    // EDITTEXT KHUSUS: BLOKIR TOTAL COPY, CUT, PASTE, & SELEKSI TEKS
+    // ==============================================================
+    inner class AntiCopyPasteEditText(context: Context) : androidx.appcompat.widget.AppCompatEditText(context) {
+        init {
+            isLongClickable = false
+            setTextIsSelectable(false)
+            customSelectionActionModeCallback = object : ActionMode.Callback {
+                override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean = false
+                override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean = false
+                override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean = false
+                override fun onDestroyActionMode(mode: ActionMode?) {}
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                customInsertionActionModeCallback = object : ActionMode.Callback {
+                    override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean = false
+                    override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean = false
+                    override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean = false
+                    override fun onDestroyActionMode(mode: ActionMode?) {}
+                }
+            }
+            // Blokir tempel teks/gambar dari soft keyboard suggestion strip (Gboard, Samsung Keyboard, dll.)
+            androidx.core.view.ViewCompat.setOnReceiveContentListener(
+                this,
+                arrayOf("text/*", "image/*")
+            ) { _, _ -> null }
+        }
+
+        override fun onTextContextMenuItem(id: Int): Boolean {
+            when (id) {
+                android.R.id.paste,
+                android.R.id.pasteAsPlainText,
+                android.R.id.copy,
+                android.R.id.cut,
+                android.R.id.selectAll -> return false
+            }
+            return super.onTextContextMenuItem(id)
+        }
+
+        override fun performLongClick(): Boolean = false
+        override fun performLongClick(x: Float, y: Float): Boolean = false
+    }
+
     private fun cekBluetoothWajibMati() {
         try {
             @Suppress("DEPRECATION")
@@ -351,6 +424,7 @@ class UjianActivity : AppCompatActivity() {
 
         // Aktifkan DND otomatis
         enableDndMode()
+        initClipboardBlocker()
 
         onBackPressedDispatcher.addCallback(this) {
             if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
@@ -434,6 +508,14 @@ class UjianActivity : AppCompatActivity() {
         super.onResume()
         cekBluetoothWajibMati()
         cekHeadsetKabel()
+        bersihkanClipboard()
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            bersihkanClipboard()
+        }
     }
 
     private fun penaltiKecurangan(alasan: String) {
@@ -557,6 +639,23 @@ class UjianActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvTotalSoalLabel).text = "dari ${daftarSoal.size}\nSoal"
 
         val tvTeks = findViewById<TextView>(R.id.tvTeksSoal)
+        tvTeks.setTextIsSelectable(false)
+        tvTeks.isLongClickable = false
+        tvTeks.setOnLongClickListener { true }
+        tvTeks.customSelectionActionModeCallback = object : ActionMode.Callback {
+            override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean = false
+            override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean = false
+            override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean = false
+            override fun onDestroyActionMode(mode: ActionMode?) {}
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            tvTeks.customInsertionActionModeCallback = object : ActionMode.Callback {
+                override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean = false
+                override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean = false
+                override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean = false
+                override fun onDestroyActionMode(mode: ActionMode?) {}
+            }
+        }
         findViewById<ImageView>(R.id.ivSoalAtas).visibility = View.GONE
 
         // Pasang Engine Render Rumus (Base64 + Image Web)
@@ -655,6 +754,8 @@ class UjianActivity : AppCompatActivity() {
                 setTextColor(Color.parseColor("#0F172A"))
                 setLineSpacing(dpToPx(3).toFloat(), 1.0f)
                 setTextIsSelectable(false)
+                isLongClickable = false
+                setOnLongClickListener { true }
 
                 val imageGetter = URLImageParser(this)
                 text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -759,6 +860,8 @@ class UjianActivity : AppCompatActivity() {
                 setTextColor(Color.parseColor("#0F172A"))
                 setLineSpacing(dpToPx(3).toFloat(), 1.0f)
                 setTextIsSelectable(false)
+                isLongClickable = false
+                setOnLongClickListener { true }
 
                 val imageGetter = URLImageParser(this)
                 text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -808,7 +911,7 @@ class UjianActivity : AppCompatActivity() {
     // REDESAIN SOAL ESAI / ISIAN
     // ==============================================================
     private fun renderEsai(wadah: LinearLayout, soal: Soal, jawaban: String, isMulti: Boolean) {
-        val et = EditText(this).apply {
+        val et = AntiCopyPasteEditText(this).apply {
             hint = "Ketik jawaban di sini..."
             setText(jawaban)
             background = getRoundedBackground()
@@ -865,6 +968,8 @@ class UjianActivity : AppCompatActivity() {
                 textSize = 14.5f
                 setTextColor(Color.parseColor("#0F172A"))
                 setTextIsSelectable(false)
+                isLongClickable = false
+                setOnLongClickListener { true }
             }
             card.addView(tv)
 
@@ -952,6 +1057,8 @@ class UjianActivity : AppCompatActivity() {
                 textSize = 14.5f
                 setTextColor(Color.parseColor("#0F172A"))
                 setTextIsSelectable(false)
+                isLongClickable = false
+                setOnLongClickListener { true }
             }
             card.addView(tv)
 
@@ -1140,6 +1247,7 @@ class UjianActivity : AppCompatActivity() {
         } catch (e: Exception) {}
         try { dialogBluetooth?.dismiss() } catch (e: Exception) {}
         try { dialogHeadset?.dismiss() } catch (e: Exception) {}
+        try { clipboardManager?.removePrimaryClipChangedListener(clipListener) } catch (e: Exception) {}
     }
 
     // ==============================================================
