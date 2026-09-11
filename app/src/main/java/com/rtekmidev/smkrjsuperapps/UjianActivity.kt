@@ -63,6 +63,7 @@ class UjianActivity : AppCompatActivity() {
     private var sisaWaktuMilis: Long = 0
     private var currentTextSize = 16f
     private var pinGracePeriod = 8
+    private var lastOverlayWarningTime = 0L
 
     private lateinit var navAdapter: NavigasiAdapter
     private lateinit var drawerLayout: DrawerLayout
@@ -251,16 +252,21 @@ class UjianActivity : AppCompatActivity() {
 
     // 5. ANTI-OVERLAY / FLOATING WINDOW BLOCKER
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        val isObscured = (ev.flags and MotionEvent.FLAG_WINDOW_IS_OBSCURED != 0) ||
-                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && (ev.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0))
+        // HANYA cek FLAG_WINDOW_IS_OBSCURED (jangan gunakan PARTIALLY_OBSCURED karena notch kamera,
+        // gesture navigation pill, dan dialog sematkan layar terhitung sebagai partially obscured)
+        val isObscured = (ev.flags and MotionEvent.FLAG_WINDOW_IS_OBSCURED) != 0
 
         if (isObscured) {
-            Toast.makeText(
-                this,
-                "⚠️ PERINGATAN KEAMANAN: Layar tertutup aplikasi mengambang / overlay! Sentuhan diblokir.",
-                Toast.LENGTH_SHORT
-            ).show()
-            return false // Blokir sentuhan
+            val now = System.currentTimeMillis()
+            if (now - lastOverlayWarningTime > 3000) {
+                lastOverlayWarningTime = now
+                Toast.makeText(
+                    this,
+                    "⚠️ PERINGATAN KEAMANAN: Layar tertutup aplikasi mengambang / overlay! Sentuhan diblokir.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            return false // Blokir sentuhan yang tertutup overlay
         }
         return super.dispatchTouchEvent(ev)
     }
