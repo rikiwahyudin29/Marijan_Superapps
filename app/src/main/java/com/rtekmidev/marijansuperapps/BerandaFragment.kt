@@ -1,4 +1,4 @@
-﻿package com.rtekmidev.marijansuperapps
+package com.rtekmidev.marijansuperapps
 
 import android.app.Dialog
 import android.content.Context
@@ -228,7 +228,7 @@ class BerandaFragment : Fragment(), RefreshableFragment {
         menuShortcutBantuan?.setOnClickListener {
             try {
                 val phone = "6285155232366"
-                val text = Uri.encode("Halo Admin MA Riyadhul Jannah Jalancagak, saya butuh bantuan terkait aplikasi.")
+                val text = Uri.encode("Halo Admin MA Riyadhul Jannah Subang, saya butuh bantuan terkait aplikasi.")
                 val url = "https://api.whatsapp.com/send?phone=$phone&text=$text"
                 val i = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 startActivity(i)
@@ -475,7 +475,7 @@ class BerandaFragment : Fragment(), RefreshableFragment {
                         if (data.presensi_sekolah != null) {
                             val ps = data.presensi_sekolah
                             tvPresensiRadiusPill?.text = "● ${ps.radius_info ?: "Radius 100m Aktif"}"
-                            tvPresensiLokasiSub?.text = "Lokasi: ${ps.lokasi_sekolah ?: "MA Riyadhul Jannah Jalancagak"} • ${ps.radius_info ?: "Radius Aktif"}"
+                            tvPresensiLokasiSub?.text = "Lokasi: ${ps.lokasi_sekolah ?: "MA Riyadhul Jannah Subang"} • ${ps.radius_info ?: "Radius Aktif"}"
                             tvPresensiJamMasuk?.text = ps.jam_masuk ?: "--:-- WIB"
                             tvPresensiStatusMasuk?.text = "● ${ps.jam_masuk_status ?: "Belum Presensi"}"
                             tvPresensiJamPulang?.text = ps.jam_pulang ?: "--:-- WIB"

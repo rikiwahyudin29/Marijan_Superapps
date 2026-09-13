@@ -1,4 +1,4 @@
-﻿package com.rtekmidev.marijansuperapps
+package com.rtekmidev.marijansuperapps
 
 import android.app.AlertDialog
 import android.app.DownloadManager
@@ -594,7 +594,7 @@ Terima kasih atas perhatian dan kerjasamanya.
 
 Wassalamu'alaikum Wr. Wb.
 _Wali Kelas: ${namaWaliKelas}_
-_MA Riyadhul Jannah Jalancagak_
+_MA Riyadhul Jannah Subang_
         """.trimIndent()
 
         try {

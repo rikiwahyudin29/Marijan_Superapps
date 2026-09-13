@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -743,7 +743,7 @@
                             android:id="@+id/tvInfoAlamat"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Subang, Jawa Barat (Jalancagak)"
+                            android:text="Subang, Jawa Barat"
                             android:textColor="#0F172A"
                             android:textSize="12sp" />
                     </LinearLayout>

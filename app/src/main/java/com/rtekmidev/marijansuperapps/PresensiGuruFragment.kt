@@ -1,4 +1,4 @@
-﻿package com.rtekmidev.marijansuperapps
+package com.rtekmidev.marijansuperapps
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -529,7 +529,7 @@ class PresensiGuruFragment : Fragment(), LocationListener, RefreshableFragment {
             if (lok.radius > 0) {
                 schoolRadius = lok.radius
             }
-            tvPortalNamaSekolah.text = lok.nama_sekolah ?: "MA Riyadhul Jannah Jalancagak"
+            tvPortalNamaSekolah.text = lok.nama_sekolah ?: "MA Riyadhul Jannah Subang"
             tvPortalMapSchoolBadge.text = "● ${lok.nama_sekolah ?: "MA Riyadhul Jannah"} (Radius ${schoolRadius}m)"
             
             val alamatStr = lok.alamat ?: "Jl. Raya Prapatan Bandung Jalancagak Subang"
