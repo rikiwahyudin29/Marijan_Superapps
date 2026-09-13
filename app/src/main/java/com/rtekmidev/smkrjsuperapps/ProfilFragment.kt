@@ -429,6 +429,16 @@ class ProfilFragment : Fragment(), RefreshableFragment {
             ivQr?.setImageBitmap(bitmap)
         } catch (_: Exception) {}
 
+        dialogView.findViewById<View>(R.id.btnUnduhKartuPelajarWeb)?.setOnClickListener {
+            val kartuUrl = ApiClient.BASE_URL.trimEnd('/') + "/kartu-pelajar/" + nisn
+            try {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(kartuUrl))
+                startActivity(intent)
+            } catch (_: Exception) {
+                Toast.makeText(requireContext(), "Gagal membuka link Kartu Pelajar", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         dialogView.findViewById<View>(R.id.btnCloseKartuPelajar)?.setOnClickListener { dialog.dismiss() }
         dialogView.findViewById<View>(R.id.btnTutupKartuPelajar)?.setOnClickListener { dialog.dismiss() }
 

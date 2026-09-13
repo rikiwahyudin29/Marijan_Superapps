@@ -153,21 +153,43 @@
                 android:layout_marginTop="2dp"/>
         </LinearLayout>
 
-        <!-- Close Button -->
-        <TextView
-            android:id="@+id/btnTutupKartuPelajar"
+        <!-- Action Buttons: Unduh Kartu Resmi Web & Tutup -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="42dp"
-            android:layout_marginTop="16dp"
-            android:text="Tutup"
-            android:textColor="#FFFFFF"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:background="@drawable/bg_rounded_border"
-            android:backgroundTint="#1E1B4B"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/btnUnduhKartuPelajarWeb"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:text="🖨️ Cetak / Unduh Kartu Resmi"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:background="@drawable/bg_rounded_border"
+                android:backgroundTint="#2563EB"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"/>
+
+            <TextView
+                android:id="@+id/btnTutupKartuPelajar"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:text="Tutup"
+                android:textColor="#475569"
+                android:textSize="12.5sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:background="@drawable/bg_rounded_border"
+                android:backgroundTint="#F1F5F9"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"/>
+        </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
