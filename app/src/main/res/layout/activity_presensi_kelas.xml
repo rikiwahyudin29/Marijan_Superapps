@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -45,7 +45,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SMK RJ SuperApps"
+                android:text="Marijan Superapps"
                 android:textColor="#64748B"
                 android:textSize="10sp" />
             <TextView
@@ -318,9 +318,9 @@
                             android:layout_weight="1"
                             android:text="Sakit"
                             android:textSize="11sp"
-                            android:textColor="#1D4ED8"
-                            android:backgroundTint="#EFF6FF"
-                            app:strokeColor="#BFDBFE"
+                            android:textColor="#047857"
+                            android:backgroundTint="#ECFDF5"
+                            app:strokeColor="#A7F3D0"
                             app:strokeWidth="1dp"
                             android:insetBottom="0dp"
                             android:insetTop="0dp"
@@ -389,7 +389,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Urut Nomor Absen"
-                    android:textColor="#2563EB"
+                    android:textColor="#059669"
                     android:textSize="11sp"
                     android:layout_alignParentEnd="true"/>
             </RelativeLayout>

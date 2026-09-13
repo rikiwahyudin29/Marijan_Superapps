@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Base Background - Gradien Halus Biru Modern -->
     <item>
         <shape>
             <gradient
                 android:startColor="#F8FAFC"
-                android:endColor="#DBEAFE"
+                android:endColor="#D1FAE5"
                 android:angle="135" />
         </shape>
     </item>

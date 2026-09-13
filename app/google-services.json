@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "894651408701",
-    "project_id": "smk-rj-superapps",
-    "storage_bucket": "smk-rj-superapps.firebasestorage.app"
+    "project_number": "482087310602",
+    "project_id": "marijan-superapps",
+    "storage_bucket": "marijan-superapps.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:894651408701:android:d4660951c7e27e667ca554",
+        "mobilesdk_app_id": "1:482087310602:android:bcfd8d650a4ca2805096f3",
         "android_client_info": {
-          "package_name": "com.rtekmidev.smkrjsuperapps"
+          "package_name": "com.rtekmidev.marijansuperapps"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDmb_WCw_RYujlgQAX8k5MUVh53rTzat1c"
+          "current_key": "AIzaSyDuCf5k6-Ly9sw32DuUUATkgSqrSvX8rEY"
         }
       ],
       "services": {

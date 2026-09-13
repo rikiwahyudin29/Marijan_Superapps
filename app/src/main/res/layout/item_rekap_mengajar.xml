@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -32,10 +32,10 @@
                 android:text="1"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:textColor="#3b82f6"
+                android:textColor="#10B981"
                 android:gravity="center"
                 android:background="@drawable/bg_icon_circle"
-                android:backgroundTint="#eff6ff" />
+                android:backgroundTint="#ECFDF5" />
 
             <LinearLayout
                 android:layout_width="0dp"

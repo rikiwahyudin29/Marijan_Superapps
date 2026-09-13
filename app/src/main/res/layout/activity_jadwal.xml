@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -50,8 +50,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SMK Riyadhul Jannah Jalancagak"
-                android:textColor="#2563EB"
+                android:text="MA Riyadhul Jannah Jalancagak"
+                android:textColor="#059669"
                 android:textStyle="bold"
                 android:textSize="13sp"/>
         </LinearLayout>
@@ -76,8 +76,8 @@
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:src="@android:drawable/ic_menu_month"
-                app:tint="#2563EB"
-                android:background="#EFF6FF"
+                app:tint="#059669"
+                android:background="#ECFDF5"
                 android:padding="10dp"
                 android:layout_alignParentStart="true"/>
 
@@ -123,7 +123,7 @@
                     android:layout_height="match_parent"
                     android:padding="10dp"
                     android:src="@android:drawable/ic_popup_sync"
-                    app:tint="#2563EB"/>
+                    app:tint="#059669"/>
             </androidx.cardview.widget.CardView>
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
@@ -149,7 +149,7 @@
                 android:layout_marginEnd="12dp"
                 app:cardCornerRadius="15dp"
                 app:cardElevation="2dp"
-                app:cardBackgroundColor="#2563EB"
+                app:cardBackgroundColor="#059669"
                 android:clickable="true"
                 android:foreground="?attr/selectableItemBackground">
                 <TextView
@@ -181,7 +181,7 @@
                     android:paddingHorizontal="20dp"
                     android:paddingVertical="10dp"
                     android:text="Waktu Ujian"
-                    android:textColor="#2563EB"
+                    android:textColor="#059669"
                     android:textSize="15sp"
                     android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
@@ -203,7 +203,7 @@
                     android:paddingHorizontal="20dp"
                     android:paddingVertical="10dp"
                     android:text="Belum Mulai"
-                    android:textColor="#2563EB"
+                    android:textColor="#059669"
                     android:textSize="15sp"
                     android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
@@ -224,7 +224,7 @@
                     android:paddingHorizontal="20dp"
                     android:paddingVertical="10dp"
                     android:text="Sudah Ujian"
-                    android:textColor="#2563EB"
+                    android:textColor="#059669"
                     android:textSize="15sp"
                     android:textStyle="bold" />
             </androidx.cardview.widget.CardView>

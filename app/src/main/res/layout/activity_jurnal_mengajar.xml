@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -46,7 +46,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SMK RJ SuperApps"
+                android:text="Marijan Superapps"
                 android:textColor="#64748B"
                 android:textSize="10sp" />
 
@@ -229,7 +229,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:text="Sesuai Jadwal"
-                            android:textColor="#3B82F6"
+                            android:textColor="#10B981"
                             android:textSize="10sp"
                             android:background="@drawable/bg_badge_blue_outline"
                             android:paddingHorizontal="6dp"

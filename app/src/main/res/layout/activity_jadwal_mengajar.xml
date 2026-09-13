@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -45,7 +45,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SMK RJ SUPERAPPS"
+                android:text="MARIJAN SUPERAPPS"
                 android:textSize="9sp"
                 android:letterSpacing="0.05"
                 android:textColor="#64748B"
@@ -167,7 +167,7 @@
                                     android:layout_height="16dp"
                                     android:layout_marginStart="6dp"
                                     android:background="@drawable/bg_circle_primary"
-                                    android:backgroundTint="#3B82F6"
+                                    android:backgroundTint="#10B981"
                                     android:gravity="center"
                                     android:text="✓"
                                     android:textColor="#FFFFFF"
@@ -224,7 +224,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:text="SMKS Riyadhul Jannah"
+                            android:text="MA Riyadhul Jannah"
                             android:textSize="10sp"
                             android:textColor="#E0E7FF"
                             android:background="#2E2875"
@@ -473,8 +473,8 @@
                         android:layout_height="wrap_content"
                         android:text="Senin terpilih (4 Jam)"
                         android:textSize="10sp"
-                        android:textColor="#3B82F6"
-                        android:background="#EFF6FF"
+                        android:textColor="#10B981"
+                        android:background="#ECFDF5"
                         android:paddingHorizontal="10dp"
                         android:paddingVertical="4dp"/>
                 </LinearLayout>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -186,7 +186,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
-                            android:text="SMK Riyadhul Jannah"
+                            android:text="MA Riyadhul Jannah"
                             android:textColor="#2DD4BF"
                             android:textSize="10.5sp"
                             android:textStyle="bold" />
@@ -678,7 +678,7 @@
                             android:id="@+id/tvPortalMapSchoolBadge"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="● SMKS Riyadhul Jannah (Radius 200m)"
+                            android:text="● MA Riyadhul Jannah (Radius 200m)"
                             android:textColor="#0F172A"
                             android:textSize="9sp"
                             android:textStyle="bold" />
@@ -710,7 +710,7 @@
                             android:id="@+id/tvPortalNamaSekolah"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="SMKS Riyadhul Jannah Jalancagak"
+                            android:text="MA Riyadhul Jannah Jalancagak"
                             android:textColor="#0F172A"
                             android:textSize="11.5sp"
                             android:textStyle="bold" />
@@ -1101,7 +1101,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Lihat Kalender Presensi ›"
-                        android:textColor="#1E40AF"
+                        android:textColor="#065F46"
                         android:textSize="10.5sp"
                         android:textStyle="bold"
                         android:clickable="true"

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -64,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
-                android:text="SMK RJ SuperApps • Rekapitulasi Nilai"
+                android:text="Marijan Superapps • Rekapitulasi Nilai"
                 android:textColor="#64748B"
                 android:textSize="11.5sp" />
         </LinearLayout>
@@ -92,7 +92,7 @@
                 app:tint="#1E293B" />
         </androidx.cardview.widget.CardView>
 
-        <!-- Logo Sekolah SMK RJ -->
+        <!-- Logo Sekolah MA RJ -->
         <androidx.cardview.widget.CardView
             android:layout_width="38dp"
             android:layout_height="38dp"

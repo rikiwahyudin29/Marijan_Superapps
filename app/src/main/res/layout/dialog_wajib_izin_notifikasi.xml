@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -8,7 +8,7 @@
     android:padding="22dp"
     android:gravity="center_horizontal">
 
-    <!-- Logo Aplikasi SMK RJ -->
+    <!-- Logo Aplikasi MA RJ -->
     <FrameLayout
         android:layout_width="72dp"
         android:layout_height="72dp"
@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:src="@drawable/logo_marj"
-            android:contentDescription="Logo SMK Riyadhul Jannah" />
+            android:contentDescription="Logo MA Riyadhul Jannah" />
     </FrameLayout>
 
     <!-- Judul Dialog -->
@@ -38,7 +38,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sistem Pengingat Jadwal Mengajar Guru SMK RJ"
+        android:text="Sistem Pengingat Jadwal Mengajar Guru MA RJ"
         android:textColor="#64748B"
         android:textSize="11.5sp"
         android:gravity="center"

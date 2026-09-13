@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -35,7 +35,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SMKS Riyadhul Jannah Jalancagak"
+                android:text="MA Riyadhul Jannah Jalancagak"
                 android:textColor="#FFFFFF"
                 android:textSize="14.5sp"
                 android:textStyle="bold" />
@@ -127,7 +127,7 @@
                 android:textAllCaps="false"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:backgroundTint="#2563EB"
+                android:backgroundTint="#059669"
                 android:textColor="#FFFFFF"
                 android:layout_marginTop="16dp" />
         </LinearLayout>

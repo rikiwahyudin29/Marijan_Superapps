@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -527,7 +527,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@drawable/ic_info_circle_20"
-                    app:tint="#2563EB"
+                    app:tint="#059669"
                     android:layout_marginEnd="12dp"
                     android:layout_marginTop="2dp"/>
 
@@ -539,14 +539,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Info Pembayaran"
-                        android:textColor="#1E3A8A"
+                        android:textColor="#064E3B"
                         android:textSize="13sp"
                         android:textStyle="bold"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Pembayaran online kini telah tersedia menggunakan metode QRIS. Klik tombol Bayar via QRIS pada tagihan Anda, lalu scan kode QR yang muncul melalui aplikasi M-Banking atau dompet digital Anda (GoPay, OVO, Dana, dll). Pembayaran akan otomatis terverifikasi secara instan."
-                        android:textColor="#1E40AF"
+                        android:textColor="#065F46"
                         android:textSize="11.5sp"
                         android:lineSpacingExtra="2dp"
                         android:layout_marginTop="4dp"/>
@@ -577,7 +577,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:text="Lihat Semua"
-                    android:textColor="#2563EB"
+                    android:textColor="#059669"
                     android:textSize="12sp"
                     android:textStyle="bold"
                     android:clickable="true"
@@ -804,7 +804,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="TU &amp; Keuangan SMKRJ"
+                            android:text="TU &amp; Keuangan MARJ"
                             android:textColor="#0F172A"
                             android:textSize="12.5sp"
                             android:textStyle="bold"/>

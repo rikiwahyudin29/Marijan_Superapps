@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -808,7 +808,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Identitas resmi kesiswaan SMK Riyadhul Jannah"
+                            android:text="Identitas resmi kesiswaan MA Riyadhul Jannah"
                             android:textColor="#64748B"
                             android:textSize="10.5sp" />
                     </LinearLayout>
@@ -1232,7 +1232,7 @@
                 android:id="@+id/tvFooterAppNameSiswa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SMK Riyadhul Jannah SuperApps v2.4.1"
+                android:text="MA Riyadhul Jannah SuperApps v2.4.1"
                 android:textColor="#94A3B8"
                 android:textSize="11sp"
                 android:textStyle="bold" />
