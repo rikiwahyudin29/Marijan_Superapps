@@ -256,6 +256,8 @@ class UjianActivity : AppCompatActivity() {
     }
 
     // 5. ANTI-OVERLAY / FLOATING WINDOW BLOCKER
+    private var dialogOverlay: AlertDialog? = null
+
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         // HANYA cek FLAG_WINDOW_IS_OBSCURED (jangan gunakan PARTIALLY_OBSCURED karena notch kamera,
         // gesture navigation pill, dan dialog sematkan layar terhitung sebagai partially obscured)
@@ -265,15 +267,27 @@ class UjianActivity : AppCompatActivity() {
             val now = System.currentTimeMillis()
             if (now - lastOverlayWarningTime > 3000) {
                 lastOverlayWarningTime = now
-                Toast.makeText(
-                    this,
-                    "⚠️ PERINGATAN KEAMANAN: Layar tertutup aplikasi mengambang / overlay! Sentuhan diblokir.",
-                    Toast.LENGTH_SHORT
-                ).show()
+                tampilkanDialogOverlayWajibDitutup()
             }
             return false // Blokir sentuhan yang tertutup overlay
         }
         return super.dispatchTouchEvent(ev)
+    }
+
+    private fun tampilkanDialogOverlayWajibDitutup() {
+        if (isFinishing || isDestroyed) return
+        if (dialogOverlay?.isShowing == true) return
+
+        val builder = AlertDialog.Builder(this)
+            .setTitle("⚠️ APLIKASI MENGAMBANG TERDETEKSI!")
+            .setMessage("Layar ujian terhalang oleh aplikasi mengambang (seperti Bubble Chat WhatsApp/Messenger, Kalkulator Floating, dll).\n\nDemi keamanan ujian, harap tutup atau singkirkan aplikasi mengambang tersebut untuk melanjutkan.")
+            .setCancelable(false)
+            .setPositiveButton("Saya Paham") { dialog, _ ->
+                dialog.dismiss()
+                dialogOverlay = null
+            }
+
+        dialogOverlay = builder.show()
     }
 
     // 6. MODE JANGAN GANGGU (DND)
@@ -420,6 +434,12 @@ class UjianActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_SECURE or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+        // Matikan paksa & sembunyikan semua floating apps / non-system overlay windows (Android 12+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            window.setHideOverlayWindows(true)
+        }
+
         setContentView(R.layout.activity_ujian)
 
         // Aktifkan DND otomatis
