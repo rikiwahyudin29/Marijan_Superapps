@@ -69,7 +69,7 @@
         android:layout_width="match_parent"
         android:layout_height="46dp"
         android:background="@drawable/bg_input_rounded"
-        android:hint="Contoh: siswa@smkrj.sch.id"
+        android:hint="Contoh: siswa@mariyadhuljannahsubang.sch.id"
         android:inputType="textEmailAddress"
         android:paddingHorizontal="14dp"
         android:textColor="#0F172A"

@@ -1,4 +1,4 @@
-﻿package com.rtekmidev.marijansuperapps
+package com.rtekmidev.marijansuperapps
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -194,7 +194,7 @@ class AkademikGuruFragment : Fragment(), com.rtekmidev.marijansuperapps.util.Ref
             "Total: ${data.total_jam_minggu_ini} Jam/Mg"
 
         view.findViewById<TextView>(R.id.tvKurikulumText)?.text =
-            data.kurikulum_text ?: "Kurikulum Merdeka SMK PK"
+            data.kurikulum_text ?: "Kurikulum Merdeka Madrasah"
 
         val containerMapel = view.findViewById<LinearLayout>(R.id.containerMapelDiampu)
         containerMapel?.removeAllViews()

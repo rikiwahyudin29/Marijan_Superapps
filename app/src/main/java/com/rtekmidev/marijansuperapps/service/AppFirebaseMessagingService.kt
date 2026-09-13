@@ -1,4 +1,4 @@
-﻿package com.rtekmidev.marijansuperapps.service
+package com.rtekmidev.marijansuperapps.service
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -30,7 +30,7 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
 
     companion object {
         private const val TAG = "AppFCM"
-        const val CHANNEL_ID = "channel_smk_rj_broadcast"
+        const val CHANNEL_ID = "channel_marijan_broadcast"
         const val CHANNEL_NAME = "Pengumuman & Notifikasi Sekolah"
         val POLA_GETAR = longArrayOf(0, 600, 250, 600)
     }

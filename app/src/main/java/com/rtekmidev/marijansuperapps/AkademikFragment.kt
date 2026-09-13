@@ -1,4 +1,4 @@
-﻿package com.rtekmidev.marijansuperapps
+package com.rtekmidev.marijansuperapps
 
 import android.app.Dialog
 import android.content.Context
@@ -165,9 +165,9 @@ class AkademikFragment : Fragment(), RefreshableFragment {
                         tvTahunAjaranSemester?.text = "• TA $ta • $sem"
                         tvTanggalHariIni?.text = data.tanggal_hari_ini ?: ""
                         tvTingkatCircle?.text = data.tingkat ?: "12"
-                        tvNamaSiswaHero?.text = data.nama ?: "Siswa SMK"
+                        tvNamaSiswaHero?.text = data.nama ?: "Santri / Siswa MA"
                         tvKelasNisnHero?.text = "${data.kelas ?: "-"} • NISN: ${data.nisn ?: "-"}"
-                        tvJurusanBadgeHero?.text = data.jurusan_singkat ?: (data.nama_jurusan?.take(4)?.uppercase() ?: "SMK")
+                        tvJurusanBadgeHero?.text = data.jurusan_singkat ?: (data.nama_jurusan?.take(4)?.uppercase() ?: "MARJ")
 
                         tvMingguEfektifLabel?.text = data.pekan_kbm_text ?: "Minggu Efektif KBM (Pekan 7/18)"
                         tvPersenSelesaiLabel?.text = data.pekan_kbm_persen_text ?: "${data.pekan_kbm_persen ?: 38}% Selesai"

@@ -1,4 +1,4 @@
-﻿@file:Suppress("unused")
+@file:Suppress("unused")
 package com.rtekmidev.marijansuperapps.api
 
 // --- MODEL UNTUK LOGIN ---
@@ -700,7 +700,7 @@ data class DashboardGuruData(
     val total_minggu_efektif: Int? = 18,
     val progress_minggu: Int? = 39,
     val kbm_aktif: KbmAktifInfo? = null,
-    val kurikulum_text: String? = "Kurikulum Merdeka SMK PK",
+    val kurikulum_text: String? = "Kurikulum Merdeka Madrasah",
     val siswa_belum_absen: Int,
     val is_libur: Boolean? = false,
     val keterangan_libur: String? = null,

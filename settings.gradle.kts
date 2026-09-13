@@ -22,6 +22,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "SMK RJ Superapps"
+rootProject.name = "Marijan Superapps"
 include(":app")
  
