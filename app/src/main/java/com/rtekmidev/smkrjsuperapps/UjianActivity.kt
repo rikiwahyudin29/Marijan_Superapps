@@ -161,10 +161,23 @@ class UjianActivity : AppCompatActivity() {
 
         if (isWifi) {
             try {
-                val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager
-                val rssi = wifiManager?.connectionInfo?.rssi ?: -60
+                val wifiInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    capabilities.transportInfo as? android.net.wifi.WifiInfo
+                } else null
+
                 @Suppress("DEPRECATION")
-                val level = WifiManager.calculateSignalLevel(rssi, 5)
+                val fallbackWifiInfo = if (wifiInfo == null) {
+                    (applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager)?.connectionInfo
+                } else null
+
+                val rssi = wifiInfo?.rssi ?: fallbackWifiInfo?.rssi ?: -60
+                val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager
+                val level = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && wifiManager != null) {
+                    wifiManager.calculateSignalLevel(rssi)
+                } else {
+                    @Suppress("DEPRECATION")
+                    WifiManager.calculateSignalLevel(rssi, 5)
+                }
                 when {
                     level >= 3 -> {
                         tvSignal.text = "Stabil"
