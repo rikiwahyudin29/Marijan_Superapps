@@ -235,7 +235,7 @@ class WaliKelasAbsenHarianActivity : AppCompatActivity() {
         val sharedPref = getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
         val fotoProfilUrl = sharedPref.getString("foto_profil", null)
         if (!fotoProfilUrl.isNullOrEmpty() && ::ivProfilPhoto.isInitialized) {
-            val fullUrl = if (fotoProfilUrl.startsWith("http")) fotoProfilUrl else "https://smkriyadhuljannahjalancagak.sch.id/uploads/guru/$fotoProfilUrl"
+            val fullUrl = if (fotoProfilUrl.startsWith("http")) fotoProfilUrl else "https://mariyadhuljannahsubang.sch.id/uploads/guru/$fotoProfilUrl"
             try {
                 Glide.with(this)
                     .load(fullUrl)

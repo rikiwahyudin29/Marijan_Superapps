@@ -1313,7 +1313,7 @@ class UjianActivity : AppCompatActivity() {
                 if (fullUrl.contains("http")) {
                     fullUrl = fullUrl.substring(fullUrl.indexOf("http"))
                 } else {
-                    val baseUrl = "https://smkriyadhuljannahjalancagak.sch.id/"
+                    val baseUrl = "https://mariyadhuljannahsubang.sch.id/"
                     fullUrl = if (fullUrl.startsWith("/")) baseUrl + fullUrl.substring(1) else baseUrl + fullUrl
                 }
 

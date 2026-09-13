@@ -114,9 +114,9 @@ class IzinActivity : AppCompatActivity() {
 
         val finalUrl = if (fotoProfilUrl.isNotEmpty()) {
             if (!fotoProfilUrl.startsWith("http") && userRole == "GURU") {
-                "https://smkriyadhuljannahjalancagak.sch.id/uploads/guru/" + fotoProfilUrl
+                "https://mariyadhuljannahsubang.sch.id/uploads/guru/" + fotoProfilUrl
             } else if (!fotoProfilUrl.startsWith("http") && userRole == "SISWA") {
-                "https://smkriyadhuljannahjalancagak.sch.id/uploads/siswa/" + fotoProfilUrl
+                "https://mariyadhuljannahsubang.sch.id/uploads/siswa/" + fotoProfilUrl
             } else {
                 fotoProfilUrl
             }

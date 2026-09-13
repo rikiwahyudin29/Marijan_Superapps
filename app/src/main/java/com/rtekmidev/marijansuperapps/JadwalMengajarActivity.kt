@@ -207,7 +207,7 @@ class JadwalMengajarActivity : AppCompatActivity() {
         val namaLengkap = prefGuru.getString("nama_lengkap", "Guru")
 
         if (!fotoProfilUrl.isNullOrEmpty()) {
-            val fullUrl = if (fotoProfilUrl.startsWith("http")) fotoProfilUrl else "https://smkriyadhuljannahjalancagak.sch.id/uploads/guru/$fotoProfilUrl"
+            val fullUrl = if (fotoProfilUrl.startsWith("http")) fotoProfilUrl else "https://mariyadhuljannahsubang.sch.id/uploads/guru/$fotoProfilUrl"
             try {
                 Glide.with(this)
                     .load(fullUrl)

@@ -278,7 +278,7 @@ class BerandaGuruFragment : Fragment(), RefreshableFragment {
         val cvProfilPic = requireActivity().findViewById<CardView>(R.id.cvProfilPic)
         val fotoProfilUrl = sharedPref.getString("foto_profil", null)
         val fullUrl = if (!fotoProfilUrl.isNullOrEmpty()) {
-            if (fotoProfilUrl.startsWith("http")) fotoProfilUrl else "https://smkriyadhuljannahjalancagak.sch.id/uploads/guru/$fotoProfilUrl"
+            if (fotoProfilUrl.startsWith("http")) fotoProfilUrl else "https://mariyadhuljannahsubang.sch.id/uploads/guru/$fotoProfilUrl"
         } else null
         
         try {

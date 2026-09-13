@@ -223,7 +223,7 @@ class WaliKelasKehadiranActivity : AppCompatActivity() {
             val url = if (!cetakMatrixUrl.isNullOrEmpty() && cetakMatrixUrl!!.contains("download-matrix")) {
                 cetakMatrixUrl!!
             } else {
-                "https://smkriyadhuljannahjalancagak.sch.id/api/walikelas/download-matrix?id_user=$idUser&bulan=$bulanIso"
+                "https://mariyadhuljannahsubang.sch.id/api/walikelas/download-matrix?id_user=$idUser&bulan=$bulanIso"
             }
             downloadFileDirect(url, fileName, "application/pdf")
         }
@@ -241,7 +241,7 @@ class WaliKelasKehadiranActivity : AppCompatActivity() {
             val url = if (!exportExcelUrl.isNullOrEmpty() && exportExcelUrl!!.contains("download-excel")) {
                 exportExcelUrl!!
             } else {
-                "https://smkriyadhuljannahjalancagak.sch.id/api/walikelas/download-excel?id_user=$idUser&bulan=$bulanIso"
+                "https://mariyadhuljannahsubang.sch.id/api/walikelas/download-excel?id_user=$idUser&bulan=$bulanIso"
             }
             downloadFileDirect(url, fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
         }
@@ -394,7 +394,7 @@ class WaliKelasKehadiranActivity : AppCompatActivity() {
         val sharedPref = getSharedPreferences("SesiGuru", Context.MODE_PRIVATE)
         val fotoProfilUrl = sharedPref.getString("foto_profil", null)
         if (!fotoProfilUrl.isNullOrEmpty() && ::ivProfilPhoto.isInitialized) {
-            val fullUrl = if (fotoProfilUrl.startsWith("http")) fotoProfilUrl else "https://smkriyadhuljannahjalancagak.sch.id/uploads/guru/$fotoProfilUrl"
+            val fullUrl = if (fotoProfilUrl.startsWith("http")) fotoProfilUrl else "https://mariyadhuljannahsubang.sch.id/uploads/guru/$fotoProfilUrl"
             try {
                 Glide.with(this)
                     .load(fullUrl)
@@ -549,7 +549,7 @@ class WaliKelasKehadiranActivity : AppCompatActivity() {
             val downloadUrl = if (!cetakSiswaBaseUrl.isNullOrEmpty() && cetakSiswaBaseUrl!!.contains("download-siswa-pdf")) {
                 "$cetakSiswaBaseUrl${student.siswa_id}"
             } else {
-                "https://smkriyadhuljannahjalancagak.sch.id/api/walikelas/download-siswa-pdf?id_user=$idUser&bulan=$bulanIso&id_siswa=${student.siswa_id}"
+                "https://mariyadhuljannahsubang.sch.id/api/walikelas/download-siswa-pdf?id_user=$idUser&bulan=$bulanIso&id_siswa=${student.siswa_id}"
             }
             downloadFileDirect(downloadUrl, fileName, "application/pdf")
         }

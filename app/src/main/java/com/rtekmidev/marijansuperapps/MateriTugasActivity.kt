@@ -285,7 +285,7 @@ class MateriTugasActivity : AppCompatActivity() {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.linkYoutube))
                 startActivity(intent)
             } else {
-                val urlLengkap = "https://smkriyadhuljannahjalancagak.sch.id/uploads/materi/" + item.urlFile
+                val urlLengkap = "https://mariyadhuljannahsubang.sch.id/uploads/materi/" + item.urlFile
                 val viewerIntent = Intent(this, FileViewerActivity::class.java)
                 viewerIntent.putExtra("FILE_URL", urlLengkap)
                 viewerIntent.putExtra("TITLE", item.judul)

@@ -93,7 +93,7 @@ class JurnalMengajarActivity : AppCompatActivity() {
         val fotoProfilUrl = prefGuru.getString("foto_profil", null)
         val ivProfilPhoto = findViewById<ImageView>(R.id.ivProfilPhoto)
         if (!fotoProfilUrl.isNullOrEmpty() && ivProfilPhoto != null) {
-            val fullUrl = if (fotoProfilUrl.startsWith("http")) fotoProfilUrl else "https://smkriyadhuljannahjalancagak.sch.id/uploads/guru/$fotoProfilUrl"
+            val fullUrl = if (fotoProfilUrl.startsWith("http")) fotoProfilUrl else "https://mariyadhuljannahsubang.sch.id/uploads/guru/$fotoProfilUrl"
             try {
                 Glide.with(this)
                     .load(fullUrl)

@@ -347,7 +347,7 @@ class KumpulTugasActivity : AppCompatActivity() {
             val downloadUrl = if (rawUrl.startsWith("http://") || rawUrl.startsWith("https://")) {
                 rawUrl.replace("http://", "https://")
             } else {
-                "https://smkriyadhuljannahjalancagak.sch.id/uploads/tugas/$rawUrl"
+                "https://mariyadhuljannahsubang.sch.id/uploads/tugas/$rawUrl"
             }
 
             var fileName = try {

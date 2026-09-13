@@ -153,7 +153,7 @@ class DashboardGuruActivity : AppCompatActivity() {
             val nama = sharedPref.getString("nama", "Guru")
             val foto = sharedPref.getString("foto_profil", null)
             val fullUrl = if (!foto.isNullOrEmpty()) {
-                if (foto.startsWith("http")) foto else "https://smkriyadhuljannahjalancagak.sch.id/uploads/guru/$foto"
+                if (foto.startsWith("http")) foto else "https://mariyadhuljannahsubang.sch.id/uploads/guru/$foto"
             } else null
             com.rtekmidev.marijansuperapps.util.AvatarHelper.setAvatar(this, nama, fullUrl, ivProfil, tvInisial, cvProfil)
         }

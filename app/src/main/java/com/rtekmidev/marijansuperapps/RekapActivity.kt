@@ -86,9 +86,9 @@ class RekapActivity : AppCompatActivity() {
             if (fotoProfilUrl.startsWith("http")) {
                 fotoProfilUrl
             } else if (userRole == "GURU") {
-                "https://smkriyadhuljannahjalancagak.sch.id/uploads/guru/$fotoProfilUrl"
+                "https://mariyadhuljannahsubang.sch.id/uploads/guru/$fotoProfilUrl"
             } else {
-                "https://smkriyadhuljannahjalancagak.sch.id/uploads/siswa/$fotoProfilUrl"
+                "https://mariyadhuljannahsubang.sch.id/uploads/siswa/$fotoProfilUrl"
             }
         } else {
             null

@@ -187,7 +187,7 @@ class WaliKelasKeuanganActivity : AppCompatActivity() {
 
     private fun loadProfilePic(fotoUrl: String?) {
         if (!fotoUrl.isNullOrEmpty()) {
-            val fullUrl = if (fotoUrl.startsWith("http")) fotoUrl else "https://smkriyadhuljannahjalancagak.sch.id/uploads/guru/$fotoUrl"
+            val fullUrl = if (fotoUrl.startsWith("http")) fotoUrl else "https://mariyadhuljannahsubang.sch.id/uploads/guru/$fotoUrl"
             try {
                 Glide.with(this)
                     .load(fullUrl)
@@ -470,7 +470,7 @@ class WaliKelasKeuanganActivity : AppCompatActivity() {
         val downloadUrl = if (!cetakRekapUrl.isNullOrEmpty() && cetakRekapUrl!!.contains("download-keuangan-pdf")) {
             cetakRekapUrl!!
         } else {
-            "https://smkriyadhuljannahjalancagak.sch.id/api/walikelas/download-keuangan-pdf?id_user=${identifier}$posParam"
+            "https://mariyadhuljannahsubang.sch.id/api/walikelas/download-keuangan-pdf?id_user=${identifier}$posParam"
         }
 
         downloadFileDirect(downloadUrl, fileName, "application/pdf")
@@ -490,7 +490,7 @@ class WaliKelasKeuanganActivity : AppCompatActivity() {
         val downloadUrl = if (!exportExcelUrl.isNullOrEmpty() && exportExcelUrl!!.contains("download-keuangan-excel")) {
             exportExcelUrl!!
         } else {
-            "https://smkriyadhuljannahjalancagak.sch.id/api/walikelas/download-keuangan-excel?id_user=${identifier}$posParam"
+            "https://mariyadhuljannahsubang.sch.id/api/walikelas/download-keuangan-excel?id_user=${identifier}$posParam"
         }
 
         downloadFileDirect(downloadUrl, fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
@@ -509,7 +509,7 @@ class WaliKelasKeuanganActivity : AppCompatActivity() {
         val downloadUrl = if (!cetakTagihanBaseUrl.isNullOrEmpty() && cetakTagihanBaseUrl!!.contains("download-tagihan-siswa-pdf")) {
             "${cetakTagihanBaseUrl}${siswa.siswa_id}"
         } else {
-            "https://smkriyadhuljannahjalancagak.sch.id/api/walikelas/download-tagihan-siswa-pdf?id_user=${identifier}&id_siswa=${siswa.siswa_id}"
+            "https://mariyadhuljannahsubang.sch.id/api/walikelas/download-tagihan-siswa-pdf?id_user=${identifier}&id_siswa=${siswa.siswa_id}"
         }
 
         downloadFileDirect(downloadUrl, fileName, "application/pdf")

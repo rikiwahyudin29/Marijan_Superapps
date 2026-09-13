@@ -307,7 +307,7 @@ class MateriBelajarActivity : AppCompatActivity() {
         val urlLengkap = if (fileUrl.startsWith("http")) {
             fileUrl
         } else {
-            "https://smkriyadhuljannahjalancagak.sch.id/uploads/materi/" + fileUrl
+            "https://mariyadhuljannahsubang.sch.id/uploads/materi/" + fileUrl
         }
 
         val viewerIntent = Intent(this, FileViewerActivity::class.java)
